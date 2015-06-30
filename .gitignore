@@ -1,0 +1,11 @@
+Makefile
+bin
+obj
+gen
+libs
+.classpath
+local.properties
+#project.properties
+.cproject
+.project
+.settings

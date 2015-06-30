@@ -56,7 +56,7 @@ LOCAL_LDLIBS     += -fuse-ld=bfd -rdynamic -llog
 #-DETH_MAC: Ethernet
 #-DSET_MAC: Setting type of the network by setNetworkType, default Wireless
 LOCAL_CPPFLAGS :=  -DSET_MAC
-#$(call set-git-version)
+$(call set-git-version)
 
 ifeq ($(OUTPUT_TYPE), ANDROID_JAR)
 	LOCAL_CPPFLAGS += -DSDK_TYPE=1
