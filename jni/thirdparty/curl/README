@@ -1,0 +1,15 @@
+###################################
+first step:
+Download curl-7.40.0.tar.gz
+
+###################################
+second step:
+./configure --host=arm-linux-androideabi --without-zlib
+
+###################################
+third step:
+use the directory include/ and lib/
+
+###################################
+4:
+modify curl-7.40.0/packages/Android/Android.mk

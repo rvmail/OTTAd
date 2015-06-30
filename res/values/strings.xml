@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">OTTLogin</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    
+    <string name="bn0">isInit</string>
+    <string name="bn1">sdkInit</string>
+    <string name="bn2">sdkQuit</string>
+    <string name="bn3">getDeviceID</string>
+    <string name="bn4">getPlatformID</string>
+    <string name="bn5">getVersion</string>
+    <string name="bn6">auto off</string>
+
+</resources>

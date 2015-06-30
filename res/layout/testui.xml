@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    
+<TableLayout 
+    android:id="@+id/TableLayout01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:stretchColumns="1"
+    >
+    
+<!-- the first table row -->
+<TableRow>
+<Button
+    android:id="@+id/bn0"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/bn0"
+    />
+<EditText
+    android:id="@+id/txt0"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:editable="false"
+    android:cursorVisible="false"
+    android:textSize="12pt"
+    />
+	
+</TableRow>
+
+<TableRow>
+<Button
+    android:id="@+id/bn1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/bn1"
+    />
+<EditText
+    android:id="@+id/txt1"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:editable="false"
+    android:cursorVisible="false"
+    android:textSize="12pt"
+    />
+    
+</TableRow>
+
+<TableRow>
+<Button
+    android:id="@+id/bn2"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/bn2"
+    />
+<EditText
+    android:id="@+id/txt2"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:editable="false"
+    android:cursorVisible="false"
+    android:textSize="12pt"
+    />
+    
+</TableRow>
+
+<TableRow>
+<Button
+    android:id="@+id/bn3"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/bn3"
+    />
+<EditText
+    android:id="@+id/txt3"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:editable="false"
+    android:cursorVisible="false"
+    android:textSize="12pt"
+    />
+    
+</TableRow>
+
+<TableRow>
+<Button
+    android:id="@+id/bn4"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/bn4"
+    />
+<EditText
+    android:id="@+id/txt4"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:editable="false"
+    android:cursorVisible="false"
+    android:textSize="12pt"
+    />
+    
+</TableRow>
+
+<TableRow>
+<Button
+    android:id="@+id/bn5"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/bn5"
+    />
+<EditText
+    android:id="@+id/txt5"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:editable="false"
+    android:cursorVisible="false"
+    android:textSize="12pt"
+    />
+    
+</TableRow>
+
+<TableRow>
+<Button
+    android:id="@+id/bn6"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/bn6"
+    />
+<EditText
+    android:id="@+id/txt6"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:editable="false"
+    android:cursorVisible="false"
+    android:textSize="12pt"
+    />
+
+</TableRow>
+
+</TableLayout>
+
+</LinearLayout>
+
