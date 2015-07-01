@@ -11,7 +11,7 @@
     <string name="bn2">sdkQuit</string>
     <string name="bn3">getDeviceID</string>
     <string name="bn4">getPlatformID</string>
-    <string name="bn5">getVersion</string>
+    <string name="bn5">getUserID</string>
     <string name="bn6">auto off</string>
 
 </resources>

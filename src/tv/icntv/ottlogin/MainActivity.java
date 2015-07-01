@@ -31,7 +31,8 @@ public class MainActivity extends Activity
 		{
 			if (msg.what == 1)
 			{
-				Integer result =  (Integer) msg.obj;
+				//Integer result =  (Integer) msg.obj;
+				Boolean result = (Boolean)msg.obj;
 				EditText txt = (EditText)findViewById(R.id.txt1);
 	        	txt.setText(result.toString());
 			}
@@ -119,7 +120,7 @@ public class MainActivity extends Activity
     	            Message response = Message.obtain();
     	            response.what = 1;
     	            //response.obj = Integer.valueOf(ret);
-    	            response.obj = ret;
+    	            response.obj = Boolean.valueOf(ret);
     	            handler.sendMessage(response);
     			}
     		}).start();
@@ -132,7 +133,7 @@ public class MainActivity extends Activity
     {
         public void onClick(View v)
         {
-        	EditText txt = (EditText)findViewById(R.id.txt2);
+        	EditText txt = (EditText)findViewById(R.id.txt3);
         	txt.setText("getDeviceID...");
         	
         	StringBuffer tf  = new StringBuffer();
@@ -147,7 +148,7 @@ public class MainActivity extends Activity
     {
         public void onClick(View v)
         {
-        	EditText txt = (EditText)findViewById(R.id.txt3);
+        	EditText txt = (EditText)findViewById(R.id.txt4);
         	txt.setText("getPlatformID...");
         	
         	StringBuffer tf  = new StringBuffer();
@@ -162,7 +163,7 @@ public class MainActivity extends Activity
     {
         public void onClick(View v)
         {
-        	EditText txt = (EditText)findViewById(R.id.txt4);
+        	EditText txt = (EditText)findViewById(R.id.txt5);
         	txt.setText("getUserID...");
         	
         	StringBuffer tf  = new StringBuffer();
