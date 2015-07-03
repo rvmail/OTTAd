@@ -64,7 +64,7 @@ public class MainActivity extends Activity
             copyFileToDst("ini/DeviceInfo.ini", configFile.getPath());
         }
         
-        //isInit
+        //getLoginStatus
         Button bn0 = (Button)findViewById(R.id.bn0);
         bn0.setOnClickListener(new ClickB0());
         
@@ -93,7 +93,7 @@ public class MainActivity extends Activity
         bn6.setOnClickListener(new ClickB6());
     }
     
-    //isInit
+    //getLoginStatus
     class ClickB0 implements View.OnClickListener
     {
         public void onClick(View v)
@@ -216,7 +216,7 @@ public class MainActivity extends Activity
 					loginSDK.getInstance().sdkQuit();
 					
 					String ret = loginSDK.getInstance().deviceLogin(getFilesDir().getPath());
-					if (ret == "111" || ret == "110"){
+					if (ret.compareTo("111") == 0 || ret.compareTo("110") == 0){
 						resp.arg1 = ++okCount;
 						resp.arg2 = errorCount;
 					}
