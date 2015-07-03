@@ -106,6 +106,14 @@ public:
     int get(const char *request, httpResponse *response);
     int post(const char *head, const char *data, httpResponse *response);
 
+    /**
+    * @name          getData
+    * @param
+    * @return        0: OK
+    *               -1: if curlget is not CURLE_OK, return -1
+    *               -2: ERR_MALLOC
+    * @description
+    */
     int getData(string host, string path, string query, string &response);
     int postData(string host, string path, string query, string &response);
 

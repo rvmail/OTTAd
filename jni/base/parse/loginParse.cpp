@@ -29,22 +29,28 @@ int loginParse::parse(const char *src, void *dst)
     {
         //find online
         TiXmlElement *pNode = pRoot->FirstChildElement("online");
-        if (pNode != NULL)
+        if (pNode)
         {
             const char *p = NULL;
             TiXmlElement *pChildNode = pNode->FirstChildElement("state");
-            if (pChildNode != NULL)
+            if (pChildNode)
             {
                 p = pChildNode->GetText();
-                if (p != NULL)
+                if (p)
                 {
                     res->state.assign(p);
                     LOG(DEBUG) << "state=" << res->state;
                 }
                 else
                 {
+                    LOG(ERROR) << "state no value";
                     return -1;
                 }
+            }
+            else
+            {
+                LOG(ERROR) << "state is NULL";
+                return -1;
             }
 
             pChildNode = pNode->FirstChildElement("userId");
@@ -170,12 +176,22 @@ int loginParse::parse(const char *src, void *dst)
                 }
             }
         }
+        else
+        {
+            LOG(ERROR) << "online is NULL";
+            return -1;
+        }
 
         pNode = pRoot->FirstChildElement("update");
         if (pNode != NULL)
         {
             //Todo
         }
+    }
+    else
+    {
+        LOG(ERROR) << "RootElement is NULL";
+        return -1;
     }
 
     return 0;

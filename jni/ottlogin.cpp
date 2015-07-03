@@ -36,11 +36,11 @@ mutex exit_mutex;
 
 static int isCurlInit = 0;
 
-bool sdkInitialize(string path)
+string ICNTV_Login_deviceLogin(string path)
 {
     initialize_mutex.lock();
 
-    LOG(DEBUG) << "sdkInitialize...";
+    LOG(DEBUG) << "ICNTV_Login_deviceLogin...";
     LOG(DEBUG) << "path=" << path;
 
 #ifdef GIT_VERSION
@@ -54,15 +54,16 @@ bool sdkInitialize(string path)
         isCurlInit = 1;
     }
 
+    string ret;
     if (Login::getInstance()->getLoginStatus() != LoginStatus::Success)
     {
         dataCache::getInstance()->setPath(path);
-        Login::getInstance()->startLogin();
+        ret = Login::getInstance()->startLogin();
     }
 
     initialize_mutex.unlock();
 
-    return Login::getInstance()->getLoginStatus() == LoginStatus::Success;
+    return ret;
 }
 
 bool sdkExit(void)

@@ -36,6 +36,23 @@
 #define LOGIN_RETRY_COUNT      3
 #define LOGIN_RETRY_WAIT_TIME  2    //second
 
+#define ERR_NO                                     "0"
+#define ERR_DEFALT                                 "-1"
+#define ERR_MALLOC                                 "888"
+#define ERR_READ_MAC                               "755"
+#define ERR_LOGIN_FORCE_STOP                       "119"
+
+#define ERR_ACTIVATE_CONNECT_TMS                   "765"
+#define ERR_ACTIVATE_PARSE_RESPONSE                "776"
+#define ERR_ACTIVATE_DEVICE_NULL                   "775"
+
+#define ERR_AUTH_CONNECT_TMS                       "766"
+#define ERR_AUTH_PARSE_RESPONSE                    "777"
+#define ERR_AUTH_STATE_NULL                        "774"
+
+#define ERR_CONNECT_EPG                            "788"
+#define ERR_CHECKURL                               "799"
+
 Login* Login::m_pInstance = NULL;
 
 Login* Login::getInstance()
@@ -154,7 +171,7 @@ bool Login::isFirstLogin()
     return mFirstLogin;
 }
 
-int Login::doActivate()
+string Login::doActivate()
 {
     LOG(DEBUG) << "doActivate start...";
 
@@ -164,34 +181,54 @@ int Login::doActivate()
     string host(getConfigure(configLoginAddr));
     string path("/deviceInit.action");
     stringstream query;
-    query << "mac=" << getMacBySocket();
+
+    string mac = getMacBySocket();
+    if (mac.empty())
+    {
+        LOG(ERROR) << "doActivate mac is empty";
+        return ERR_READ_MAC;
+    }
+
+    query << "mac=" << mac;
 
     ret = http.getData(host, path, query.str(), response);
     if (ret != 0)
     {
-        LOG(ERROR) << "http.getData() error!";
-        return -1;
+        LOG(ERROR) << "doActivate http.getData() error!";
+        return ERR_ACTIVATE_CONNECT_TMS;
     }
 
     initParse mInitParse;
     InitResponse mInitResponse;
 
-    mInitParse.parse(response.c_str(), &mInitResponse);
+    ret = mInitParse.parse(response.c_str(), &mInitResponse);
+    if (ret != 0)
+    {
+        LOG(ERROR) << "mInitParse error";
+        return ERR_ACTIVATE_PARSE_RESPONSE;
+    }
+
     if (mInitResponse.status != 1)
     {
-        LOG(ERROR) << "Response error, resultCode=" << mInitResponse.status;
-        return -2;
+        LOG(ERROR) << "resultCode=" << mInitResponse.status;
+        return ERR_ACTIVATE_PARSE_RESPONSE;
     }
 
     mDeviceId = mInitResponse.deviceid;
     LOG(DEBUG) << "DeviceId: " << mDeviceId;
 
+    if (mDeviceId.empty())
+    {
+        LOG(ERROR) << "mDeviceId is empty";
+        return ERR_ACTIVATE_DEVICE_NULL;
+    }
+
     setConfigure(configDeviceId, mDeviceId);
 
-    return 0;
+    return ERR_NO;
 }
 
-int Login::doAuthenticate()
+string Login::doAuthenticate()
 {
     LOG(DEBUG) << "doAuthenticate start...";
 
@@ -202,43 +239,52 @@ int Login::doAuthenticate()
     string path("/device!deviceLogin.action");
     stringstream query;
     query << "deviceId=" << mDeviceId;
-    query << "&mac=" << getMacBySocket();
+
+    string mac = getMacBySocket();
+    if (mac.empty())
+    {
+        LOG(ERROR) << "doAuthenticate mac is empty";
+        return ERR_READ_MAC;
+    }
+
+    query << "&mac=" << mac;
 
     ret = http.getData(host, path, query.str(), response);
     if (ret != 0)
     {
-        LOG(ERROR) << "http.getData() error!";
-        return -1;
+        LOG(ERROR) << "doAuthenticate http.getData() error!";
+        return ERR_AUTH_CONNECT_TMS;
     }
 
     loginParse mLoginParse;
     LoginResponse mLoginResponse;
-    mLoginParse.parse(response.c_str(), &mLoginResponse);
-
-    if (mLoginResponse.state.compare("000") == 0)
+    ret = mLoginParse.parse(response.c_str(), &mLoginResponse);
+    if (ret != 0)
     {
-        LOG(ERROR) << "failed, doAuthenticate state=000";
-        return -2;
+        LOG(ERROR) << "mLoginParse.parse error";
+        return ERR_AUTH_PARSE_RESPONSE;
     }
 
-    if (mLoginResponse.state.compare("111") != 0)
+    if (mLoginResponse.state.empty())
     {
-        LOG(ERROR) << "failed, state=" << mLoginResponse.state;
-        return -3;
+        LOG(ERROR) << "doAuthenticate state is empty";
+        return ERR_AUTH_STATE_NULL;
     }
-    else
+
+    if (mLoginResponse.state.compare("111") == 0 \
+            && mLoginResponse.state.compare("110") == 0)
     {
         mUserId = mLoginResponse.userId;
         mTemplateId = mLoginResponse.templateId;
         mServerList= mLoginResponse.serverList;
     }
 
-    return 0;
+    return mLoginResponse.state;
 }
 
-int Login::startLogin()
+string Login::startLogin()
 {
-    int ret = -1;
+    string ret;
     int retryCount = 0;
     bool needDoActivate = false;
 
@@ -255,7 +301,7 @@ int Login::startLogin()
         if (mLoginStatus == LoginStatus::ForceStop)
         {
             LOG(DEBUG) << "stopLogin has been invoked";
-            return -2;
+            return ERR_LOGIN_FORCE_STOP;
         }
         else
         {
@@ -265,7 +311,7 @@ int Login::startLogin()
         if (needDoActivate)
         {
             ret = doActivate();
-            if (ret != 0)
+            if (ret.compare(ERR_NO) != 0)
             {
                 sleep(LOGIN_RETRY_WAIT_TIME);
                 continue;
@@ -276,12 +322,12 @@ int Login::startLogin()
         }
 
         ret = doAuthenticate();
-        if (ret == 0)
+        if (ret.compare("111") == 0 || ret.compare("110") == 0)
         {
             LOG(DEBUG) << "doAuthenticate OK";
             break;
         }
-        else if (ret == -2)
+        else if (ret.compare("000") == 0)
         {
             needDoActivate = true;
             sleep(LOGIN_RETRY_WAIT_TIME);
@@ -298,12 +344,15 @@ int Login::startLogin()
     {
         LOG(ERROR) << "login failed, up to the max retry times";
         mLoginStatus = LoginStatus::LoginFailed;
-        return -1;
+    }
+    else
+    {
+        mLoginStatus = LoginStatus::Success;
+        LOG(DEBUG) << "Login success";
     }
 
-    mLoginStatus = LoginStatus::Success;
-    LOG(DEBUG) << "Login success";
-    return 0;
+    mLoginState = ret;
+    return ret;
 }
 
 void Login::stopLogin()

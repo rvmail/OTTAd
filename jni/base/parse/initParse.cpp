@@ -24,48 +24,56 @@ int initParse::parse(const char *src, void *dst)
     TiXmlDocument xmlDoc;
     xmlDoc.Parse(src);
     LOG(DEBUG) << "request xml: " << src;
+
     TiXmlElement *pRoot = xmlDoc.RootElement();
-
-    if (pRoot)
+    if (!pRoot)
     {
-        //find "online"
-        TiXmlElement *pNode = pRoot->FirstChildElement("online");
-        if (pNode != NULL)
+        LOG(ERROR) << "RootElement is NULL";
+        return -1;
+    }
+
+    //find "online"
+    TiXmlElement *pNode = pRoot->FirstChildElement("online");
+    if (pNode)
+    {
+        const char *p = NULL;
+
+        //find resultCode
+        TiXmlElement *pChildNode = pNode->FirstChildElement("resultCode");
+        if (pChildNode)
         {
-            const char *p = NULL;
-
-            //find resultCode
-            TiXmlElement *pChildNode = pNode->FirstChildElement("resultCode");
-            if (pChildNode != NULL)
+            p = pChildNode->GetText();
+            if (p)
             {
-                p = pChildNode->GetText();
-                if (p != NULL)
-                {
-                    res->status = atoi(p);
-                    if (res->status != 1)
-                    {
-                        LOG(ERROR) << "resultCode=" << res->status;
-                        return -1;
-                    }
-                }
-            }
-
-            //find deviceId
-            pChildNode = pNode->FirstChildElement("deviceId");
-            if (pChildNode != NULL)
-            {
-                p = pChildNode->GetText();
-                if (p != NULL)
-                {
-                    res->deviceid.assign(p);
-                }
-                else
-                {
-                    LOG(ERROR) << "Can't find deviceId";
-                    return -1;
-                }
+                res->status = atoi(p);
             }
         }
+        else
+        {
+            LOG(ERROR) << "Can't find resultCode";
+            return -1;
+        }
+
+        //find deviceId
+        pChildNode = pNode->FirstChildElement("deviceId");
+        if (pChildNode)
+        {
+            p = pChildNode->GetText();
+            if (p)
+            {
+                res->deviceid.assign(p);
+            }
+        }
+        else
+        {
+            LOG(ERROR) << "Can't find deviceId";
+            return -1;
+        }
+    }
+    else
+    {
+        LOG(ERROR) << "Can't find online";
+        return -1;
     }
 
     return 0;

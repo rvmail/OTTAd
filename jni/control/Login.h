@@ -51,7 +51,7 @@ public:
     string getPlatformID();
     string getTemplateID();
     string getServerAddress(string type);
-    int startLogin();
+    string startLogin();
     void stopLogin();
     bool isFirstLogin();
 
@@ -75,7 +75,7 @@ private:
     *                -2: the response data is not good
     * @description   Activate the terminal, get device ID
     */
-    int doActivate();
+    string doActivate();
 
     /**
     * @name          doAuthenticate
@@ -86,7 +86,7 @@ private:
     *                -3: other result
     * @description   Authenticate the terminal, get some information
     */
-    int doAuthenticate();
+    string doAuthenticate();
 
     string getConfigure(ConfigType type);
     bool setConfigure(ConfigType type, const string val);
@@ -94,6 +94,7 @@ private:
     static Login* m_pInstance;
 
     LoginStatus mLoginStatus;
+    string mLoginState;
 
     string mDeviceId;
     string mUserId;

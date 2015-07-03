@@ -138,7 +138,7 @@ int icntvHttp::getData(string host, string path, string query, string &response)
     if (buf == NULL)
     {
         LOG(ERROR) << "new char[] error!";
-        return -1;
+        return -2;
     }
     buf[len] = 0;
 
@@ -178,7 +178,7 @@ int icntvHttp::postData(string host, string path, string query, string &response
     if (buf == NULL)
     {
         LOG(ERROR) << "new char[] error!";
-        return -1;
+        return -2;
     }
     buf[len] = 0;
 

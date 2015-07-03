@@ -57,14 +57,9 @@ public class loginSDK {
 	 * @param path
 	 * @return
 	 */
-	private native boolean sdkInitialize(String path);
-	public synchronized boolean sdkInit(String path) {
-		Log.d("epgsdk", "isInit=" + isInit);
-		if (isInit) {
-			return true;
-		}
-		isInit = sdkInitialize(path);
-		return isInit;
+	private native String login(String path);
+	public synchronized String deviceLogin(String path) {
+		return login(path);
 	}
 
 	/**

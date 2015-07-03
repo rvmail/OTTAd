@@ -32,17 +32,17 @@ public class MainActivity extends Activity
 			if (msg.what == 1)
 			{
 				//Integer result =  (Integer) msg.obj;
-				Boolean result = (Boolean)msg.obj;
+				String result = (String) msg.obj;
 				EditText txt = (EditText)findViewById(R.id.txt1);
-	        	txt.setText(result.toString());
+	        	txt.setText(result);
 			}
 			else if (msg.what == 6)
 			{
 				Integer arg1 = (Integer) msg.arg1;
 				Integer arg2 = (Integer) msg.arg2;
-				Integer error = (Integer)msg.obj;
+				String error = (String)msg.obj;
 				EditText txt = (EditText)findViewById(R.id.txt6);
-	        	txt.setText("<okCount=" + arg1.toString() + ">, <errorCount=" + arg2.toString() + ", lastErrCode=" + error.toString() + ">");
+	        	txt.setText("<okCount=" + arg1.toString() + ">, <errorCount=" + arg2.toString() + ", lastErrCode=" + error + ">");
 			    Log.d("", "ui thread id = " + Thread.currentThread().getId());
 			}
 		}
@@ -68,7 +68,7 @@ public class MainActivity extends Activity
         Button bn0 = (Button)findViewById(R.id.bn0);
         bn0.setOnClickListener(new ClickB0());
         
-        //sdkInit
+        //deviceLogin
         Button bn1 = (Button)findViewById(R.id.bn1);
         bn1.setOnClickListener(new ClickB1());
         
@@ -113,14 +113,14 @@ public class MainActivity extends Activity
         public void onClick(View v)
         {
         	EditText txt = (EditText)findViewById(R.id.txt1);
-        	txt.setText("sdkInit...");
+        	txt.setText("deviceLogin...");
         	new Thread(new Runnable() {
     			public void run() {
-    	            boolean ret = loginSDK.getInstance().sdkInit(getFilesDir().getPath());
+    	            String ret = loginSDK.getInstance().deviceLogin(getFilesDir().getPath());
     	            Message response = Message.obtain();
     	            response.what = 1;
     	            //response.obj = Integer.valueOf(ret);
-    	            response.obj = Boolean.valueOf(ret);
+    	            response.obj = ret;
     	            handler.sendMessage(response);
     			}
     		}).start();
@@ -215,8 +215,8 @@ public class MainActivity extends Activity
 					
 					loginSDK.getInstance().sdkQuit();
 					
-					boolean ret = loginSDK.getInstance().sdkInit(getFilesDir().getPath());
-					if (ret){
+					String ret = loginSDK.getInstance().deviceLogin(getFilesDir().getPath());
+					if (ret == "111" || ret == "110"){
 						resp.arg1 = ++okCount;
 						resp.arg2 = errorCount;
 					}

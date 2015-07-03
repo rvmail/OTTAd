@@ -32,12 +32,12 @@
 using namespace std;
 
 /**
-* @name         sdkInitialize
+* @name         ICNTV_Login_deviceLogin
 * @param        path[in]: the path to the configuration files
-* @return       bool true success, false failed
-* @description  icntv sdk initialize
+* @return
+* @description  device login
 */
-bool sdkInitialize(string path);
+string ICNTV_Login_deviceLogin(string path);
 
 /**
 * @name         sdkExit
