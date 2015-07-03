@@ -62,6 +62,8 @@ public class loginSDK {
 		return login(path);
 	}
 
+	public synchronized native boolean getLoginStatus();
+	
 	/**
 	 * 销毁的方法
 	 * 

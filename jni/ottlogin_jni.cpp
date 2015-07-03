@@ -132,6 +132,12 @@ JNIEXPORT jstring JNICALL Java_tv_icntv_ottlogin_loginSDK_login
     return jstr;
 }
 
+JNIEXPORT jboolean JNICALL Java_tv_icntv_ottlogin_loginSDK_getLoginStatus
+(JNIEnv *env, jobject thiz)
+{
+    return ICNTV_Login_getLoginStatus();
+}
+
 // APP_CMD_DESTROY
 JNIEXPORT jboolean JNICALL Java_tv_icntv_ottlogin_loginSDK_sdkExit
 (JNIEnv *env, jobject thiz)

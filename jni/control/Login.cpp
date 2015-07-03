@@ -272,7 +272,7 @@ string Login::doAuthenticate()
     }
 
     if (mLoginResponse.state.compare("111") == 0 \
-            && mLoginResponse.state.compare("110") == 0)
+            || mLoginResponse.state.compare("110") == 0)
     {
         mUserId = mLoginResponse.userId;
         mTemplateId = mLoginResponse.templateId;

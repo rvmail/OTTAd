@@ -54,7 +54,7 @@ string ICNTV_Login_deviceLogin(string path)
         isCurlInit = 1;
     }
 
-    string ret;
+    string ret("111");
     if (Login::getInstance()->getLoginStatus() != LoginStatus::Success)
     {
         dataCache::getInstance()->setPath(path);
@@ -64,6 +64,11 @@ string ICNTV_Login_deviceLogin(string path)
     initialize_mutex.unlock();
 
     return ret;
+}
+
+bool ICNTV_Login_getLoginStatus()
+{
+    return (Login::getInstance()->getLoginStatus() == LoginStatus::Success);
 }
 
 bool sdkExit(void)

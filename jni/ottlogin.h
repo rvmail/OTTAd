@@ -40,6 +40,14 @@ using namespace std;
 string ICNTV_Login_deviceLogin(string path);
 
 /**
+* @name         ICNTV_Login_getLoginStatus
+* @param
+* @return       true: device has already logined, false otherwise
+* @description  get the status of login
+*/
+bool ICNTV_Login_getLoginStatus();
+
+/**
 * @name         sdkExit
 * @param        void
 * @return       bool true success, false failed

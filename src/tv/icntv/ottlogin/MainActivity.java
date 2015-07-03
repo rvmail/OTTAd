@@ -99,11 +99,11 @@ public class MainActivity extends Activity
         public void onClick(View v)
         {
         	EditText txt = (EditText)findViewById(R.id.txt0);
-        	txt.setText("isInit...");
+        	txt.setText("getLoginStatus...");
         	
-            boolean ret = loginSDK.getInstance().isInit();
+            boolean ret = loginSDK.getInstance().getLoginStatus();
             
-            txt.setText("isInit return " + ret);
+            txt.setText("" + ret);
         }
     }
     

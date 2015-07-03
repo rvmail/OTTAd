@@ -6,7 +6,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     
-    <string name="bn0">isInit</string>
+    <string name="bn0">getLoginStatus</string>
     <string name="bn1">deviceLogin</string>
     <string name="bn2">sdkQuit</string>
     <string name="bn3">getDeviceID</string>
