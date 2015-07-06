@@ -31,13 +31,15 @@
 #include <iostream>
 using namespace std;
 
+bool ICNTV_Login_sdkInit(string path);
+
 /**
 * @name         ICNTV_Login_deviceLogin
 * @param        path[in]: the path to the configuration files
 * @return
 * @description  device login
 */
-string ICNTV_Login_deviceLogin(string path);
+string ICNTV_Login_deviceLogin(void);
 
 /**
 * @name         ICNTV_Login_getLoginStatus

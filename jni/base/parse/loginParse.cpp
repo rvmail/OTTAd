@@ -158,7 +158,7 @@ int loginParse::parse(const char *src, void *dst)
                         if (p != NULL)
                         {
                             address.url.assign(p);
-                            LOG(DEBUG) << "url=" << address.url;
+                            LOG(DEBUG) << "type"<< address.type << "url=" << address.url;
                         }
 
                         p = pAddressNode->Attribute("name");

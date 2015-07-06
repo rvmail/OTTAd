@@ -31,7 +31,9 @@
 
 #include "base/parse/initParse.h"
 #include "base/parse/loginParse.h"
+#include "base/parse/tokenParse.h"
 #include "base/configure/icntvConfigure.h"
+#include "base/baseThread.h"
 
 #define LOGIN_RETRY_COUNT      3
 #define LOGIN_RETRY_WAIT_TIME  2    //second
@@ -65,9 +67,9 @@ Login* Login::getInstance()
     return m_pInstance;
 }
 
-Login::Login(void): mLoginStatus(LoginStatus::NotLogin)
+Login::Login(void): mLoginStatus(LoginNot), isCheckTokenStart(false)
 {
-    mFirstLogin = (mDeviceId.empty() || mPlatformId.empty());
+
 }
 
 Login::~Login(void)
@@ -81,11 +83,7 @@ LoginStatus Login::getLoginStatus()
 
 string Login::getToken()
 {
-    if (mLoginStatus == LoginStatus::Success)
-    {
         return mToken;
-    }
-    return "";
 }
 
 string Login::getDeviceID()
@@ -164,11 +162,6 @@ bool Login::setConfigure(ConfigType type, const string val)
     }
 
     return false;
-}
-
-bool Login::isFirstLogin()
-{
-    return mFirstLogin;
 }
 
 string Login::doActivate()
@@ -277,6 +270,7 @@ string Login::doAuthenticate()
         mUserId = mLoginResponse.userId;
         mTemplateId = mLoginResponse.templateId;
         mServerList= mLoginResponse.serverList;
+        mToken = mLoginResponse.token;
     }
 
     return mLoginResponse.state;
@@ -298,14 +292,14 @@ string Login::startLogin()
 
     for (retryCount = 0; retryCount < LOGIN_RETRY_COUNT; retryCount++)
     {
-        if (mLoginStatus == LoginStatus::ForceStop)
+        if (mLoginStatus == LoginForceStop)
         {
             LOG(DEBUG) << "stopLogin has been invoked";
             return ERR_LOGIN_FORCE_STOP;
         }
         else
         {
-            mLoginStatus = LoginStatus::Logging;
+            mLoginStatus = Logining;
         }
 
         if (needDoActivate)
@@ -347,7 +341,7 @@ string Login::startLogin()
     }
     else
     {
-        mLoginStatus = LoginStatus::Success;
+        mLoginStatus = LoginSuccess;
         LOG(DEBUG) << "Login success";
     }
 
@@ -357,12 +351,82 @@ string Login::startLogin()
 
 void Login::stopLogin()
 {
-    if (mLoginStatus == LoginStatus::Logging)
+    if (mLoginStatus == Logining)
     {
-        mLoginStatus = LoginStatus::ForceStop;
+        mLoginStatus = LoginForceStop;
     }
     else
     {
-        mLoginStatus = LoginStatus::NotLogin;
+        mLoginStatus = LoginNot;
     }
 }
+
+int Login::checkToken()
+{
+    int ret;
+    string host = getServerAddress("AUTH");
+    string path("/auth/checkToken/");
+
+    string token = getToken();
+    path += token;
+
+    string query;
+    string response;
+    icntvHttp http;
+    ret = http.getData(host, path, query, response);
+    if (ret != 0)
+    {
+        LOG(ERROR) << "checkToken http.getData() error!";
+        return -1;
+    }
+
+    tokenParse tokenParse;
+    TokenResponse tokenResponse;
+    ret = tokenParse.parse(response.c_str(), &tokenResponse);
+    if (ret != 0)
+    {
+        LOG(ERROR) << "tokenParse.parse error";
+        return -2;
+    }
+
+    if (tokenResponse.respCode != 1)
+    {
+        mLoginStatus = LoginTokenErr;
+        startLogin();
+    }
+
+    return 0;
+}
+
+void *Login::checkTokenThread(void *param)
+{
+    LOG(DEBUG) << "checkToken start!!!";
+
+    Login *plogin = (Login *)param;
+
+    while (1)
+    {
+        sleep(60 * 5);
+        plogin->checkToken();
+    }
+
+    LOG(DEBUG) << "checkToken end!!!";
+
+    return 0;
+}
+
+int Login::startCheckToken()
+{
+    if (isCheckTokenStart)
+    {
+        return 0;
+    }
+
+    baseThread heart;
+    heart.startThread(Login::checkTokenThread, Login::getInstance());
+
+    isCheckTokenStart = true;
+    return 0;
+}
+
+

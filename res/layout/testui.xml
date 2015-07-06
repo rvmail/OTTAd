@@ -15,6 +15,24 @@
 <!-- the first table row -->
 <TableRow>
 <Button
+    android:id="@+id/buttoninit"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/init"
+    />
+<EditText
+    android:id="@+id/txtinit"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:editable="false"
+    android:cursorVisible="false"
+    android:textSize="12pt"
+    />
+    
+</TableRow>
+
+<TableRow>
+<Button
     android:id="@+id/bn0"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"

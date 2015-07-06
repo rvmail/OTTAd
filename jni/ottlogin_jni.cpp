@@ -119,12 +119,24 @@ JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_setNetworkType
     return 0;
 }
 
-JNIEXPORT jstring JNICALL Java_tv_icntv_ottlogin_loginSDK_login
+JNIEXPORT jboolean JNICALL Java_tv_icntv_ottlogin_loginSDK_sdkInit
 (JNIEnv *env, jobject thiz, jstring path)
 {
     string currPath = jstringToString(env, path);
 
-    string ret = ICNTV_Login_deviceLogin(currPath);
+    return ICNTV_Login_sdkInit(currPath);
+}
+
+JNIEXPORT jboolean JNICALL Java_tv_icntv_ottlogin_loginSDK_sdkExit
+(JNIEnv *env, jobject thiz)
+{
+    return sdkExit();
+}
+
+JNIEXPORT jstring JNICALL Java_tv_icntv_ottlogin_loginSDK_deviceLogin
+(JNIEnv *env, jobject thiz, jstring path)
+{
+    string ret = ICNTV_Login_deviceLogin();
 
     jstring jstr;
     jstr = env->NewStringUTF(ret.c_str());
@@ -136,13 +148,6 @@ JNIEXPORT jboolean JNICALL Java_tv_icntv_ottlogin_loginSDK_getLoginStatus
 (JNIEnv *env, jobject thiz)
 {
     return ICNTV_Login_getLoginStatus();
-}
-
-// APP_CMD_DESTROY
-JNIEXPORT jboolean JNICALL Java_tv_icntv_ottlogin_loginSDK_sdkExit
-(JNIEnv *env, jobject thiz)
-{
-    return sdkExit();
 }
 
 JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_getVersion

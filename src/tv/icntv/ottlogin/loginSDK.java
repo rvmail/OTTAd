@@ -43,43 +43,36 @@ public class loginSDK {
 	}
 
 	/**
-	 * 是否初始化完成
+	 * SDK初始化
 	 * 
 	 * @return
 	 */
-	public synchronized boolean isInit() {
-		return isInit;
-	}
+	public synchronized native boolean sdkInit(String path);
+	
+	/**
+	 * SDK退出
+	 * 
+	 * @return
+	 */
+	public synchronized native boolean sdkExit();
 
 	/**
-	 * 初始化的方法
+	 * 设备认证
 	 * 
 	 * @param path
 	 * @return
 	 */
-	private native String login(String path);
-	public synchronized String deviceLogin(String path) {
-		return login(path);
-	}
+	//private native String login();
+	public synchronized native String deviceLogin();
 
+	/**
+	 * 获取认证状态
+	 * 
+	 * @param 
+	 * @return true: 已认证；false：未认证
+	 */
 	public synchronized native boolean getLoginStatus();
 	
-	/**
-	 * 销毁的方法
-	 * 
-	 * @return
-	 */
-	private native boolean sdkExit();
-	public boolean sdkQuit() {
-		// if (!isInit) {
-		// return false;
-		// }
-		boolean isOK = sdkExit();
-		if (isOK) {
-			isInit = false;
-		}
-		return isOK;
-	}
 	
 	/**
 	 * 获取devive ID

@@ -64,6 +64,8 @@ public class MainActivity extends Activity
             copyFileToDst("ini/DeviceInfo.ini", configFile.getPath());
         }
         
+        loginSDK.getInstance().sdkInit(getFilesDir().getPath());
+        
         //getLoginStatus
         Button bn0 = (Button)findViewById(R.id.bn0);
         bn0.setOnClickListener(new ClickB0());
@@ -72,7 +74,7 @@ public class MainActivity extends Activity
         Button bn1 = (Button)findViewById(R.id.bn1);
         bn1.setOnClickListener(new ClickB1());
         
-        //sdkQuit
+        //sdkExit
         Button bn2 = (Button)findViewById(R.id.bn2);
         bn2.setOnClickListener(new ClickB2());
         
@@ -91,6 +93,10 @@ public class MainActivity extends Activity
         //auto
         Button bn6 = (Button)findViewById(R.id.bn6);
         bn6.setOnClickListener(new ClickB6());
+        
+      //sdkInit
+        Button init = (Button)findViewById(R.id.buttoninit);
+        init.setOnClickListener(new Click_init());
     }
     
     //getLoginStatus
@@ -107,7 +113,7 @@ public class MainActivity extends Activity
         }
     }
     
-    //sdkInit
+    //deviceLogin
     class ClickB1 implements View.OnClickListener
     {
         public void onClick(View v)
@@ -116,7 +122,7 @@ public class MainActivity extends Activity
         	txt.setText("deviceLogin...");
         	new Thread(new Runnable() {
     			public void run() {
-    	            String ret = loginSDK.getInstance().deviceLogin(getFilesDir().getPath());
+    	            String ret = loginSDK.getInstance().deviceLogin();
     	            Message response = Message.obtain();
     	            response.what = 1;
     	            //response.obj = Integer.valueOf(ret);
@@ -173,17 +179,17 @@ public class MainActivity extends Activity
         }
     }
     
-    //sdkQuit
+    //sdkExit
     class ClickB2 implements View.OnClickListener
     {
         public void onClick(View v)
         {
         	EditText txt = (EditText)findViewById(R.id.txt2);
-        	txt.setText("sdkQuit...");
+        	txt.setText("sdkExit...");
         	
-            boolean ret = loginSDK.getInstance().sdkQuit();
+            boolean ret = loginSDK.getInstance().sdkExit();
             
-            txt.setText("sdkQuit return " + ret);
+            txt.setText("sdkExit return " + ret);
         }
     }
     
@@ -213,9 +219,10 @@ public class MainActivity extends Activity
 					Message resp = Message.obtain();
 					resp.what = 6;
 					
-					loginSDK.getInstance().sdkQuit();
+					loginSDK.getInstance().sdkExit();
+					loginSDK.getInstance().sdkInit(getFilesDir().getPath());
 					
-					String ret = loginSDK.getInstance().deviceLogin(getFilesDir().getPath());
+					String ret = loginSDK.getInstance().deviceLogin();
 					if (ret.compareTo("111") == 0 || ret.compareTo("110") == 0){
 						resp.arg1 = ++okCount;
 						resp.arg2 = errorCount;
@@ -234,10 +241,24 @@ public class MainActivity extends Activity
         }
     }
     
+  //sdkInit
+    class Click_init implements View.OnClickListener
+    {
+        public void onClick(View v)
+        {
+        	EditText txt = (EditText)findViewById(R.id.txtinit);
+        	txt.setText("sdkInit...");
+        	
+            boolean ret = loginSDK.getInstance().sdkInit(getFilesDir().getPath());
+            
+            txt.setText("" + ret);
+        }
+    }
+    
     protected void onDestroy() 
     {
     	Log.d("loginsdk", "onDestroy");
-    	loginSDK.getInstance().sdkQuit();
+    	loginSDK.getInstance().sdkExit();
     	if (timer != null){
     		timer.cancel();
         	timer = null;

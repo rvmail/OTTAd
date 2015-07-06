@@ -31,44 +31,47 @@
 
 #include <mutex>
 
-mutex initialize_mutex;
+mutex login_mutex;
 mutex exit_mutex;
 
-static int isCurlInit = 0;
+static int isInit = 0;
 
-string ICNTV_Login_deviceLogin(string path)
+bool ICNTV_Login_sdkInit(string path)
 {
-    initialize_mutex.lock();
-
-    LOG(DEBUG) << "ICNTV_Login_deviceLogin...";
-    LOG(DEBUG) << "path=" << path;
-
-#ifdef GIT_VERSION
-    LOG(DEBUG) << "sdk commit version on git: " << GIT_VERSION;
-#endif
-
-    if (isCurlInit == 0)
+    if (isInit == 0)
     {
         LOG(DEBUG) << "curl_global_init()";
         curl_global_init(CURL_GLOBAL_DEFAULT);
-        isCurlInit = 1;
+        Login::getInstance()->startCheckToken();
+        isInit = 1;
     }
 
+    LOG(DEBUG) << "path=" << path;
+    dataCache::getInstance()->setPath(path);
+
+    return true;
+}
+
+string ICNTV_Login_deviceLogin(void)
+{
+    login_mutex.lock();
+
+    LOG(DEBUG) << "ICNTV_Login_deviceLogin...";
+
     string ret("111");
-    if (Login::getInstance()->getLoginStatus() != LoginStatus::Success)
+    if (Login::getInstance()->getLoginStatus() != LoginSuccess)
     {
-        dataCache::getInstance()->setPath(path);
         ret = Login::getInstance()->startLogin();
     }
 
-    initialize_mutex.unlock();
+    login_mutex.unlock();
 
     return ret;
 }
 
 bool ICNTV_Login_getLoginStatus()
 {
-    return (Login::getInstance()->getLoginStatus() == LoginStatus::Success);
+    return (Login::getInstance()->getLoginStatus() == LoginSuccess);
 }
 
 bool sdkExit(void)
@@ -80,11 +83,11 @@ bool sdkExit(void)
     Login::getInstance()->stopLogin();
     //Poco::Process::kill(Poco::Process::id());
 
-    if (isCurlInit == 1)
+    if (isInit == 1)
     {
         LOG(DEBUG) << "curl_global_cleanup()";
         curl_global_cleanup();
-        isCurlInit = 0;
+        isInit = 0;
     }
 
     LOG(DEBUG) << "sdkExit OK";
@@ -107,7 +110,7 @@ int getVersion(string &version)
 
 int getDeviceID(string &deviceID)
 {
-    if (Login::getInstance()->getLoginStatus() != LoginStatus::Success)
+    if (Login::getInstance()->getLoginStatus() != LoginSuccess)
     {
         LOG(ERROR) << "login status is not success";
         return -1;
@@ -121,7 +124,7 @@ int getDeviceID(string &deviceID)
 
 int getUserID(string &userID)
 {
-    if (Login::getInstance()->getLoginStatus() != LoginStatus::Success)
+    if (Login::getInstance()->getLoginStatus() != LoginSuccess)
     {
         LOG(ERROR) << "login status is not success";
         return -1;
@@ -135,7 +138,7 @@ int getUserID(string &userID)
 
 int getTemplateID(string &templateID)
 {
-    if (Login::getInstance()->getLoginStatus() != LoginStatus::Success)
+    if (Login::getInstance()->getLoginStatus() != LoginSuccess)
     {
         LOG(ERROR) << "login status is not success";
         return -1;
@@ -149,7 +152,7 @@ int getTemplateID(string &templateID)
 
 int getPlatformID(string &platformID)
 {
-    if (Login::getInstance()->getLoginStatus() != LoginStatus::Success)
+    if (Login::getInstance()->getLoginStatus() != LoginSuccess)
     {
         LOG(ERROR) << "login status is not success";
         return -1;
@@ -163,7 +166,7 @@ int getPlatformID(string &platformID)
 
 int getServerAddress(string type, string &serverAddr)
 {
-    if (Login::getInstance()->getLoginStatus() != LoginStatus::Success)
+    if (Login::getInstance()->getLoginStatus() != LoginSuccess)
     {
         LOG(ERROR) << "login status is not success";
         return -1;

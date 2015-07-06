@@ -26,15 +26,16 @@
 
 using namespace std;
 
-enum class LoginStatus
+enum LoginStatus
 {
-    NotLogin,
-    Logging,
-    Success,
+    LoginNot,
+    Logining,
+    LoginSuccess,
     LoginFailed,
-    NetworkFailed,
-    ForceStop,
-    Unknown,
+    LoginNetworkFailed,
+    LoginForceStop,
+    LoginTokenErr,
+    LoginUnknown,
 };
 
 class Login
@@ -53,7 +54,7 @@ public:
     string getServerAddress(string type);
     string startLogin();
     void stopLogin();
-    bool isFirstLogin();
+    int startCheckToken();
 
 private:
     enum ConfigType
@@ -91,6 +92,9 @@ private:
     string getConfigure(ConfigType type);
     bool setConfigure(ConfigType type, const string val);
 
+    int checkToken();
+    static void *checkTokenThread(void *param);
+
     static Login* m_pInstance;
 
     LoginStatus mLoginStatus;
@@ -103,7 +107,7 @@ private:
     string mToken;
     MapServerList mServerList;
 
-    bool mFirstLogin;
+    bool isCheckTokenStart;
 };
 
 #endif // !__LOGIN_H__

@@ -25,7 +25,7 @@
 
 using std::ostream;
 
-#define LOG_TAG         "epgsdk"
+#define LOG_TAG         "ottlogin"
 
 #define LL_ERROR        ANDROID_LOG_ERROR
 #define LL_WARNING      ANDROID_LOG_WARN

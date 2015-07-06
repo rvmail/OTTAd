@@ -8,10 +8,11 @@
     
     <string name="bn0">getLoginStatus</string>
     <string name="bn1">deviceLogin</string>
-    <string name="bn2">sdkQuit</string>
+    <string name="bn2">sdkExit</string>
     <string name="bn3">getDeviceID</string>
     <string name="bn4">getPlatformID</string>
     <string name="bn5">getUserID</string>
     <string name="bn6">auto off</string>
+    <string name="init">sdkInit</string>
 
 </resources>
