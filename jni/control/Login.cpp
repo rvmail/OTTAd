@@ -98,6 +98,11 @@ string Login::getUserID()
 
 string Login::getPlatformID()
 {
+    if (mPlatformId.empty())
+    {
+        mPlatformId = getConfigure(configPlatformId);
+    }
+
     return mPlatformId;
 }
 
@@ -122,23 +127,26 @@ string Login::getServerAddress(string type)
 
 string Login::getConfigure(ConfigType type)
 {
-    char serverAddr[NUM_128] = {0};
-    char buffer[NUM_32] = {0};
+    char buffer[NUM_128] = {0};
 
     switch (type)
     {
         case configLoginAddr:
-            icntvConfigure::getInstance()->getLoginServer(serverAddr, NUM_128);
-            if (serverAddr[0] == '\0')
+            icntvConfigure::getInstance()->getLoginServer(buffer, NUM_128);
+            if (buffer[0] == '\0')
             {
                 LOG(ERROR) << "Get login server address failed, use default address";
                 return  "http://tms.is.ysten.com:8080/yst-tms";
             }
-            LOG(DEBUG) << "Login serverAddr : " << serverAddr;
-            return string(serverAddr);
+            LOG(DEBUG) << "Login serverAddr : " << buffer;
+            return string(buffer);
             break;
         case configDeviceId:
-            icntvConfigure::getInstance()->getDeviceID(buffer, NUM_32);
+            icntvConfigure::getInstance()->getDeviceID(buffer, NUM_128);
+            return string(buffer);
+            break;
+        case configPlatformId:
+            icntvConfigure::getInstance()->getPlatformID(buffer, NUM_128);
             return string(buffer);
             break;
         default:

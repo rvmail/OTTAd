@@ -40,6 +40,8 @@ public:
     int getDeviceID(char *id, int size);
     int setDeviceID(const char *id);
 
+    int getPlatformID(char *id, int size);
+
     int getStrValue(const char *section, const char *key , char *keyvalue, \
                     const int bufsize, const char *filePath);
     int getIntValue(const char *section, const char *key, \

@@ -45,6 +45,7 @@ const char DEVICEID_KEY[]             = "DeviceID";
 const char DEVICE_CONFIG_FILE[]       ="/ini/DeviceInfo.ini";
 const char DEVICE_SECTION[]           = "DEVICE";
 const char LOGINSERVER_KEY[]          = "LoginServer";
+const char PLATFORMID_KEY[]           = "PlatformId";
 
 icntvConfigure* icntvConfigure::m_pInstance = NULL;
 
@@ -77,9 +78,14 @@ int icntvConfigure::getDeviceID(char *id, int size)
     return getStrValue(DEVICEID_SECTION, DEVICEID_KEY, id, size, DEVICEID_CONFIG_FILE);
 }
 
-int icntvConfigure::setDeviceID(const char* id)
+int icntvConfigure::setDeviceID(const char *id)
 {
     return setKeyValue(DEVICEID_SECTION, DEVICEID_KEY, id, DEVICEID_CONFIG_FILE);
+}
+
+int icntvConfigure::getPlatformID(char *id, int size)
+{
+    return getStrValue(DEVICE_SECTION, PLATFORMID_KEY, id, size, DEVICE_CONFIG_FILE);
 }
 
 int icntvConfigure::getFilePath(char *szFile, const char *filePath /* = NULL */)
