@@ -31,11 +31,17 @@
 #include <iostream>
 using namespace std;
 
+/**
+* @name         ICNTV_Login_sdkInit
+* @param        path[in]: the path to the configuration files
+* @return
+* @description  SDK initialize
+*/
 bool ICNTV_Login_sdkInit(string path);
 
 /**
 * @name         ICNTV_Login_deviceLogin
-* @param        path[in]: the path to the configuration files
+* @param
 * @return
 * @description  device login
 */
@@ -50,62 +56,62 @@ string ICNTV_Login_deviceLogin(void);
 bool ICNTV_Login_getLoginStatus();
 
 /**
-* @name         sdkExit
+* @name         ICNTV_Login_sdkExit
 * @param        void
 * @return       bool true success, false failed
 * @description  quit from the SDK
 */
-bool sdkExit(void);
+bool ICNTV_Login_sdkExit(void);
 
 /**
-* @name         getVersion
+* @name         ICNTV_Login_getVersion
 * @param        version[out]
 * @return       0 success, -1 failed
 * @description  get the version of the SDK
 */
-int getVersion(string &version);
+int ICNTV_Login_getVersion(string &version);
 
 /**
-* @name         getDeviceID
+* @name         ICNTV_Login_getDeviceID
 * @param        deviceID[out]
 * @return       0 success, -1 failed
 * @description  get device ID
 */
-int getDeviceID(string &deviceID);
+int ICNTV_Login_getDeviceID(string &deviceID);
 
 /**
-* @name         getUserID
+* @name         ICNTV_Login_getUserID
 * @param        userID[out]
 * @return       0 success, -1 failed
 * @description  get user ID
 */
-int getUserID(string &userID);
+int ICNTV_Login_getUserID(string &userID);
 
 /**
-* @name         getTemplateID
+* @name         ICNTV_Login_getTemplateID
 * @param        templateID[out]
 * @return       0 success, -1 failed
 * @description  get the template ID
 */
-int getTemplateID(string &templateID);
+int ICNTV_Login_getTemplateID(string &templateID);
 
 /**
-* @name         getPlatformID
+* @name         ICNTV_Login_getPlatformID
 * @param        platformID[out]
 * @return       0 success, -1 failed
 * @description  get the platform ID
 */
-int getPlatformID(string &platformID);
+int ICNTV_Login_getPlatformID(string &platformID);
 
 /**
-* @name         getServerAddress
+* @name         ICNTV_Login_getServerAddress
 * @param        type[in]: type of the server
 *               "EPG"
 * @param        platformID[out]
 * @return       0 success, -1 failed
 * @description  get the platform ID
 */
-int getServerAddress(string type, string &serverAddr);
+int ICNTV_Login_getServerAddress(string type, string &serverAddr);
 
 #endif
 

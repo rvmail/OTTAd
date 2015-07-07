@@ -74,7 +74,7 @@ bool ICNTV_Login_getLoginStatus()
     return (Login::getInstance()->getLoginStatus() == LoginSuccess);
 }
 
-bool sdkExit(void)
+bool ICNTV_Login_sdkExit(void)
 {
     exit_mutex.lock();
 
@@ -97,7 +97,7 @@ bool sdkExit(void)
     return true;
 }
 
-int getVersion(string &version)
+int ICNTV_Login_getVersion(string &version)
 {
     version = SDK_VERSION;
     version += "(";
@@ -108,7 +108,7 @@ int getVersion(string &version)
     return 0;
 }
 
-int getDeviceID(string &deviceID)
+int ICNTV_Login_getDeviceID(string &deviceID)
 {
     if (Login::getInstance()->getLoginStatus() != LoginSuccess)
     {
@@ -122,7 +122,7 @@ int getDeviceID(string &deviceID)
     return 0;
 }
 
-int getUserID(string &userID)
+int ICNTV_Login_getUserID(string &userID)
 {
     if (Login::getInstance()->getLoginStatus() != LoginSuccess)
     {
@@ -136,7 +136,7 @@ int getUserID(string &userID)
     return 0;
 }
 
-int getTemplateID(string &templateID)
+int ICNTV_Login_getTemplateID(string &templateID)
 {
     if (Login::getInstance()->getLoginStatus() != LoginSuccess)
     {
@@ -150,7 +150,7 @@ int getTemplateID(string &templateID)
     return 0;
 }
 
-int getPlatformID(string &platformID)
+int ICNTV_Login_getPlatformID(string &platformID)
 {
     if (Login::getInstance()->getLoginStatus() != LoginSuccess)
     {
@@ -164,7 +164,7 @@ int getPlatformID(string &platformID)
     return 0;
 }
 
-int getServerAddress(string type, string &serverAddr)
+int ICNTV_Login_getServerAddress(string type, string &serverAddr)
 {
     if (Login::getInstance()->getLoginStatus() != LoginSuccess)
     {
@@ -179,7 +179,7 @@ int getServerAddress(string type, string &serverAddr)
 
 }
 
-int setNetworkType(int type)
+int ICNTV_Login_setNetworkType(int type)
 {
     setNetType(type);
 

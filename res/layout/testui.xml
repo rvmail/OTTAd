@@ -141,6 +141,23 @@
 
 <TableRow>
 <Button
+    android:id="@+id/buttonTemplate"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="getTemplateID"
+    />
+<EditText
+    android:id="@+id/txtTemplate"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:editable="false"
+    android:cursorVisible="false"
+    android:textSize="12pt"
+    />
+</TableRow>
+
+<TableRow>
+<Button
     android:id="@+id/bn6"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -154,7 +171,6 @@
     android:cursorVisible="false"
     android:textSize="12pt"
     />
-
 </TableRow>
 
 </TableLayout>

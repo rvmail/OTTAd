@@ -28,7 +28,7 @@
 
 #define TRANSFER_DATA "tv/icntv/ottlogin/TransferData"
 
-extern int setNetworkType(int type);
+extern int ICNTV_Login_setNetworkType(int type);
 
 #ifdef __cplusplus
 extern "C" {
@@ -115,7 +115,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_setNetworkType
   (JNIEnv *env, jobject thiz, jint type)
 {
-    setNetworkType(type);
+    ICNTV_Login_setNetworkType(type);
     return 0;
 }
 
@@ -130,7 +130,7 @@ JNIEXPORT jboolean JNICALL Java_tv_icntv_ottlogin_loginSDK_sdkInit
 JNIEXPORT jboolean JNICALL Java_tv_icntv_ottlogin_loginSDK_sdkExit
 (JNIEnv *env, jobject thiz)
 {
-    return sdkExit();
+    return ICNTV_Login_sdkExit();
 }
 
 JNIEXPORT jstring JNICALL Java_tv_icntv_ottlogin_loginSDK_deviceLogin
@@ -156,7 +156,7 @@ JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_getVersion
     int ret = -1;
     string str;
 
-    ret = getVersion(str);
+    ret = ICNTV_Login_getVersion(str);
     if (ret != 0)
     {
         LOG(ERROR) << "JNI-getVersion() error";
@@ -175,7 +175,7 @@ JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_getDeviceID
     int ret = -1;
     string str;
 
-    ret = getDeviceID(str);
+    ret = ICNTV_Login_getDeviceID(str);
     if (ret != 0)
     {
         LOG(ERROR) << "JNI-getDeviceID() error";
@@ -194,7 +194,7 @@ JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_getUserID
     int ret = -1;
     string str;
 
-    ret = getUserID(str);
+    ret = ICNTV_Login_getUserID(str);
     if (ret != 0)
     {
         LOG(ERROR) << "JNI-getUserID() error";
@@ -213,7 +213,7 @@ JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_getTemplateID
     int ret = -1;
     string str;
 
-    ret = getTemplateID(str);
+    ret = ICNTV_Login_getTemplateID(str);
     if (ret != 0)
     {
         LOG(ERROR) << "JNI-getTemplateID() error";
@@ -232,7 +232,7 @@ JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_getPlatformID
     int ret = -1;
     string str;
 
-    ret = getPlatformID(str);
+    ret = ICNTV_Login_getPlatformID(str);
     if (ret != 0)
     {
         LOG(ERROR) << "JNI-getPlatformID() error";
@@ -253,7 +253,7 @@ JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_getServerAddress
 
     string ty = jstringToString(env, type);
 
-    ret = getServerAddress(ty, str);
+    ret = ICNTV_Login_getServerAddress(ty, str);
     if (ret != 0)
     {
         LOG(ERROR) << "JNI-getServerAddress() error";

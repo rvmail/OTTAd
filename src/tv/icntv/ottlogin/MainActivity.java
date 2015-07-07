@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SimpleAdapter.ViewBinder;
 import tv.icntv.ottlogin.loginSDK;
 
 public class MainActivity extends Activity
@@ -94,9 +95,15 @@ public class MainActivity extends Activity
         Button bn6 = (Button)findViewById(R.id.bn6);
         bn6.setOnClickListener(new ClickB6());
         
-      //sdkInit
+        //sdkInit
         Button init = (Button)findViewById(R.id.buttoninit);
         init.setOnClickListener(new Click_init());
+        
+        //getTemplateID
+        Button template = (Button)findViewById(R.id.buttonTemplate);
+        template.setOnClickListener(new Click_template());
+        
+        
     }
     
     //getLoginStatus
@@ -193,6 +200,7 @@ public class MainActivity extends Activity
         }
     }
     
+    //auto test
     class ClickB6 implements View.OnClickListener
     {
     	public void onClick(View v)
@@ -241,7 +249,7 @@ public class MainActivity extends Activity
         }
     }
     
-  //sdkInit
+    //sdkInit
     class Click_init implements View.OnClickListener
     {
         public void onClick(View v)
@@ -253,6 +261,22 @@ public class MainActivity extends Activity
             
             txt.setText("" + ret);
         }
+    }
+    
+    //getTemplateID
+    class Click_template implements View.OnClickListener
+    {
+    	public void onClick(View v)
+    	{
+    		EditText txt = (EditText)findViewById(R.id.txtTemplate);
+        	txt.setText("getTemplateID...");
+        	
+        	StringBuffer tf  = new StringBuffer();
+            int ret = loginSDK.getInstance().getTemplateID(tf);
+            
+            txt.setText("getTemplateID return " + ret + ", and get data: " + tf.toString());
+    	}
+    	
     }
     
     protected void onDestroy() 
