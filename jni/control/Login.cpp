@@ -149,6 +149,10 @@ string Login::getConfigure(ConfigType type)
             icntvConfigure::getInstance()->getPlatformID(buffer, NUM_128);
             return string(buffer);
             break;
+        case configLoginType:
+            icntvConfigure::getInstance()->getLoginType(buffer, NUM_128);
+            return string(buffer);
+            break;
         default:
             break;
     }
@@ -164,6 +168,9 @@ bool Login::setConfigure(ConfigType type, const string val)
             break;
         case configDeviceId:
             return icntvConfigure::getInstance()->setDeviceID(val.c_str());
+            break;
+        case configLoginType:
+            return icntvConfigure::getInstance()->setLoginType(val.c_str());
             break;
         default:
             break;
@@ -183,7 +190,23 @@ string Login::doActivate()
     string path("/deviceInit.action");
     stringstream query;
 
-    string mac = getMacBySocket();
+    string loginType(getConfigure(configLoginType));
+    int macFlag = 1;    //activate by MAC: 1 wlan, 0 eth
+
+    if (loginType.compare("1") == 0)
+    {
+        macFlag = 1;
+    }
+    else if (loginType.compare("0") == 0)
+    {
+        macFlag = 0;
+    }
+    else    //read configuration file error, 1 default
+    {
+        macFlag = 1;
+    }
+
+    string mac = getMac(macFlag);
     if (mac.empty())
     {
         LOG(ERROR) << "doActivate mac is empty";
@@ -212,7 +235,7 @@ string Login::doActivate()
     if (mInitResponse.status != 1)
     {
         LOG(ERROR) << "resultCode=" << mInitResponse.status;
-        return ERR_ACTIVATE_PARSE_RESPONSE;
+        //return ERR_ACTIVATE_DEVICE_NULL;
     }
 
     mDeviceId = mInitResponse.deviceid;
@@ -221,6 +244,16 @@ string Login::doActivate()
     if (mDeviceId.empty())
     {
         LOG(ERROR) << "mDeviceId is empty";
+
+//        if (loginType.compare("1") == 0)
+//        {
+//            setConfigure(configLoginType, "0");
+//        }
+//        else if (loginType.compare("0") == 0)
+//        {
+//            setConfigure(configLoginType, "1");
+//        }
+
         return ERR_ACTIVATE_DEVICE_NULL;
     }
 
@@ -241,7 +274,23 @@ string Login::doAuthenticate()
     stringstream query;
     query << "deviceId=" << mDeviceId;
 
-    string mac = getMacBySocket();
+    string loginType(getConfigure(configLoginType));
+    int macFlag = 1;    //activate by MAC: 1 wlan, 0 eth
+
+    if (loginType.compare("1") == 0)
+    {
+        macFlag = 1;
+    }
+    else if (loginType.compare("0") == 0)
+    {
+        macFlag = 0;
+    }
+    else    //read configuration file error, 1 default
+    {
+        macFlag = 1;
+    }
+
+    string mac = getMac(macFlag);
     if (mac.empty())
     {
         LOG(ERROR) << "doAuthenticate mac is empty";

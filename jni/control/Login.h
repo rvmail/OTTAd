@@ -64,6 +64,7 @@ private:
         configUpdataAddr,
         configDeviceId,
         configPlatformId,
+        configLoginType,
     };
 
     Login(void);
@@ -98,7 +99,7 @@ private:
     static Login* m_pInstance;
 
     LoginStatus mLoginStatus;
-    string mLoginState;
+    string mLoginState;    //store the return value of startLogin
 
     string mDeviceId;
     string mUserId;

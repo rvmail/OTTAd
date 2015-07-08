@@ -42,6 +42,9 @@ public:
 
     int getPlatformID(char *id, int size);
 
+    int getLoginType(char *type, int size);
+    int setLoginType(const char *type);
+
     int getStrValue(const char *section, const char *key , char *keyvalue, \
                     const int bufsize, const char *filePath);
     int getIntValue(const char *section, const char *key, \

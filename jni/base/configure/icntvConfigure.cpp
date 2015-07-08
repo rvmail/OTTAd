@@ -37,15 +37,17 @@ using namespace std;
 
 const char LIBS_FILE_PATH[]           = "/libs/armeabi-v7a";
 
-//device ID
-const char DEVICEID_CONFIG_FILE[]     = "/ini/DeviceID.ini";
-const char DEVICEID_SECTION[]         = "DEVICE";
-const char DEVICEID_KEY[]             = "DeviceID";
-
+//DeviceInfo.ini
 const char DEVICE_CONFIG_FILE[]       ="/ini/DeviceInfo.ini";
 const char DEVICE_SECTION[]           = "DEVICE";
 const char LOGINSERVER_KEY[]          = "LoginServer";
 const char PLATFORMID_KEY[]           = "PlatformId";
+const char LOGINTYPE_KEY[]            = "LoginType";
+
+//DeviceID.ini
+const char DEVICEID_CONFIG_FILE[]     = "/ini/DeviceID.ini";
+const char DEVICEID_SECTION[]         = "DEVICE";
+const char DEVICEID_KEY[]             = "DeviceID";
 
 icntvConfigure* icntvConfigure::m_pInstance = NULL;
 
@@ -86,6 +88,16 @@ int icntvConfigure::setDeviceID(const char *id)
 int icntvConfigure::getPlatformID(char *id, int size)
 {
     return getStrValue(DEVICE_SECTION, PLATFORMID_KEY, id, size, DEVICE_CONFIG_FILE);
+}
+
+int icntvConfigure::getLoginType(char *type, int size)
+{
+    return getStrValue(DEVICE_SECTION, LOGINTYPE_KEY, type, size, DEVICE_CONFIG_FILE);
+}
+
+int icntvConfigure::setLoginType(const char *type)
+{
+    return setKeyValue(DEVICE_SECTION, LOGINTYPE_KEY, type, DEVICE_CONFIG_FILE);
 }
 
 int icntvConfigure::getFilePath(char *szFile, const char *filePath /* = NULL */)

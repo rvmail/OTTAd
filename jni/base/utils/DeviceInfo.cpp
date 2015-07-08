@@ -47,50 +47,63 @@ int setNetType(int type)
     return 0;
 }
 
-std::string getMacByFile()
+//type: 0 eth0, 1 wlan0
+std::string getMac(int type)
 {
-    FILE *fp;
-    char buffer[80]={0};
-
     mtx.lock();
 
-#ifdef WLAN_MAC
-    fp=popen("cat /sys/class/net/wlan0/address","r");
-#endif
+    FILE *fp = NULL;
+    char buffer[80] = {0};
 
-#ifdef ETH_MAC
-    fp=popen("cat /sys/class/net/eth0/address","r");
-#endif
-
-#ifdef SET_MAC
-    if (g_netType == 1)
+    if (type == 0)
     {
-        fp=popen("cat /sys/class/net/wlan0/address","r");
+        fp = popen("cat /sys/class/net/eth0/address","r");
     }
-    else if (g_netType == 0)
+    else if (type == 1)
     {
-        fp=popen("cat /sys/class/net/eth0/address","r");
+        fp = popen("cat /sys/class/net/wlan0/address","r");
     }
     else
     {
-        fp=popen("cat /sys/class/net/wlan0/address","r");
+        fp = popen("cat /sys/class/net/wlan0/address","r");
     }
-#endif
 
-    while (fgets(buffer, sizeof(buffer), fp)) {
-        for (int i = 0; buffer[i]; i++) {
-            if (buffer[i] == '\n' || buffer[i] == '\r') {
+    while (fgets(buffer, sizeof(buffer), fp))
+    {
+        for (int i = 0; buffer[i]; i++)
+        {
+            if (buffer[i] == '\n' || buffer[i] == '\r')
+            {
                 buffer[i] = 0;
                 break;
             }
         }
     }
     pclose(fp);
+
     mtx.unlock();
 
     LOG(DEBUG) << "Mac address: " << std::string(buffer);
-
     return std::string(buffer);
+}
+
+std::string getMacByFile()
+{
+    std::string mac;
+
+#ifdef WLAN_MAC
+    mac = getMac(1);
+#endif
+
+#ifdef ETH_MAC
+    mac = getMac(0);
+#endif
+
+#ifdef SET_MAC
+    mac = getMac(g_netType);
+#endif
+
+    return mac;
 }
 
 std::string getMacBySocket()

@@ -30,6 +30,7 @@ extern "C"
 {
 #endif
 
+std::string getMac(int type);
 std::string getMacByFile();
 std::string getMacBySocket();
 unsigned long long getMacInNum();
