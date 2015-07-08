@@ -83,7 +83,7 @@ std::string getMac(int type)
 
     mtx.unlock();
 
-    LOG(DEBUG) << "Mac address: " << std::string(buffer);
+    LOG(DEBUG) << "getMac return: " << std::string(buffer);
     return std::string(buffer);
 }
 

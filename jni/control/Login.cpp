@@ -35,7 +35,7 @@
 #include "base/configure/icntvConfigure.h"
 #include "base/baseThread.h"
 
-#define LOGIN_RETRY_COUNT      3
+#define LOGIN_RETRY_COUNT      4
 #define LOGIN_RETRY_WAIT_TIME  2    //second
 
 #define ERR_NO                                     "0"
@@ -67,9 +67,10 @@ Login* Login::getInstance()
     return m_pInstance;
 }
 
-Login::Login(void): mLoginStatus(LoginNot), isCheckTokenStart(false)
+Login::Login(void): mLoginStatus(LoginNot),
+                    m_isCheckTokenStart(false),
+                    m_loginType(1)
 {
-
 }
 
 Login::~Login(void)
@@ -179,6 +180,48 @@ bool Login::setConfigure(ConfigType type, const string val)
     return false;
 }
 
+void Login::getLoginType(void)
+{
+    string loginType(getConfigure(configLoginType));
+
+    if (loginType.compare("1") == 0)
+    {
+        m_loginType = 1;
+    }
+    else if (loginType.compare("0") == 0)
+    {
+        m_loginType = 0;
+    }
+    else    //read configuration file error, 1 default
+    {
+        m_loginType = 1;
+    }
+}
+
+void Login::setLoginType(void)
+{
+    if (m_loginType == 0)
+    {
+        setConfigure(configLoginType, "0");
+    }
+    else if (m_loginType == 1)
+    {
+        setConfigure(configLoginType, "1");
+    }
+}
+
+void Login::changeLoginType(void)
+{
+    if (m_loginType == 0)
+    {
+        m_loginType = 1;
+    }
+    else if (m_loginType == 1)
+    {
+        m_loginType = 0;
+    }
+}
+
 string Login::doActivate()
 {
     LOG(DEBUG) << "doActivate start...";
@@ -188,31 +231,16 @@ string Login::doActivate()
     string response;
     string host(getConfigure(configLoginAddr));
     string path("/deviceInit.action");
-    stringstream query;
 
-    string loginType(getConfigure(configLoginType));
-    int macFlag = 1;    //activate by MAC: 1 wlan, 0 eth
-
-    if (loginType.compare("1") == 0)
-    {
-        macFlag = 1;
-    }
-    else if (loginType.compare("0") == 0)
-    {
-        macFlag = 0;
-    }
-    else    //read configuration file error, 1 default
-    {
-        macFlag = 1;
-    }
-
-    string mac = getMac(macFlag);
+    string mac = getMac(m_loginType);
     if (mac.empty())
     {
         LOG(ERROR) << "doActivate mac is empty";
+        changeLoginType();
         return ERR_READ_MAC;
     }
 
+    stringstream query;
     query << "mac=" << mac;
 
     ret = http.getData(host, path, query.str(), response);
@@ -245,19 +273,12 @@ string Login::doActivate()
     {
         LOG(ERROR) << "mDeviceId is empty";
 
-//        if (loginType.compare("1") == 0)
-//        {
-//            setConfigure(configLoginType, "0");
-//        }
-//        else if (loginType.compare("0") == 0)
-//        {
-//            setConfigure(configLoginType, "1");
-//        }
-
+        changeLoginType();
         return ERR_ACTIVATE_DEVICE_NULL;
     }
 
     setConfigure(configDeviceId, mDeviceId);
+    setLoginType();
 
     return ERR_NO;
 }
@@ -274,23 +295,7 @@ string Login::doAuthenticate()
     stringstream query;
     query << "deviceId=" << mDeviceId;
 
-    string loginType(getConfigure(configLoginType));
-    int macFlag = 1;    //activate by MAC: 1 wlan, 0 eth
-
-    if (loginType.compare("1") == 0)
-    {
-        macFlag = 1;
-    }
-    else if (loginType.compare("0") == 0)
-    {
-        macFlag = 0;
-    }
-    else    //read configuration file error, 1 default
-    {
-        macFlag = 1;
-    }
-
-    string mac = getMac(macFlag);
+    string mac = getMac(m_loginType);
     if (mac.empty())
     {
         LOG(ERROR) << "doAuthenticate mac is empty";
@@ -344,6 +349,7 @@ string Login::startLogin()
     mDeviceId = getConfigure(configDeviceId);
     if (mDeviceId.empty())
     {
+        LOG(DEBUG) << "Can not get device ID from configuration file, Need doActivate!";
         needDoActivate = true;
     }
 
@@ -474,7 +480,7 @@ void *Login::checkTokenThread(void *param)
 
 int Login::startCheckToken()
 {
-    if (isCheckTokenStart)
+    if (m_isCheckTokenStart)
     {
         return 0;
     }
@@ -482,7 +488,7 @@ int Login::startCheckToken()
     baseThread heart;
     heart.startThread(Login::checkTokenThread, Login::getInstance());
 
-    isCheckTokenStart = true;
+    m_isCheckTokenStart = true;
     return 0;
 }
 

@@ -31,6 +31,7 @@
 
 #include <mutex>
 
+mutex init_mutex;
 mutex login_mutex;
 mutex exit_mutex;
 
@@ -38,6 +39,8 @@ static int isInit = 0;
 
 bool ICNTV_Login_sdkInit(string path)
 {
+    init_mutex.lock();
+
     if (isInit == 0)
     {
         LOG(DEBUG) << "curl_global_init()";
@@ -48,6 +51,9 @@ bool ICNTV_Login_sdkInit(string path)
 
     LOG(DEBUG) << "path=" << path;
     dataCache::getInstance()->setPath(path);
+    Login::getInstance()->getLoginType();
+
+    init_mutex.unlock();
 
     return true;
 }

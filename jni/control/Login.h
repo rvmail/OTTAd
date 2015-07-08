@@ -55,6 +55,7 @@ public:
     string startLogin();
     void stopLogin();
     int startCheckToken();
+    void getLoginType(void);
 
 private:
     enum ConfigType
@@ -96,6 +97,9 @@ private:
     int checkToken();
     static void *checkTokenThread(void *param);
 
+    void setLoginType(void);
+    void changeLoginType(void);
+
     static Login* m_pInstance;
 
     LoginStatus mLoginStatus;
@@ -108,7 +112,8 @@ private:
     string mToken;
     MapServerList mServerList;
 
-    bool isCheckTokenStart;
+    bool m_isCheckTokenStart;
+    int m_loginType;    //activate by MAC: 1 wlan, 0 eth
 };
 
 #endif // !__LOGIN_H__
