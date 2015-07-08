@@ -144,10 +144,14 @@ JNIEXPORT jstring JNICALL Java_tv_icntv_ottlogin_loginSDK_deviceLogin
     return jstr;
 }
 
-JNIEXPORT jboolean JNICALL Java_tv_icntv_ottlogin_loginSDK_getLoginStatus
+JNIEXPORT jstring JNICALL Java_tv_icntv_ottlogin_loginSDK_getLoginStatus
 (JNIEnv *env, jobject thiz)
 {
-    return ICNTV_Login_getLoginStatus();
+    string ret = ICNTV_Login_getLoginStatus();
+
+    jstring jstr;
+    jstr = env->NewStringUTF(ret.c_str());
+    return jstr;
 }
 
 JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_getVersion

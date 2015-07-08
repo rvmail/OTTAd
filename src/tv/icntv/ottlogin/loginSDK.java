@@ -69,9 +69,9 @@ public class loginSDK {
 	 * 获取认证状态
 	 * 
 	 * @param 
-	 * @return true: 已认证；false：未认证
+	 * @return 返回认证状态
 	 */
-	public synchronized native boolean getLoginStatus();
+	public synchronized native String getLoginStatus();
 	
 	
 	/**

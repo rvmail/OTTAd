@@ -37,6 +37,7 @@
 
 #define LOGIN_RETRY_COUNT      4
 #define LOGIN_RETRY_WAIT_TIME  2    //second
+#define CHECK_TOKEN_TIME_INTERVAL   (60 * 5)    //five minutes
 
 #define ERR_NO                                     "0"
 #define ERR_DEFALT                                 "-1"
@@ -69,7 +70,8 @@ Login* Login::getInstance()
 
 Login::Login(void): mLoginStatus(LoginNot),
                     m_isCheckTokenStart(false),
-                    m_loginType(1)
+                    m_loginType(1),
+                    m_loginState("000")
 {
 }
 
@@ -77,9 +79,14 @@ Login::~Login(void)
 {
 }
 
-LoginStatus Login::getLoginStatus()
+LoginStatus Login::getLoginStatus(void)
 {
     return mLoginStatus;
+}
+
+string Login::getLoginState(void)
+{
+    return m_loginState;
 }
 
 string Login::getToken()
@@ -408,7 +415,7 @@ string Login::startLogin()
         LOG(DEBUG) << "Login success";
     }
 
-    mLoginState = ret;
+    m_loginState = ret;
     return ret;
 }
 
@@ -421,6 +428,7 @@ void Login::stopLogin()
     else
     {
         mLoginStatus = LoginNot;
+        m_loginState = "000";
     }
 }
 
@@ -431,6 +439,11 @@ int Login::checkToken()
     string path("/auth/checkToken/");
 
     string token = getToken();
+    if (token.empty())
+    {
+        LOG(ERROR) << "checkToken token is empty";
+        return 0;
+    }
     path += token;
 
     string query;
@@ -469,7 +482,7 @@ void *Login::checkTokenThread(void *param)
 
     while (1)
     {
-        sleep(60 * 5);
+        sleep(CHECK_TOKEN_TIME_INTERVAL);
         plogin->checkToken();
     }
 

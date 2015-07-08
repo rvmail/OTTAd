@@ -75,9 +75,9 @@ string ICNTV_Login_deviceLogin(void)
     return ret;
 }
 
-bool ICNTV_Login_getLoginStatus(void)
+string ICNTV_Login_getLoginStatus(void)
 {
-    return (Login::getInstance()->getLoginStatus() == LoginSuccess);
+    return (Login::getInstance()->getLoginState());
 }
 
 bool ICNTV_Login_sdkExit(void)

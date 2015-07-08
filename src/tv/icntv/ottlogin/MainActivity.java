@@ -114,9 +114,9 @@ public class MainActivity extends Activity
         	EditText txt = (EditText)findViewById(R.id.txt0);
         	txt.setText("getLoginStatus...");
         	
-            boolean ret = loginSDK.getInstance().getLoginStatus();
+            String ret = loginSDK.getInstance().getLoginStatus();
             
-            txt.setText("" + ret);
+            txt.setText(ret);
         }
     }
     

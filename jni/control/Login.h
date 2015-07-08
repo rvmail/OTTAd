@@ -45,7 +45,8 @@ public:
 
     ~Login(void);
 
-    LoginStatus getLoginStatus();
+    LoginStatus getLoginStatus(void);
+    string getLoginState(void);
     string getToken();
     string getDeviceID();
     string getUserID();
@@ -103,7 +104,8 @@ private:
     static Login* m_pInstance;
 
     LoginStatus mLoginStatus;
-    string mLoginState;    //store the return value of startLogin
+    string m_loginState;    //store the return value of startLogin,
+                            //getLoginStatus will get m_loginState
 
     string mDeviceId;
     string mUserId;

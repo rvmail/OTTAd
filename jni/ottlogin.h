@@ -50,10 +50,10 @@ string ICNTV_Login_deviceLogin(void);
 /**
 * @name         ICNTV_Login_getLoginStatus
 * @param
-* @return       true: device has already logined, false otherwise
+* @return
 * @description  get the status of login
 */
-bool ICNTV_Login_getLoginStatus(void);
+string ICNTV_Login_getLoginStatus(void);
 
 /**
 * @name         ICNTV_Login_sdkExit
