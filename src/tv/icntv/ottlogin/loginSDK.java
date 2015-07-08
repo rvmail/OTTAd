@@ -175,6 +175,31 @@ public class loginSDK {
 	}
 	
 	/**
+	 * 获取token
+	 * 
+	 * @param token
+	 * @return
+	 */
+	private native int getToken(TransferData token);
+
+	public int getToken(StringBuffer token) {
+		if (token == null)
+			token = new StringBuffer();
+		token.delete(0, token.length());
+
+		TransferData id = new TransferData();
+		int val = getToken(id);
+
+		if (id != null && id.getResult() != null) {
+			token.append(id.getResult());
+		} else {
+			token.append("");
+		}
+
+		return val;
+	}
+	
+	/**
 	 * 获取服务器地址
 	 * 
 	 * @param data

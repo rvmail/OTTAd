@@ -270,6 +270,25 @@ JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_getServerAddress
     return 0;
 }
 
+JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_getToken
+(JNIEnv *env, jobject thiz, jobject data)
+{
+    int ret = -1;
+    string str;
+
+    ret = ICNTV_Login_getToken(str);
+    if (ret != 0)
+    {
+        LOG(ERROR) << "JNI-getToken() error";
+        return -1;
+    }
+
+    setLength(env, data, str.length());
+    setResult(env, data, str.c_str());
+
+    return 0;
+}
+
 #ifdef __cplusplus
 }
 #endif

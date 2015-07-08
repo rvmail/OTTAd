@@ -103,7 +103,9 @@ public class MainActivity extends Activity
         Button template = (Button)findViewById(R.id.buttonTemplate);
         template.setOnClickListener(new Click_template());
         
-        
+        //getToken
+        Button token = (Button)findViewById(R.id.buttonToken);
+        token.setOnClickListener(new Click_token());
     }
     
     //getLoginStatus
@@ -276,7 +278,21 @@ public class MainActivity extends Activity
             
             txt.setText("getTemplateID return " + ret + ", and get data: " + tf.toString());
     	}
-    	
+    }
+    
+    //getToken
+    class Click_token implements View.OnClickListener
+    {
+    	public void onClick(View v)
+    	{
+    		EditText txt = (EditText)findViewById(R.id.txtToken);
+        	txt.setText("getToken...");
+        	
+        	StringBuffer tf  = new StringBuffer();
+            int ret = loginSDK.getInstance().getToken(tf);
+            
+            txt.setText("return " + ret + ", and get data: " + tf.toString());
+    	}
     }
     
     protected void onDestroy() 

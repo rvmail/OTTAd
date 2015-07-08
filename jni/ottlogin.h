@@ -113,5 +113,7 @@ int ICNTV_Login_getPlatformID(string &platformID);
 */
 int ICNTV_Login_getServerAddress(string type, string &serverAddr);
 
+int ICNTV_Login_getToken(string &token);
+
 #endif
 

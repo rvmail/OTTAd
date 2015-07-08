@@ -91,7 +91,7 @@ string Login::getLoginState(void)
 
 string Login::getToken()
 {
-        return mToken;
+    return mToken;
 }
 
 string Login::getDeviceID()

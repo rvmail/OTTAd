@@ -182,7 +182,20 @@ int ICNTV_Login_getServerAddress(string type, string &serverAddr)
     LOG(DEBUG) << type << " serverAddr=" << serverAddr;
 
     return 0;
+}
 
+int ICNTV_Login_getToken(string &token)
+{
+    if (Login::getInstance()->getLoginStatus() != LoginSuccess)
+    {
+        LOG(ERROR) << "login status is not success";
+        return -1;
+    }
+
+    token = Login::getInstance()->getToken();
+    LOG(DEBUG) << "token=" << token;
+
+    return 0;
 }
 
 int ICNTV_Login_setNetworkType(int type)
