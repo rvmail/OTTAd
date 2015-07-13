@@ -46,7 +46,7 @@ LogOperate* LogOperate::getInstance()
     return m_instance;
 }
 
-LogOperate::LogOperate(): m_defaultLogLevel(0x00),
+LogOperate::LogOperate(): m_defaultLogLevel(0xFF),
                           m_logOutput(0xFF)
 {
 
@@ -143,6 +143,8 @@ void LogOperate::logInit()
 
 void LogOperate::logOutput(eLogLevel logLevel, const char *format, ...)
 {
+    m_logOutputMutex.lock();
+
     static char buffer[MAX_LOG_MSG_SIZE];
     va_list ap;
 
@@ -183,6 +185,7 @@ void LogOperate::logOutput(eLogLevel logLevel, const char *format, ...)
             bool bret = bfile.fileOpen(m_logFileName.c_str(), "a+");
             if (!bret)
             {
+                m_logOutputMutex.unlock();
                 return;
             }
 
@@ -198,6 +201,8 @@ void LogOperate::logOutput(eLogLevel logLevel, const char *format, ...)
             bfile.fileClose();
         }
     }
+
+    m_logOutputMutex.unlock();
 }
 
 

@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <mutex>
 
 typedef enum
 {
@@ -77,6 +78,8 @@ private:
 
     std::string m_logFileName;
     std::string m_time;
+
+    std::mutex m_logOutputMutex;
 };
 
 #define LOGDEBUG(x, ...)\

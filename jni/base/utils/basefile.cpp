@@ -24,6 +24,7 @@
 #include <unistd.h>
 #include "basefile.h"
 #include "log.h"
+#include "debug.h"
 
 BaseFile::BaseFile()
 {
