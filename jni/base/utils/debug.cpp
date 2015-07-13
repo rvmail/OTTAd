@@ -154,7 +154,27 @@ void LogOperate::logOutput(eLogLevel logLevel, const char *format, ...)
 
         if (LOG_OUTPUT_SCR & m_logOutput)
         {
-            LOGD("%s", buffer);
+            if (logLevel == LOG_LEVEL_DEBUG)
+            {
+                LOGD("%s", buffer);
+            }
+            else if (logLevel == LOG_LEVEL_INFO)
+            {
+                LOGI("%s", buffer);
+            }
+            else if (logLevel == LOG_LEVEL_WARN)
+            {
+                LOGW("%s", buffer);
+            }
+            else if (logLevel == LOG_LEVEL_ERROR)
+            {
+                LOGE("%s", buffer);
+            }
+            else
+            {
+                //Do nothing
+            }
+
         }
 
         if (LOG_OUTPUT_FILE & m_logOutput)

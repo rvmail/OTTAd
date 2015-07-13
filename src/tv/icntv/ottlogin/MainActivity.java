@@ -65,7 +65,7 @@ public class MainActivity extends Activity
             copyFileToDst("ini/DeviceInfo.ini", configFile.getPath());
         }
         
-        loginSDK.getInstance().sdkInit(getFilesDir().getPath());
+        //loginSDK.getInstance().sdkInit(getFilesDir().getPath());
         
         //getLoginStatus
         Button bn0 = (Button)findViewById(R.id.bn0);
