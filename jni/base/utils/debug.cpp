@@ -160,7 +160,11 @@ void LogOperate::logOutput(eLogLevel logLevel, const char *format, ...)
         if (LOG_OUTPUT_FILE & m_logOutput)
         {
             BaseFile bfile;
-            bfile.fileOpen(m_logFileName.c_str(), "a+");
+            bool bret = bfile.fileOpen(m_logFileName.c_str(), "a+");
+            if (!bret)
+            {
+                return;
+            }
 
             if (bfile.getSize() > MAX_LOG_FILE_SIZE)
             {
