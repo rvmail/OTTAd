@@ -36,7 +36,13 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := ottlogin
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH) 
+LOCAL_C_INCLUDES := $(LOCAL_PATH) \
+                    $(LOCAL_PATH)/base \
+                    $(LOCAL_PATH)/base/configure \
+                    $(LOCAL_PATH)/base/network \
+                    $(LOCAL_PATH)/base/parse \
+                    $(LOCAL_PATH)/base/utils \
+                    $(LOCAL_PATH)/control
 
 LOCAL_SRC_FILES := ottlogin.cpp \
                    $(call all-cpp-files-under, base) \

@@ -17,12 +17,12 @@
  * specific language governing permissions and limitations
  * under the License.
 *
-* @author   li.he@icntv.tv
-* @date     2014-10-10
+* @author
+* @date
 */
 
-#ifndef __STRING_H__
-#define __STRING_H__
+#ifndef __MISC_H__
+#define __MISC_H__
 
 #include <string>
 #include <cctype>

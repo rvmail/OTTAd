@@ -1,6 +1,6 @@
 #include "icntvEncrypt.h"
 #include "base/utils/log.h"
-#include "base/utils/string.h"
+#include "base/utils/misc.h"
 
 #include <Poco/MD5Engine.h>
 #include <Poco/DigestEngine.h>

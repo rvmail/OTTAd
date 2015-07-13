@@ -26,7 +26,7 @@
 #include "../common.h"
 #include "base/network/icntvHttp.h"
 #include "base/utils/log.h"
-#include "base/utils/string.h"
+#include "base/utils/misc.h"
 #include "base/utils/DeviceInfo.h"
 
 #include "base/parse/initParse.h"

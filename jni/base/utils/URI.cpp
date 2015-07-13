@@ -22,7 +22,7 @@
 */
 #include "URI.h"
 #include "log.h"
-#include "string.h"
+#include "misc.h"
 
 using namespace std;
 
