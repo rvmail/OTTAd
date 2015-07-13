@@ -20,8 +20,10 @@
 #define ICNTV_SYSTEMCLOCK_H_
 
 #include <cstdint>
+#include <string>
 
-class SystemClock {
+class SystemClock
+{
 public:
     /**
      * 获得开机以来的秒数
@@ -32,6 +34,8 @@ public:
      * 获得 1970 年以来的秒数
      */
     static int64_t currentTimeMillis();
+
+    std::string getTime();
 };
 
 #endif /* ICNTV_SYSTEMCLOCK_H_ */

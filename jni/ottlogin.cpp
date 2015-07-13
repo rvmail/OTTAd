@@ -25,6 +25,7 @@
 #include "base/utils/DeviceInfo.h"
 #include "base/dataCache.h"
 #include "control/Login.h"
+#include "base/utils/debug.h"
 
 #include <Poco/Process.h>
 #include "thirdparty/curl/include/curl/curl.h"
@@ -46,12 +47,14 @@ bool ICNTV_Login_sdkInit(string path)
         LOG(DEBUG) << "curl_global_init()";
         curl_global_init(CURL_GLOBAL_DEFAULT);
         Login::getInstance()->startCheckToken();
+
+        LOG(DEBUG) << "path=" << path;
+        dataCache::getInstance()->setPath(path);
+        Login::getInstance()->getLoginType();
+        LogOperate::getInstance()->logInit();
+
         isInit = 1;
     }
-
-    LOG(DEBUG) << "path=" << path;
-    dataCache::getInstance()->setPath(path);
-    Login::getInstance()->getLoginType();
 
     init_mutex.unlock();
 

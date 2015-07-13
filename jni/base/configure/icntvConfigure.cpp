@@ -212,7 +212,7 @@ int icntvConfigure::getIntValue(const char *section, const char *key, \
 
     getFilePath(path, filePath);;
     memcpy(szFile, path, strlen(path));
-    nValue = read_profile_int(section, key, 0, szFile);
+    nValue = read_profile_int(section, key, -1, szFile);
 
     LOG(DEBUG) << key << "=" << nValue;
     return nValue;
