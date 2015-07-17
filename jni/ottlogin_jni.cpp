@@ -289,6 +289,12 @@ JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_getToken
     return 0;
 }
 
+JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_logUpload
+(JNIEnv *env, jobject thiz)
+{
+    return ICNTV_Login_logUpload();
+}
+
 #ifdef __cplusplus
 }
 #endif

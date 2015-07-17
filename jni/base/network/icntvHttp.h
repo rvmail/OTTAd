@@ -103,8 +103,12 @@ public:
     icntvHttp(void);
     ~icntvHttp(void);
 
+    void setHeader(string key, string value);
+    int setTimeout(int timeout);
+    int setCompress(bool type);
+
     int get(const char *request, httpResponse *response);
-    int post(const char *head, const char *data, httpResponse *response);
+    int post(const char *head, const char *data, int datasize, httpResponse *response);
 
     /**
     * @name          getData
@@ -115,12 +119,16 @@ public:
     * @description
     */
     int getData(string host, string path, string query, string &response);
-    int postData(string host, string path, string query, string &response);
+    int postData(string host, string path, const char *data, int datasize, string &response);
 
 protected:
     static size_t write_func(char *buffer, size_t size, size_t nitems, void *outstream);
 
     CURL* m_pCurl;
+    string m_header1;
+    string m_header2;
+    int m_timeout;  //seconds
+    bool m_isCompress;
 };
 
 class icntvHttps : public icntvHttp

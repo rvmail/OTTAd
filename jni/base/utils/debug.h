@@ -64,14 +64,12 @@ public :
 
     void logInit(void);
     void logOutput(eLogLevel logLevel, const char *format, ...);
+    std::string getLogFileName(void);
 
 private:
     void getConfig(void);
 
     static LogOperate *m_instance;
-    std::string m_fileName;
-    //int m_lineNo;
-    //int m_logLevel;
 
     int m_defaultLogLevel;
     int m_logOutput;

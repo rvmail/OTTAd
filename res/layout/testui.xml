@@ -190,6 +190,23 @@
     />
 </TableRow>
 
+<TableRow>
+<Button
+    android:id="@+id/buttonlog"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="logUpload"
+    />
+<EditText
+    android:id="@+id/txtlog"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:editable="false"
+    android:cursorVisible="false"
+    android:textSize="12pt"
+    />
+</TableRow>
+
 </TableLayout>
 
 </LinearLayout>

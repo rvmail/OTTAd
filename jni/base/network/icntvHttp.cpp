@@ -22,11 +22,12 @@
 #include "icntvHttp.h"
 #include "base/utils/log.h"
 #include "base/utils/URI.h"
+#include "debug.h"
 
 /************************************************************************/
 /* class icntvHttp */
 /************************************************************************/
-icntvHttp::icntvHttp(void) : m_pCurl(NULL)
+icntvHttp::icntvHttp(void) : m_pCurl(NULL), m_timeout(60), m_isCompress(false)
 {
     m_pCurl = curl_easy_init(); // curl init
 }
@@ -80,20 +81,28 @@ int icntvHttp::get(const char *request, httpResponse *response)
     return nRet;
 }
 
-int icntvHttp::post(const char *head, const char *data, httpResponse *response)
+int icntvHttp::post(const char *head, const char *data, int datasize, httpResponse *response)
 {
     int nRet = 0;
+    struct curl_slist *chunk = NULL;
 
     if (m_pCurl != NULL && data != NULL)
     {
+        chunk = curl_slist_append(chunk, "Accept-Encoding:gzip,deflate");
+        chunk = curl_slist_append(chunk, m_header1.c_str());
+        chunk = curl_slist_append(chunk, m_header2.c_str());
+        curl_easy_setopt(m_pCurl, CURLOPT_HTTPHEADER, chunk);
+
         curl_easy_setopt(m_pCurl, CURLOPT_VERBOSE, 1L);
         curl_easy_setopt(m_pCurl, CURLOPT_URL, head);
         curl_easy_setopt(m_pCurl, CURLOPT_FOLLOWLOCATION, 1L);
         curl_easy_setopt(m_pCurl, CURLOPT_POST, 1L);
         curl_easy_setopt(m_pCurl, CURLOPT_POSTFIELDS, data);
+        curl_easy_setopt(m_pCurl, CURLOPT_POSTFIELDSIZE, datasize);
         curl_easy_setopt(m_pCurl, CURLOPT_WRITEFUNCTION, &icntvHttp::write_func);
         curl_easy_setopt(m_pCurl, CURLOPT_WRITEDATA, response);
         curl_easy_setopt(m_pCurl, CURLOPT_NOSIGNAL, 1L);;
+        curl_easy_setopt(m_pCurl, CURLOPT_TIMEOUT, m_timeout); // set timeout
 
         CURLcode retCode = curl_easy_perform(m_pCurl);
         if (retCode != CURLE_OK)
@@ -102,11 +111,12 @@ int icntvHttp::post(const char *head, const char *data, httpResponse *response)
             if (pError != NULL)
             {
                 nRet = -1;
-                LOG(ERROR) << "http error, " << pError;
+                LOGERROR("http error=%s\n", pError);
             }
         }
     }
 
+    curl_slist_free_all(chunk);
     return nRet;
 }
 
@@ -154,7 +164,7 @@ int icntvHttp::getData(string host, string path, string query, string &response)
     return 0;
 }
 
-int icntvHttp::postData(string host, string path, string query, string &response)
+int icntvHttp::postData(string host, string path, const char *data, int datasize, string &response)
 {
     //build URL of the request
     int ret;
@@ -164,8 +174,9 @@ int icntvHttp::postData(string host, string path, string query, string &response
     url.setPath(url.getPath() + path);
 
     LOG(DEBUG) << "Request URL: " << url.toString();
+    LOG(DEBUG) << "post data=" << data;
 
-    ret = post(url.toString().c_str(), query.c_str(), &resp);
+    ret = post(url.toString().c_str(), data, datasize, &resp);
     if (ret != 0)
     {
         LOG(ERROR) << "http.post() error!";
@@ -192,6 +203,20 @@ int icntvHttp::postData(string host, string path, string query, string &response
     LOG(DEBUG) << "response length=" << response.length();
 
     return 0;
+}
+
+void icntvHttp::setHeader(string key, string value)
+{
+    if (key.compare("ID") == 0)
+    {
+        m_header1 = key + ":";
+        m_header1 += value;
+    }
+    else if (key.compare("UK") == 0)
+    {
+        m_header2 = key + ":";
+        m_header2 += value;
+    }
 }
 
 /************************************************************************/

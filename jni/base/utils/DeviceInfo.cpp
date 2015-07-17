@@ -34,6 +34,7 @@
 
 #include "DeviceInfo.h"
 #include "base/utils/log.h"
+#include "debug.h"
 
 #define MAX_INTERFACES  8
 
@@ -188,6 +189,27 @@ unsigned long long  getMacInNum()
     LOG(DEBUG) << "getMacInNum : " << mac;
 
     return mac;
+}
+
+unsigned long long convertMac2Num(std::string mac)
+{
+    int i;
+    int ret;
+    unsigned int tmp[6] = {0};
+    unsigned long long num = 0, m = 0;
+
+    ret = sscanf(mac.c_str(), "%2x:%2x:%2x:%2x:%2x:%2x", &tmp[0], \
+                 &tmp[1], &tmp[2], &tmp[3], &tmp[4], &tmp[5]);
+
+    for (i = 0; i < 6; i++)
+    {
+        m = tmp[i];
+        num += (m << (8*(6-1-i)));
+    }
+
+    LOGDEBUG("macnum=%lld\n", num);
+
+    return num;
 }
 
 

@@ -42,13 +42,15 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH) \
                     $(LOCAL_PATH)/base/network \
                     $(LOCAL_PATH)/base/parse \
                     $(LOCAL_PATH)/base/utils \
-                    $(LOCAL_PATH)/control
+                    $(LOCAL_PATH)/control \
+                    $(LOCAL_PATH)/interface
 
 LOCAL_SRC_FILES := ottlogin.cpp \
                    $(call all-cpp-files-under, base) \
                    $(call all-c-files-under,   base) \
                    $(call all-cpp-files-under, control) \
-                   $(call all-cpp-files-under, thirdparty/tinyxml)
+                   $(call all-cpp-files-under, thirdparty/tinyxml) \
+                   $(call all-cpp-files-under, interface)
 
 LOCAL_STATIC_LIBRARIES := poco_foundation \
                           poco_util \
@@ -56,7 +58,7 @@ LOCAL_STATIC_LIBRARIES := poco_foundation \
                           libthrift \
                           libfb303
 
-LOCAL_LDLIBS     += -fuse-ld=bfd -rdynamic -llog
+LOCAL_LDLIBS     += -fuse-ld=bfd -rdynamic -llog -lz
 
 #-DWLAN_MAC: Wireless
 #-DETH_MAC: Ethernet

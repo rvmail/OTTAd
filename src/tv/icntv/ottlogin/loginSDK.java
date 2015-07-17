@@ -248,4 +248,11 @@ public class loginSDK {
 
 		return val;
 	}
+	
+	/**
+	 * 日志上传
+	 * 
+	 * @return
+	 */
+	public synchronized native int logUpload();
 }
