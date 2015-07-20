@@ -84,8 +84,9 @@ string ICNTV_Login_deviceLogin(void)
 
 string ICNTV_Login_getLoginStatus(void)
 {
-    LOGINFO("ICNTV_Login_getLoginStatus...\n");
-    return (Login::getInstance()->getLoginState());
+    string stat = Login::getInstance()->getLoginState();
+    LOGINFO("ICNTV_Login_getLoginStatus=%s\n", stat.c_str());
+    return stat;
 }
 
 bool ICNTV_Login_sdkExit(void)

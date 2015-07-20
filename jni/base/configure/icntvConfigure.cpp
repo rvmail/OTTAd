@@ -23,15 +23,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
-#ifndef WIN32
 #include <unistd.h>
-#endif
 
 #include "inifile.h"
 #include "icntvConfigure.h"
-#include "base/utils/log.h"
 #include "base/dataCache.h"
 #include "common.h"
+#include "debug.h"
 
 using namespace std;
 
@@ -113,47 +111,30 @@ int icntvConfigure::getFilePath(char *szFile, const char *filePath /* = NULL */)
 #ifdef LOCAL_SERVER
     // compile to local sever, config file add to binary file path
     getcwd(szEnv, sizeof(szEnv));
+
 #elif PURE_SDK
     // compile to sdk, cdonfig file add to ../ini
     if (dataCache::getInstance()->getPath(szEnv) == -1)
     {
         strcpy(szEnv, "/system/etc");
-        LOG(DEBUG) << "pure sdk get path failed, default path was used: /system/etc";
+        LOGDEBUG("pure sdk get path failed, default path was used: /system/etc\n");
     }
 
-    /*char szCurrPath[NUM_256] = {0};
-    char szTmp[NUM_256] = {0};
-    getcwd(szCurrPath, sizeof(szCurrPath));
-    LOG(DEBUG) << "szCurrPath : " << szCurrPath;
-    path = strstr(szCurrPath, LIBS_FILE_PATH);
-    if (path != NULL)
-    {
-        memcpy(szEnv, szCurrPath, strlen(szCurrPath) - strlen(path));
-    }
-    else
-    {
-        strcpy(szEnv, szCurrPath);
-    }*/
 #elif ENV_SDK
     // compile to sdk, config file path is alterable if set environment value
     path = getenv("ICNTV_SDK_PATH");
     if (path != NULL)
     {
         strcpy(szEnv, path);
-        printf("szEnv = %s", szEnv);
+        LOGDEBUG("szEnv=%s\n", szEnv);
     }
     else
     {
         strcpy(szEnv, "/system/etc");
     }
 #else
-#ifdef WIN32
-    strcpy(szEnv,"./");
-#elif LINUX
     getcwd(szEnv, sizeof(szEnv));
-#else
-    LOG(DEBUG) << "Please choose a platform";
-#endif
+
 #endif
 
     if (filePath == NULL)
@@ -165,7 +146,7 @@ int icntvConfigure::getFilePath(char *szFile, const char *filePath /* = NULL */)
         sprintf(szFile,"%s%s", szEnv, filePath);
     }
 
-    LOG(DEBUG) << "szFile : " << szFile;
+    LOGDEBUG("szFile=%s\n", szFile);
     return 0;
 }
 
@@ -177,22 +158,17 @@ int icntvConfigure::getStrValue(const char *section, const char *key , \
         return -1;
     }
 
-    char szFile[NUM_256];
-    memset(szFile, 0, NUM_256);
+    char szFile[NUM_256] = {0};
+    getFilePath(szFile, filePath);
 
-    char path[NUM_256] = {0};
-    getFilePath(path, filePath);
-    memcpy(szFile, path, strlen(path));
-
-    LOG(DEBUG) << "base path: " << szFile;
     if(!read_profile_string(section, key, keyvalue, bufsize, "", szFile))
     {
-        LOG(ERROR) << "Get config information failed";
+        LOGDEBUG("Get config infor failed, [%s][%s][%s]\n", szFile, section, key);
         return -1;
     }
     else
     {
-        LOG(DEBUG) << key << "=" << keyvalue;
+        LOGDEBUG("[%s][%s]%s=%s\n", szFile, section, key, keyvalue);
     }
 
     return 0;
@@ -203,23 +179,21 @@ int icntvConfigure::getIntValue(const char *section, const char *key, \
 {
     int nValue = 0;
     char szFile[NUM_256] = {0};
-    char path[NUM_256] = {0};
 
     if (filePath == NULL)
     {
         return -1;
     }
 
-    getFilePath(path, filePath);;
-    memcpy(szFile, path, strlen(path));
+    getFilePath(szFile, filePath);
     nValue = read_profile_int(section, key, -1, szFile);
 
-    LOG(DEBUG) << key << "=" << nValue;
+    LOGDEBUG("[%s][%s]%s=%d", szFile, section, key, nValue);
     return nValue;
 }
 
 int icntvConfigure::setKeyValue(const char *section, const char *key , \
-                   const char *keyvalue, const char *filePath)
+                                const char *keyvalue, const char *filePath)
 {
     if (filePath == NULL)
     {
@@ -227,14 +201,12 @@ int icntvConfigure::setKeyValue(const char *section, const char *key , \
     }
 
     char szFile[NUM_256] = {0};
-    char path[NUM_256] = {0};
-
-    getFilePath(path, filePath);
-    memcpy(szFile, path, strlen(path));
+    getFilePath(szFile, filePath);
 
     if(!write_profile_string(section, key, keyvalue, szFile))
     {
-        LOG(ERROR) << "write config file failed!";
+        LOGERROR("write value[%s] to config file[%s-%s-%s] failed!!\n", \
+                  keyvalue, szFile, section, key);
         return -1;
     }
     return 0;

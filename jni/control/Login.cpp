@@ -34,6 +34,7 @@
 #include "base/parse/tokenParse.h"
 #include "base/configure/icntvConfigure.h"
 #include "base/baseThread.h"
+#include "debug.h"
 
 #define LOGIN_RETRY_COUNT      4
 #define LOGIN_RETRY_WAIT_TIME  2    //second
@@ -143,10 +144,10 @@ string Login::getConfigure(ConfigType type)
             icntvConfigure::getInstance()->getLoginServer(buffer, NUM_128);
             if (buffer[0] == '\0')
             {
-                LOG(ERROR) << "Get login server address failed, use default address";
+                LOGERROR("Get login server address failed, use default address\n");
                 return  "http://tms.is.ysten.com:8080/yst-tms";
             }
-            LOG(DEBUG) << "Login serverAddr : " << buffer;
+            LOGINFO("Login serverAddr=%s\n", buffer);
             return string(buffer);
             break;
         case configDeviceId:
@@ -231,7 +232,7 @@ void Login::changeLoginType(void)
 
 string Login::doActivate()
 {
-    LOG(DEBUG) << "doActivate start...";
+    LOGINFO("doActivate start...\n");
 
     int ret;
     icntvHttp http;
@@ -242,7 +243,7 @@ string Login::doActivate()
     string mac = getMac(m_loginType);
     if (mac.empty())
     {
-        LOG(ERROR) << "doActivate mac is empty";
+        LOGERROR("doActivate mac is empty\n");
         changeLoginType();
         return ERR_READ_MAC;
     }
@@ -253,7 +254,7 @@ string Login::doActivate()
     ret = http.getData(host, path, query.str(), response);
     if (ret != 0)
     {
-        LOG(ERROR) << "doActivate http.getData() error!";
+        LOGERROR("doActivate http.getData() error!\n");
         return ERR_ACTIVATE_CONNECT_TMS;
     }
 
@@ -263,22 +264,22 @@ string Login::doActivate()
     ret = mInitParse.parse(response.c_str(), &mInitResponse);
     if (ret != 0)
     {
-        LOG(ERROR) << "mInitParse error";
+        LOGERROR("mInitParse error\n");
         return ERR_ACTIVATE_PARSE_RESPONSE;
     }
 
     if (mInitResponse.status != 1)
     {
-        LOG(ERROR) << "resultCode=" << mInitResponse.status;
+        LOGERROR("resultCode=%d\n", mInitResponse.status);
         //return ERR_ACTIVATE_DEVICE_NULL;
     }
 
     mDeviceId = mInitResponse.deviceid;
-    LOG(DEBUG) << "DeviceId: " << mDeviceId;
+    LOGINFO("DeviceId=%s\n", mDeviceId.c_str());
 
     if (mDeviceId.empty())
     {
-        LOG(ERROR) << "mDeviceId is empty";
+        LOGERROR("mDeviceId is empty\n");
 
         changeLoginType();
         return ERR_ACTIVATE_DEVICE_NULL;
@@ -292,7 +293,7 @@ string Login::doActivate()
 
 string Login::doAuthenticate()
 {
-    LOG(DEBUG) << "doAuthenticate start...";
+    LOGINFO("doAuthenticate start...\n");
 
     int ret;
     icntvHttp http;
@@ -305,7 +306,7 @@ string Login::doAuthenticate()
     string mac = getMac(m_loginType);
     if (mac.empty())
     {
-        LOG(ERROR) << "doAuthenticate mac is empty";
+        LOGERROR("doAuthenticate mac is empty\n");
         return ERR_READ_MAC;
     }
 
@@ -314,7 +315,7 @@ string Login::doAuthenticate()
     ret = http.getData(host, path, query.str(), response);
     if (ret != 0)
     {
-        LOG(ERROR) << "doAuthenticate http.getData() error!";
+        LOGERROR("doAuthenticate http.getData() error!\n");
         return ERR_AUTH_CONNECT_TMS;
     }
 
@@ -323,13 +324,13 @@ string Login::doAuthenticate()
     ret = mLoginParse.parse(response.c_str(), &mLoginResponse);
     if (ret != 0)
     {
-        LOG(ERROR) << "mLoginParse.parse error";
+        LOGERROR("mLoginParse.parse error\n");
         return ERR_AUTH_PARSE_RESPONSE;
     }
 
     if (mLoginResponse.state.empty())
     {
-        LOG(ERROR) << "doAuthenticate state is empty";
+        LOGERROR("doAuthenticate state is empty\n");
         return ERR_AUTH_STATE_NULL;
     }
 
@@ -351,12 +352,12 @@ string Login::startLogin()
     int retryCount = 0;
     bool needDoActivate = false;
 
-    LOG(DEBUG) << "startLogin...";
+    LOGINFO("startLogin...\n");
 
     mDeviceId = getConfigure(configDeviceId);
     if (mDeviceId.empty())
     {
-        LOG(DEBUG) << "Can not get device ID from configuration file, Need doActivate!";
+        LOGWARN("Can not get device ID from configuration file, Need doActivate!\n");
         needDoActivate = true;
     }
 
@@ -364,7 +365,7 @@ string Login::startLogin()
     {
         if (mLoginStatus == LoginForceStop)
         {
-            LOG(DEBUG) << "stopLogin has been invoked";
+            LOGINFO("stopLogin has been invoked\n");
             return ERR_LOGIN_FORCE_STOP;
         }
         else
@@ -388,7 +389,7 @@ string Login::startLogin()
         ret = doAuthenticate();
         if (ret.compare("111") == 0 || ret.compare("110") == 0)
         {
-            LOG(DEBUG) << "doAuthenticate OK";
+            LOGINFO("doAuthenticate OK\n");
             break;
         }
         else if (ret.compare("000") == 0)
@@ -406,13 +407,13 @@ string Login::startLogin()
 
     if (retryCount == LOGIN_RETRY_COUNT)
     {
-        LOG(ERROR) << "login failed, up to the max retry times";
+        LOGERROR("login failed, up to the max retry times\n");
         mLoginStatus = LoginStatus::LoginFailed;
     }
     else
     {
         mLoginStatus = LoginSuccess;
-        LOG(DEBUG) << "Login success";
+        LOGINFO("Login success\n");
     }
 
     m_loginState = ret;
@@ -441,7 +442,7 @@ int Login::checkToken()
     string token = getToken();
     if (token.empty())
     {
-        LOG(ERROR) << "checkToken token is empty";
+        LOGWARN("checkToken token is empty\n");
         return 0;
     }
     path += token;
@@ -452,7 +453,7 @@ int Login::checkToken()
     ret = http.getData(host, path, query, response);
     if (ret != 0)
     {
-        LOG(ERROR) << "checkToken http.getData() error!";
+        LOGERROR("checkToken http.getData() error!\n");
         return -1;
     }
 
@@ -461,7 +462,7 @@ int Login::checkToken()
     ret = tokenParse.parse(response.c_str(), &tokenResponse);
     if (ret != 0)
     {
-        LOG(ERROR) << "tokenParse.parse error";
+        LOGERROR("tokenParse.parse error\n");
         return -2;
     }
 
@@ -476,7 +477,7 @@ int Login::checkToken()
 
 void *Login::checkTokenThread(void *param)
 {
-    LOG(DEBUG) << "checkToken start!!!";
+    LOGINFO("checkToken start!!!\n");
 
     Login *plogin = (Login *)param;
 
@@ -486,7 +487,7 @@ void *Login::checkTokenThread(void *param)
         plogin->checkToken();
     }
 
-    LOG(DEBUG) << "checkToken end!!!";
+    LOGINFO("checkToken end!!!\n");
 
     return 0;
 }

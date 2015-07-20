@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "basefile.h"
-#include "log.h"
 #include "debug.h"
 
 BaseFile::BaseFile()
@@ -40,17 +39,16 @@ bool BaseFile::isExist(const char *filename)
 {
     if (filename == NULL)
     {
-        LOG(ERROR) << filename << " is NULL";
+        LOGERROR("filename is NULL\n");
         return false;
     }
 
     if (access(filename, F_OK) != 0)
     {
-        LOG(DEBUG) << filename << " is NOT exist!";
+        LOGWARN("%s is NOT exist\n", filename);
         return false;
     }
 
-    LOG(DEBUG) << filename << " is exist!";
     return true;
 }
 
@@ -58,20 +56,20 @@ bool BaseFile::fileOpen(const char *filename, const char *mode)
 {
     if (filename == NULL)
     {
-        LOG(ERROR) << filename << " is NULL";
+        LOGERROR("filename is NULL\n");
         return false;
     }
 
     if (mode == NULL)
     {
-       LOG(ERROR) << mode << " is NULL";
+       LOGERROR("mode is NULL\n");
        return false;
     }
 
     m_pFile = fopen(filename, mode);
     if (m_pFile == NULL)
     {
-        LOG(ERROR) << "fopen " << filename << " error";
+        LOGERROR("fopen %s error\n", filename);
         return false;
     }
 
@@ -82,7 +80,7 @@ int BaseFile::getSize()
 {
     if (m_pFile == NULL)
     {
-        LOG(ERROR) << "Please open a file";
+        LOGERROR("Please open a file\n");
         return -1;
     }
 
@@ -94,13 +92,13 @@ int BaseFile::fileRead(void *buffer, int size)
 {
     if (m_pFile == NULL)
     {
-        LOG(ERROR) << "Please open a file";
+        LOGERROR("Please open a file\n");
         return -1;
     }
 
     if (buffer == NULL)
     {
-        LOG(ERROR) << "buffer is NULL";
+        LOGERROR("buffer is NULL\n");
         return -1;
     }
 
@@ -111,7 +109,7 @@ int BaseFile::fileRead(void *buffer, int size)
     ret = fread(buffer, 1, size, m_pFile);
     if (ret != size)
     {
-        LOG(ERROR) << "Reading error, ret is not equal to the size";
+        LOGERROR("fileRead error, ret is not equal to the size\n");
         return -1;
     }
 
@@ -122,13 +120,13 @@ int BaseFile::fileWrite(const char *data, int size)
 {
     if (m_pFile == NULL)
     {
-        LOG(ERROR) << "Please open a file";
+        LOGERROR("Please open a file\n");
         return -1;
     }
 
     if (data == NULL)
     {
-        LOG(ERROR) << "data is NULL";
+        LOGERROR("data is NULL\n");
         return -1;
     }
 
@@ -136,7 +134,7 @@ int BaseFile::fileWrite(const char *data, int size)
     ret = fwrite(data, 1, size, m_pFile);
     if (ret != size)
     {
-        LOG(ERROR) << "Reading error, ret is not equal to the size";
+        LOGERROR("fileWrite error, ret is not equal to the size\n");
         return -1;
     }
 
@@ -156,7 +154,7 @@ bool BaseFile::fileClose()
         ret = fclose(m_pFile);
         if (ret != 0)
         {
-            LOG(ERROR) << "fclose failure!";
+            LOGERROR("fclose failure!\n");
             return false;
         }
 
@@ -182,14 +180,14 @@ int BaseFile::fileSeek(int offset, int origin)
 {
     if (m_pFile == NULL)
     {
-        LOG(ERROR) << "Please open a file";
+        LOGERROR("Please open a file\n");
         return -1;
     }
 
     int ret = fseek(m_pFile, offset, origin);
     if (ret != 0)
     {
-        LOG(ERROR) << "fseek error, return " << ret;
+        LOGERROR("fseek error, return %d\n", ret);
     }
 
     return ret;
