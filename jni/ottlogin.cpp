@@ -67,7 +67,7 @@ string ICNTV_Login_deviceLogin(void)
 {
     login_mutex.lock();
 
-    LOGDEBUG("ICNTV_Login_deviceLogin...\n");
+    LOGINFO("ICNTV_Login_deviceLogin...\n");
 
     string ret("111");
     if (Login::getInstance()->getLoginStatus() != LoginSuccess)
@@ -77,14 +77,14 @@ string ICNTV_Login_deviceLogin(void)
 
     login_mutex.unlock();
 
-    LOGDEBUG("ICNTV_Login_deviceLogin return %s\n", ret.c_str());
+    LOGINFO("ICNTV_Login_deviceLogin return %s\n", ret.c_str());
 
     return ret;
 }
 
 string ICNTV_Login_getLoginStatus(void)
 {
-    LOGDEBUG("ICNTV_Login_getLoginStatus...\n");
+    LOGINFO("ICNTV_Login_getLoginStatus...\n");
     return (Login::getInstance()->getLoginState());
 }
 
@@ -92,19 +92,19 @@ bool ICNTV_Login_sdkExit(void)
 {
     exit_mutex.lock();
 
-    LOGDEBUG("ICNTV_Login_sdkExit...\n");
+    LOGINFO("ICNTV_Login_sdkExit...\n");
 
     Login::getInstance()->stopLogin();
     //Poco::Process::kill(Poco::Process::id());
 
     if (isInit == 1)
     {
-        LOGDEBUG("curl_global_cleanup\n");
+        LOGINFO("curl_global_cleanup\n");
         curl_global_cleanup();
         isInit = 0;
     }
 
-    LOGDEBUG("ICNTV_Login_sdkExit OK\n");
+    LOGINFO("ICNTV_Login_sdkExit OK\n");
 
     exit_mutex.unlock();
 
@@ -117,7 +117,7 @@ int ICNTV_Login_getVersion(string &version)
     version += "(";
     version += GIT_VERSION;
     version += ")";
-    LOGDEBUG("SDK_VERSION: %s\n", version.c_str());
+    LOGINFO("SDK_VERSION: %s\n", version.c_str());
 
     return 0;
 }
@@ -144,7 +144,7 @@ int ICNTV_Login_getUserID(string &userID)
     }
 
     userID = Login::getInstance()->getUserID();
-    LOGDEBUG("userID=%s\n", userID.c_str());
+    LOGINFO("userID=%s\n", userID.c_str());
 
     return 0;
 }
@@ -158,7 +158,7 @@ int ICNTV_Login_getTemplateID(string &templateID)
     }
 
     templateID = Login::getInstance()->getTemplateID();
-    LOGDEBUG("templateID=%s\n", templateID.c_str());
+    LOGINFO("templateID=%s\n", templateID.c_str());
 
     return 0;
 }
@@ -172,7 +172,7 @@ int ICNTV_Login_getPlatformID(string &platformID)
     }
 
     platformID = Login::getInstance()->getPlatformID();
-    LOGDEBUG("platformID=%s\n", platformID.c_str());
+    LOGINFO("platformID=%s\n", platformID.c_str());
 
     return 0;
 }
@@ -186,7 +186,7 @@ int ICNTV_Login_getServerAddress(string type, string &serverAddr)
     }
 
     serverAddr = Login::getInstance()->getServerAddress(type);
-    LOGDEBUG("%s serverAddr=%s\n", type.c_str(), serverAddr.c_str());
+    LOGINFO("%s serverAddr=%s\n", type.c_str(), serverAddr.c_str());
 
     return 0;
 }
@@ -200,7 +200,7 @@ int ICNTV_Login_getToken(string &token)
     }
 
     token = Login::getInstance()->getToken();
-    LOGDEBUG("token=%s\n", token.c_str());
+    LOGINFO("token=%s\n", token.c_str());
 
     return 0;
 }
@@ -214,7 +214,7 @@ int ICNTV_Login_setNetworkType(int type)
 
 int ICNTV_Login_logUpload(void)
 {
-    LOGDEBUG("ICNTV_Login_logUpload..\n");
+    LOGINFO("ICNTV_Login_logUpload..\n");
     LogUpload::getInstance()->startUpload();
 
     return 0;

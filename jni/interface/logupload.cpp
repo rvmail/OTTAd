@@ -133,6 +133,7 @@ void *LogUpload::upload(void *param)
     if (!data)
     {
         f.fileClose();
+        f.fileRemove(instance->m_compressLogFile.c_str());
         return NULL;
     }
 
@@ -140,11 +141,13 @@ void *LogUpload::upload(void *param)
     if (ret == -1)
     {
         f.fileClose();
+        f.fileRemove(instance->m_compressLogFile.c_str());
         free(data);
         data = NULL;
         return NULL;
     }
     f.fileClose();
+    f.fileRemove(instance->m_compressLogFile.c_str());
 
     std::string mac = getMac(1);
     if (mac.empty())
@@ -212,7 +215,7 @@ int LogUpload::startUpload()
         return -1;
     }
 
-    m_compressLogFile = dataCache::getInstance()->getPath() + "/ini/runtime.log";
+    m_compressLogFile = dataCache::getInstance()->getPath() + "/ini/log.gz";
 
     baseThread thread;
     thread.startThread(LogUpload::upload, LogUpload::getInstance());

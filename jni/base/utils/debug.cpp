@@ -58,16 +58,14 @@ LogOperate::~LogOperate()
 
 void LogOperate::getConfig(void)
 {
-    char namebuf[256] = {0};
-    icntvConfigure::getInstance()->getStrValue("LOG", "FileName", \
-                namebuf, sizeof(namebuf) - 1, "/ini/DeviceInfo.ini");
-    BaseFile f;
-    f.fileRemove(namebuf);
-
-    int debug = icntvConfigure::getInstance()->getIntValue("LOG", "DEBUG", "/ini/DeviceInfo.ini");
-    int info = icntvConfigure::getInstance()->getIntValue("LOG", "INFO", "/ini/DeviceInfo.ini");
-    int warn = icntvConfigure::getInstance()->getIntValue("LOG", "WARN", "/ini/DeviceInfo.ini");
-    int error  = icntvConfigure::getInstance()->getIntValue("LOG", "ERROR", "/ini/DeviceInfo.ini");
+    int debug = icntvConfigure::getInstance()->getIntValue("LOG", \
+                      "DEBUG", "/ini/DeviceInfo.ini");
+    int info = icntvConfigure::getInstance()->getIntValue("LOG", \
+                      "INFO", "/ini/DeviceInfo.ini");
+    int warn = icntvConfigure::getInstance()->getIntValue("LOG", \
+                      "WARN", "/ini/DeviceInfo.ini");
+    int error  = icntvConfigure::getInstance()->getIntValue("LOG", \
+                      "ERROR", "/ini/DeviceInfo.ini");
 
     if (debug != 0)
     {
@@ -98,33 +96,36 @@ void LogOperate::getConfig(void)
 
     //LOG(DEBUG) << "m_defaultLogLevel=" << m_defaultLogLevel;
 
-    std::string mac = getMac(1);
-    if (mac.empty())
-    {
-        mac = getMac(0);
-    }
-
-    if (!mac.empty())
-    {
-        //MAC 12:23:34:45:56:67 --> 122334455667
-        std::string::iterator it;
-        for (it =mac.begin(); it != mac.end(); it++)
-        {
-            if (*it == ':')
-            {
-                mac.erase(it);
-            }
-        }
-    }
-
-    SystemClock t;
-    std::string time = t.getTime();
+//    std::string mac = getMac(1);
+//    if (mac.empty())
+//    {
+//        mac = getMac(0);
+//    }
+//
+//    if (!mac.empty())
+//    {
+//        //MAC 12:23:34:45:56:67 --> 122334455667
+//        std::string::iterator it;
+//        for (it =mac.begin(); it != mac.end(); it++)
+//        {
+//            if (*it == ':')
+//            {
+//                mac.erase(it);
+//            }
+//        }
+//    }
+//
+//    SystemClock t;
+//    std::string time = t.getTime();
 
     std::string path = dataCache::getInstance()->getPath();
-    m_logFileName = path + "/ini/" + mac + "_" + time;
-    //LOG(DEBUG) << m_logFileName;
-    icntvConfigure::getInstance()->setKeyValue("LOG", "FileName", \
-                    m_logFileName.c_str(), "/ini/DeviceInfo.ini");
+    m_logFileName = path + "/ini/runtime.log";
+
+    BaseFile f;
+    if (f.isExist(m_logFileName.c_str()))
+    {
+        f.fileRemove(m_logFileName.c_str());
+    }
 }
 
 void LogOperate::logInit()
@@ -181,6 +182,11 @@ void LogOperate::logOutput(eLogLevel logLevel, const char *format, ...)
             if (logLevel == LOG_LEVEL_DEBUG)
             {
                 return;    //do not write to file if LOG_LEVEL_DEBUG
+            }
+
+            if (m_logFileName.empty())
+            {
+                return;
             }
 
             BaseFile bfile;

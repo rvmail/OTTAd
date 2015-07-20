@@ -71,7 +71,6 @@ private:
     int m_logOutput;
 
     std::string m_logFileName;
-    std::string m_time;
 
     std::mutex m_logOutputMutex;
 };
