@@ -1,6 +1,6 @@
 #include "loginParse.h"
-#include "base/utils/log.h"
-#include "../../thirdparty/tinyxml/tinyxml.h"
+#include "debug.h"
+#include "tinyxml.h"
 
 loginParse::loginParse(void)
 {
@@ -14,7 +14,7 @@ int loginParse::parse(const char *src, void *dst)
 {
     if (src == NULL || dst == NULL)
     {
-        LOG(ERROR) << "initParse input null pointer";
+        LOGERROR("initParse input null pointer\n");
         return -1;
     }
 
@@ -22,7 +22,6 @@ int loginParse::parse(const char *src, void *dst)
 
     TiXmlDocument xmlDoc;
     xmlDoc.Parse(src);
-    LOG(DEBUG) << "request xml: " << src;
     TiXmlElement *pRoot = xmlDoc.RootElement();
 
     if (pRoot)
@@ -39,17 +38,17 @@ int loginParse::parse(const char *src, void *dst)
                 if (p)
                 {
                     res->state.assign(p);
-                    LOG(DEBUG) << "state=" << res->state;
+                    LOGDEBUG("state=%s\n", res->state.c_str());
                 }
                 else
                 {
-                    LOG(ERROR) << "state no value";
+                    LOGERROR("state no value\n");
                     return -1;
                 }
             }
             else
             {
-                LOG(ERROR) << "state is NULL";
+                LOGERROR("state is NULL\n");
                 return -1;
             }
 
@@ -60,7 +59,7 @@ int loginParse::parse(const char *src, void *dst)
                 if (p != NULL)
                 {
                     res->userId.assign(p);
-                    LOG(DEBUG) << "userId=" << res->userId;
+                    LOGDEBUG("userId=%s\n", res->userId.c_str());
                 }
             }
 
@@ -71,7 +70,7 @@ int loginParse::parse(const char *src, void *dst)
                 if (p != NULL)
                 {
                     res->accountId.assign(p);
-                    LOG(DEBUG) << "accountId=" << res->accountId;
+                    LOGDEBUG("accountId=%s\n", res->accountId.c_str());
                 }
             }
 
@@ -82,7 +81,7 @@ int loginParse::parse(const char *src, void *dst)
                 if (p != NULL)
                 {
                     res->password.assign(p);
-                    LOG(DEBUG) << "password=" << res->password;
+                    LOGDEBUG("password=%s\n", res->password.c_str());
                 }
             }
 
@@ -93,7 +92,7 @@ int loginParse::parse(const char *src, void *dst)
                 if (p != NULL)
                 {
                     res->customerCategory.assign(p);
-                    LOG(DEBUG) << "customerCategory=" << res->customerCategory;
+                    LOGDEBUG("customerCategory=%s\n", res->customerCategory.c_str());
                 }
             }
 
@@ -104,7 +103,7 @@ int loginParse::parse(const char *src, void *dst)
                 if (p != NULL)
                 {
                     res->regionId.assign(p);
-                    LOG(DEBUG) << "regionId=" << res->regionId;
+                    LOGDEBUG("regionId=%s\n", res->regionId.c_str());
                 }
             }
 
@@ -115,7 +114,7 @@ int loginParse::parse(const char *src, void *dst)
                 if (p != NULL)
                 {
                     res->templateId.assign(p);
-                    LOG(DEBUG) << "templateId=" << res->templateId;
+                    LOGDEBUG("templateId=%s\n", res->templateId.c_str());
                 }
             }
 
@@ -126,7 +125,7 @@ int loginParse::parse(const char *src, void *dst)
                 if (p != NULL)
                 {
                     res->resultCode.assign(p);
-                    LOG(DEBUG) << "resultCode=" << res->resultCode;
+                    LOGDEBUG("resultCode=%s\n", res->resultCode.c_str());
                 }
             }
 
@@ -137,7 +136,7 @@ int loginParse::parse(const char *src, void *dst)
                 if (p != NULL)
                 {
                     res->token.assign(p);
-                    LOG(DEBUG) << "token=" << res->token;
+                    LOGDEBUG("token=%s\n", res->token.c_str());
                 }
             }
 
@@ -158,7 +157,7 @@ int loginParse::parse(const char *src, void *dst)
                         if (p != NULL)
                         {
                             address.url.assign(p);
-                            LOG(DEBUG) << "type"<< address.type << "url=" << address.url;
+                            LOGDEBUG("type(%s), url(%s)\n", address.type.c_str(), address.url.c_str());
                         }
 
                         p = pAddressNode->Attribute("name");
@@ -178,7 +177,7 @@ int loginParse::parse(const char *src, void *dst)
         }
         else
         {
-            LOG(ERROR) << "online is NULL";
+            LOGERROR("online is NULL\n");
             return -1;
         }
 
@@ -190,7 +189,7 @@ int loginParse::parse(const char *src, void *dst)
     }
     else
     {
-        LOG(ERROR) << "RootElement is NULL";
+        LOGERROR("RootElement is NULL\n");
         return -1;
     }
 

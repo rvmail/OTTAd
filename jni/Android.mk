@@ -43,7 +43,8 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH) \
                     $(LOCAL_PATH)/base/parse \
                     $(LOCAL_PATH)/base/utils \
                     $(LOCAL_PATH)/control \
-                    $(LOCAL_PATH)/interface
+                    $(LOCAL_PATH)/interface \
+                    $(LOCAL_PATH)/thirdparty/tinyxml
 
 LOCAL_SRC_FILES := ottlogin.cpp \
                    $(call all-cpp-files-under, base) \

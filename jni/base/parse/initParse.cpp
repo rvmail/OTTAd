@@ -1,6 +1,6 @@
-#include "base/utils/log.h"
 #include "initParse.h"
-#include "../../thirdparty/tinyxml/tinyxml.h"
+#include "tinyxml.h"
+#include "debug.h"
 
 initParse::initParse(void)
 {
@@ -15,7 +15,7 @@ int initParse::parse(const char *src, void *dst)
 {
     if (src == NULL || dst == NULL)
     {
-        LOG(ERROR) << "initParse input null pointer";
+        LOGERROR("initParse input null pointer\n");
         return -1;
     }
 
@@ -23,12 +23,11 @@ int initParse::parse(const char *src, void *dst)
 
     TiXmlDocument xmlDoc;
     xmlDoc.Parse(src);
-    LOG(DEBUG) << "request xml: " << src;
 
     TiXmlElement *pRoot = xmlDoc.RootElement();
     if (!pRoot)
     {
-        LOG(ERROR) << "RootElement is NULL";
+        LOGERROR("RootElement is NULL\n");
         return -1;
     }
 
@@ -50,7 +49,7 @@ int initParse::parse(const char *src, void *dst)
         }
         else
         {
-            LOG(ERROR) << "Can't find resultCode";
+            LOGERROR("Can't find resultCode\n");
             return -1;
         }
 
@@ -66,13 +65,13 @@ int initParse::parse(const char *src, void *dst)
         }
         else
         {
-            LOG(ERROR) << "Can't find deviceId";
+            LOGERROR("Can't find deviceId\n");
             return -1;
         }
     }
     else
     {
-        LOG(ERROR) << "Can't find online";
+        LOGERROR("Can't find online\n");
         return -1;
     }
 

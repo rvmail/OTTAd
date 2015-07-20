@@ -48,7 +48,7 @@ typedef enum
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
-#define MAX_LOG_MSG_SIZE  (1024 * 4)  //4KB
+#define MAX_LOG_MSG_SIZE  (1024 * 8)  //8KB
 #define MAX_LOG_FILE_SIZE  (1024 * 500)  //500KB
 
 class LogOperate

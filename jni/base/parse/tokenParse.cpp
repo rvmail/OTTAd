@@ -1,6 +1,6 @@
-#include "base/utils/log.h"
 #include "tokenParse.h"
-#include "../../thirdparty/tinyxml/tinyxml.h"
+#include "debug.h"
+#include "tinyxml.h"
 
 tokenParse::tokenParse(void)
 {
@@ -15,7 +15,7 @@ int tokenParse::parse(const char *src, void *dst)
 {
     if (src == NULL || dst == NULL)
     {
-        LOG(ERROR) << "tokenParse input null pointer";
+        LOGERROR("tokenParse input null pointer\n");
         return -1;
     }
 
@@ -23,12 +23,11 @@ int tokenParse::parse(const char *src, void *dst)
 
     TiXmlDocument xmlDoc;
     xmlDoc.Parse(src);
-    LOG(DEBUG) << "request xml: " << src;
 
     TiXmlElement *pRoot = xmlDoc.RootElement();
     if (!pRoot)
     {
-        LOG(ERROR) << "RootElement is NULL";
+        LOGERROR("RootElement is NULL\n");
         return -1;
     }
 
@@ -49,13 +48,13 @@ int tokenParse::parse(const char *src, void *dst)
             }
             else
             {
-                LOG(ERROR) << "responseCode value is NULL";
+                LOGERROR("responseCode value is NULL\n");
                 return -1;
             }
         }
         else
         {
-            LOG(ERROR) << "Can't find responseCode";
+            LOGERROR("Can't find responseCode\n");
             return -1;
         }
 
@@ -72,7 +71,7 @@ int tokenParse::parse(const char *src, void *dst)
     }
     else
     {
-        LOG(ERROR) << "Can't find Response";
+        LOGERROR("Can't find Response\n");
         return -1;
     }
 

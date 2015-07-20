@@ -143,7 +143,7 @@ void LogOperate::logOutput(eLogLevel logLevel, const char *format, ...)
 {
     //m_logOutputMutex.lock();
 
-    static char buffer[MAX_LOG_MSG_SIZE];
+    char buffer[MAX_LOG_MSG_SIZE];
     va_list ap;
 
     if (logLevel & m_defaultLogLevel)

@@ -20,7 +20,6 @@
 */
 
 #include "icntvHttp.h"
-#include "base/utils/log.h"
 #include "base/utils/URI.h"
 #include "debug.h"
 
@@ -60,7 +59,7 @@ int icntvHttp::get(const char *request, httpResponse *response)
     {
         curl_easy_setopt(m_pCurl, CURLOPT_VERBOSE, 1L);
         curl_easy_setopt(m_pCurl, CURLOPT_URL, request); // set curl request
-        //curl_easy_setopt(m_pCurl, CURLOPT_TIMEOUT, 5); // set timeout
+        curl_easy_setopt(m_pCurl, CURLOPT_TIMEOUT, m_timeout); // set timeout
         curl_easy_setopt(m_pCurl, CURLOPT_FOLLOWLOCATION, 1L); // follow redirection
         curl_easy_setopt(m_pCurl, CURLOPT_WRITEFUNCTION, &icntvHttp::write_func);
         curl_easy_setopt(m_pCurl, CURLOPT_WRITEDATA, response);
@@ -73,7 +72,7 @@ int icntvHttp::get(const char *request, httpResponse *response)
             if (pError != NULL)
             {
                 nRet = -1;
-                LOG(ERROR) << "http error, " << pError;
+                LOGERROR("http get error, %s\n", pError);
             }
         }
     }
@@ -111,7 +110,7 @@ int icntvHttp::post(const char *head, const char *data, int datasize, httpRespon
             if (pError != NULL)
             {
                 nRet = -1;
-                LOGERROR("http error=%s\n", pError);
+                LOGERROR("http post error, %s\n", pError);
             }
         }
     }
@@ -133,21 +132,20 @@ int icntvHttp::getData(string host, string path, string query, string &response)
     url.setPath(url.getPath() + path);
     url.setQuery(query);
 
-    LOG(DEBUG) << "Request URL: " << url.toString();
+    LOGDEBUG("Get URL: %s\n", url.toString().c_str());
 
     ret = get(url.toString().c_str(), &resp);
     if (ret != 0)
     {
-        LOG(ERROR) << "http.get() error!";
+        LOGERROR("http.get error\n");
         return -1;
     }
 
     int len = resp.getLength();
-    LOG(DEBUG) << "resp.getLength() return " << len;
     char *buf = new char[len + 1];
     if (buf == NULL)
     {
-        LOG(ERROR) << "new char[] error!";
+        LOGERROR("new char[] error!\n");
         return -2;
     }
     buf[len] = 0;
@@ -158,8 +156,8 @@ int icntvHttp::getData(string host, string path, string query, string &response)
 
     delete [] buf;
 
-    LOG(DEBUG) << response;
-    LOG(DEBUG) << "response length=" << response.length();
+    LOGDEBUG("length=%d\n", response.length());
+    LOGDEBUG("%s\n", response.c_str());
 
     return 0;
 }
@@ -173,22 +171,21 @@ int icntvHttp::postData(string host, string path, const char *data, int datasize
 
     url.setPath(url.getPath() + path);
 
-    LOG(DEBUG) << "Request URL: " << url.toString();
-    LOG(DEBUG) << "post data=" << data;
+    LOGDEBUG("Post URL: %s\n", url.toString().c_str());
+    LOGDEBUG("Post data=%s\n", data);
 
     ret = post(url.toString().c_str(), data, datasize, &resp);
     if (ret != 0)
     {
-        LOG(ERROR) << "http.post() error!";
+        LOGERROR("http.post error!\n");
         return -1;
     }
 
     int len = resp.getLength();
-    LOG(DEBUG) << "resp.getLength() return " << len;
     char *buf = new char[len + 1];
     if (buf == NULL)
     {
-        LOG(ERROR) << "new char[] error!";
+        LOGERROR("new char[] error!\n");
         return -2;
     }
     buf[len] = 0;
@@ -199,8 +196,8 @@ int icntvHttp::postData(string host, string path, const char *data, int datasize
 
     delete [] buf;
 
-    LOG(DEBUG) << response;
-    LOG(DEBUG) << "response length=" << response.length();
+    LOGDEBUG("length=%d\n", response.length());
+    LOGDEBUG("%s\n", response.c_str());
 
     return 0;
 }
@@ -261,7 +258,7 @@ int icntvHttps::get(const char *request, httpResponse *response)
             if (pError != NULL)
             {
                 nRet = -1;
-                LOG(ERROR) << "https error, " << pError;
+                LOGERROR("https error, %s\n", pError);
             }
         }
     }

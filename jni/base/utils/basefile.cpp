@@ -45,7 +45,7 @@ bool BaseFile::isExist(const char *filename)
 
     if (access(filename, F_OK) != 0)
     {
-        LOGWARN("%s is NOT exist\n", filename);
+        LOGDEBUG("%s is NOT exist\n", filename);
         return false;
     }
 

@@ -33,7 +33,6 @@
 #include <mutex>
 
 #include "DeviceInfo.h"
-#include "base/utils/log.h"
 #include "debug.h"
 
 #define MAX_INTERFACES  8
@@ -84,7 +83,7 @@ std::string getMac(int type)
 
     mtx.unlock();
 
-    LOG(DEBUG) << "getMac return: " << std::string(buffer);
+    LOGDEBUG("getMac: %s\n", buffer);
     return std::string(buffer);
 }
 
@@ -119,7 +118,7 @@ std::string getMacBySocket()
     sock = socket(AF_INET, SOCK_DGRAM, 0);
     if (sock < 0)
     {
-        LOG(ERROR) << "socket() failed";
+        LOGERROR("socket() failed\n");
         return wlan0_mac;
     }
 
@@ -129,11 +128,11 @@ std::string getMacBySocket()
     if (!ioctl (sock, SIOCGIFCONF, (char *)&ifc))
     {
         interface = ifc.ifc_len / sizeof(struct ifreq);
-        LOG(DEBUG) << "interface=" << interface;
+        LOGDEBUG("interface=%d\n", interface);
 
         while (interface-- > 0)
         {
-            LOG(DEBUG) << "ifr_name=" << ifreq_buf[interface].ifr_name;
+            LOGDEBUG("ifr_name=%s\n", ifreq_buf[interface].ifr_name);
 
             //get the MAC of this net device
             if (!(ioctl(sock, SIOCGIFHWADDR, (char *)&ifreq_buf[interface])))
@@ -145,7 +144,7 @@ std::string getMacBySocket()
                     (unsigned char)p[2], (unsigned char)p[3], \
                     (unsigned char)p[4], (unsigned char)p[5]);
 
-                LOG(DEBUG) << ifreq_buf[interface].ifr_name << "MAC=" << mac;
+                LOGDEBUG("MAC=%s\n", mac);
 
                 if (strcmp(ifreq_buf[interface].ifr_name, "wlan0") == 0)
                 {
@@ -186,8 +185,7 @@ unsigned long long  getMacInNum()
         mac += (m << (8*(6-1-i)));
     }
 
-    LOG(DEBUG) << "getMacInNum : " << mac;
-
+    LOGDEBUG("mac=%lld\n", mac);
     return mac;
 }
 
