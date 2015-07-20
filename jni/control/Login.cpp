@@ -248,6 +248,8 @@ string Login::doActivate()
         return ERR_READ_MAC;
     }
 
+    LOGINFO("[doActivate] MAC(%d)=%s\n", m_loginType, mac.c_str());
+
     stringstream query;
     query << "mac=" << mac;
 
@@ -309,6 +311,8 @@ string Login::doAuthenticate()
         LOGERROR("doAuthenticate mac is empty\n");
         return ERR_READ_MAC;
     }
+
+    LOGINFO("[doAuthenticate] MAC(%d)=%s\n", m_loginType, mac.c_str());
 
     query << "&mac=" << mac;
 
