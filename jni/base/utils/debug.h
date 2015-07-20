@@ -24,11 +24,8 @@
 
 #include "SystemClock.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
 #include <mutex>
+#include <android/log.h>
 
 typedef enum
 {
@@ -44,7 +41,6 @@ typedef enum
 #define LOG_OUTPUT_FILE   0x02
 #define LOG_OUTPUT_SERVER 0x04
 
-#include <android/log.h>
 #define LOG_TAG "ottlogin"
 
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)

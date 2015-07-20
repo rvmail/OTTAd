@@ -59,46 +59,43 @@ LogOperate::~LogOperate()
 void LogOperate::getConfig(void)
 {
     char namebuf[256] = {0};
-    icntvConfigure::getInstance()->getStrValue("LOG", "LAST_LOG_FILE", \
+    icntvConfigure::getInstance()->getStrValue("LOG", "FileName", \
                 namebuf, sizeof(namebuf) - 1, "/ini/DeviceInfo.ini");
     BaseFile f;
     f.fileRemove(namebuf);
 
-//    int debug = icntvConfigure::getInstance()->getIntValue("LOGLEVEL", "DEBUG", "/ini/DeviceInfo.ini");
-//    int info = icntvConfigure::getInstance()->getIntValue("LOGLEVEL", "INFO", "/ini/DeviceInfo.ini");
-//    int warn = icntvConfigure::getInstance()->getIntValue("LOGLEVEL", "WARN", "/ini/DeviceInfo.ini");
-//    int error  = icntvConfigure::getInstance()->getIntValue("LOGLEVEL", "ERROR", "/ini/DeviceInfo.ini");
-//
-//    if (debug != 0)
-//    {
-//        m_defaultLogLevel |= LOG_LEVEL_DEBUG;
-//    }
-//
-//    if (info != 0)
-//    {
-//        m_defaultLogLevel |= LOG_LEVEL_INFO;
-//    }
-//
-//    if (warn != 0)
-//    {
-//        m_defaultLogLevel |= LOG_LEVEL_WARN;
-//    }
-//
-//    if (error != 0)
-//    {
-//        m_defaultLogLevel |= LOG_LEVEL_ERROR;
-//    }
+    int debug = icntvConfigure::getInstance()->getIntValue("LOG", "DEBUG", "/ini/DeviceInfo.ini");
+    int info = icntvConfigure::getInstance()->getIntValue("LOG", "INFO", "/ini/DeviceInfo.ini");
+    int warn = icntvConfigure::getInstance()->getIntValue("LOG", "WARN", "/ini/DeviceInfo.ini");
+    int error  = icntvConfigure::getInstance()->getIntValue("LOG", "ERROR", "/ini/DeviceInfo.ini");
+
+    if (debug != 0)
+    {
+        m_defaultLogLevel |= LOG_LEVEL_DEBUG;
+    }
+
+    if (info != 0)
+    {
+        m_defaultLogLevel |= LOG_LEVEL_INFO;
+    }
+
+    if (warn != 0)
+    {
+        m_defaultLogLevel |= LOG_LEVEL_WARN;
+    }
+
+    if (error != 0)
+    {
+        m_defaultLogLevel |= LOG_LEVEL_ERROR;
+    }
 
     int loglevel = icntvConfigure::getInstance()->getIntValue("LOG", \
-                                "LOGLEVEL", "/ini/DeviceInfo.ini");
-    if (loglevel != 0)
-    {
-        m_defaultLogLevel = 0xFF;
-    }
-    else
+                                "LogOpen", "/ini/DeviceInfo.ini");
+    if (loglevel == 0)
     {
         m_defaultLogLevel = 0x00;
     }
+
     //LOG(DEBUG) << "m_defaultLogLevel=" << m_defaultLogLevel;
 
     std::string mac = getMac(1);
@@ -126,7 +123,7 @@ void LogOperate::getConfig(void)
     std::string path = dataCache::getInstance()->getPath();
     m_logFileName = path + "/ini/" + mac + "_" + time;
     //LOG(DEBUG) << m_logFileName;
-    icntvConfigure::getInstance()->setKeyValue("LOG", "LAST_LOG_FILE", \
+    icntvConfigure::getInstance()->setKeyValue("LOG", "FileName", \
                     m_logFileName.c_str(), "/ini/DeviceInfo.ini");
 }
 
@@ -181,11 +178,14 @@ void LogOperate::logOutput(eLogLevel logLevel, const char *format, ...)
 
         if (LOG_OUTPUT_FILE & m_logOutput)
         {
-            BaseFile bfile;
-            bool bret = bfile.fileOpen(m_logFileName.c_str(), "a+");
-            if (!bret)
+            if (logLevel == LOG_LEVEL_DEBUG)
             {
-                m_logOutputMutex.unlock();
+                return;    //do not write to file if LOG_LEVEL_DEBUG
+            }
+
+            BaseFile bfile;
+            if (!bfile.fileOpen(m_logFileName.c_str(), "a+"))
+            {
                 return;
             }
 
@@ -196,7 +196,7 @@ void LogOperate::logOutput(eLogLevel logLevel, const char *format, ...)
                 bfile.fileOpen(m_logFileName.c_str(), "a+");
             }
 
-            //bfile.fileSeek(0, SEEK_END);
+            bfile.fileSeek(0, SEEK_END);
             bfile.fileWrite(buffer, strlen(buffer));
             bfile.fileClose();
         }
