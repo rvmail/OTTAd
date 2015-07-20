@@ -172,7 +172,7 @@ int icntvHttp::postData(string host, string path, const char *data, int datasize
     url.setPath(url.getPath() + path);
 
     LOGDEBUG("Post URL: %s\n", url.toString().c_str());
-    LOGDEBUG("Post data=%s\n", data);
+    LOGDEBUG("Post data=%s, size=%d\n", data, datasize);
 
     ret = post(url.toString().c_str(), data, datasize, &resp);
     if (ret != 0)

@@ -98,6 +98,7 @@ int LogUpload::comress2file(const char *srcFileName, const char *dstFileName)
         return -1;
     }
 
+    LOGINFO("readSize=%d\n", readSize);
     if(gzwrite(out, buf, (unsigned)readSize) != readSize)
     {
         LOGERROR("gzwrite error\n");
