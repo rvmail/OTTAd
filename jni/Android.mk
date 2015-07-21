@@ -44,7 +44,8 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH) \
                     $(LOCAL_PATH)/base/utils \
                     $(LOCAL_PATH)/control \
                     $(LOCAL_PATH)/interface \
-                    $(LOCAL_PATH)/thirdparty/tinyxml
+                    $(LOCAL_PATH)/thirdparty/tinyxml \
+                    $(LOCAL_PATH)/thirdparty/curl/include/curl
 
 LOCAL_SRC_FILES := ottlogin.cpp \
                    $(call all-cpp-files-under, base) \
@@ -53,11 +54,8 @@ LOCAL_SRC_FILES := ottlogin.cpp \
                    $(call all-cpp-files-under, thirdparty/tinyxml) \
                    $(call all-cpp-files-under, interface)
 
-LOCAL_STATIC_LIBRARIES := poco_foundation \
-                          poco_util \
-                          libcurl \
-                          libthrift \
-                          libfb303
+LOCAL_STATIC_LIBRARIES := libcurl \
+                          poco_foundation
 
 LOCAL_LDLIBS     += -fuse-ld=bfd -rdynamic -llog -lz
 
@@ -76,7 +74,4 @@ ifeq ($(OUTPUT_TYPE), ANDROID_JAR)
 endif
 
 $(call import-module, thirdparty/poco/foundation)
-$(call import-module, thirdparty/poco/util)
 $(call import-module, thirdparty/curl)
-$(call import-module, thirdparty/libthrift)
-$(call import-module, thirdparty/libfb303)

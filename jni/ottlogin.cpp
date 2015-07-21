@@ -27,9 +27,7 @@
 #include "control/Login.h"
 #include "base/utils/debug.h"
 #include "logupload.h"
-
-#include <Poco/Process.h>
-#include "thirdparty/curl/include/curl/curl.h"
+#include "curl.h"
 
 #include <mutex>
 
