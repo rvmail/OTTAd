@@ -104,8 +104,7 @@ public:
     ~icntvHttp(void);
 
     void setHeader(string key, string value);
-    int setTimeout(int timeout);
-    int setCompress(bool type);
+    void setTimeout(int timeout);
 
     int get(const char *request, httpResponse *response);
     int post(const char *head, const char *data, int datasize, httpResponse *response);
@@ -128,7 +127,6 @@ protected:
     string m_header1;
     string m_header2;
     int m_timeout;  //seconds
-    bool m_isCompress;
 };
 
 class icntvHttps : public icntvHttp

@@ -26,7 +26,7 @@
 /************************************************************************/
 /* class icntvHttp */
 /************************************************************************/
-icntvHttp::icntvHttp(void) : m_pCurl(NULL), m_timeout(60), m_isCompress(false)
+icntvHttp::icntvHttp(void) : m_pCurl(NULL), m_timeout(60)
 {
     m_pCurl = curl_easy_init(); // curl init
 }
@@ -50,6 +50,14 @@ size_t icntvHttp::write_func(char *buffer, size_t size, size_t nitems, void *out
     }
 
     return nitems;
+}
+
+void icntvHttp::setTimeout(int timeout)
+{
+    if (timeout > 0)
+    {
+        m_timeout = timeout;
+    }
 }
 
 int icntvHttp::get(const char *request, httpResponse *response)
