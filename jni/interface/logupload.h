@@ -37,6 +37,7 @@ public:
 private:
     static LogUpload *m_instance;
     static void *upload(void *param);
+    void getConfig(void);
 
     int comress2file(const char *srcFileName, const char *dstFileName);
 
@@ -44,6 +45,7 @@ private:
     std::string m_compressLogFile;
     std::string m_serverAddr;
     bool m_isUploading;
+    int m_loginType;
 };
 
 #endif

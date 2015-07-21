@@ -45,12 +45,11 @@ LogUpload* LogUpload::getInstance()
     return m_instance;
 }
 
-LogUpload::LogUpload(void): m_isUploading(false)
+LogUpload::LogUpload(void): m_isUploading(false),
+                            m_loginType(1)
 {
-    char buf[256] = {0};
-    icntvConfigure::getInstance()->getStrValue("LOG", "LogServer", \
-                    buf, sizeof(buf) - 1, "/ini/DeviceInfo.ini");
-    m_serverAddr = buf;
+    getConfig();
+
 }
 
 
@@ -150,10 +149,17 @@ void *LogUpload::upload(void *param)
     f.fileClose();
     f.fileRemove(instance->m_compressLogFile.c_str());
 
-    std::string mac = getMac(1);
+    std::string mac = getMac(instance->m_loginType);
     if (mac.empty())
     {
-        mac = getMac(0);
+        if (instance->m_loginType == 1)
+        {
+            mac = getMac(0);
+        }
+        else
+        {
+            mac = getMac(1);
+        }
     }
 
     if (mac.empty())
@@ -163,6 +169,8 @@ void *LogUpload::upload(void *param)
         data = NULL;
         return NULL;
     }
+
+    LOGINFO("logUpload MAC=%s\n", mac.c_str());
 
     char buf[128] = {0};
     //MAC(string) --> num(long long)
@@ -199,6 +207,30 @@ void *LogUpload::upload(void *param)
     }
 
     return 0;
+}
+
+void LogUpload::getConfig(void)
+{
+    char buf[256] = {0};
+    icntvConfigure::getInstance()->getStrValue("LOG", "LogServer", \
+                    buf, sizeof(buf) - 1, "/ini/DeviceInfo.ini");
+    m_serverAddr = buf;
+
+    int type = icntvConfigure::getInstance()->getIntValue("DEVICE", \
+                          "LoginType", "/ini/DeviceInfo.ini");
+    if (type == -1)
+    {
+        m_loginType = 1;
+    }
+    else if (type == 0)
+    {
+        m_loginType = 0;
+    }
+    else
+    {
+        m_loginType = 1;
+    }
+    LOGINFO("loginType=%d\n", m_loginType);
 }
 
 int LogUpload::startUpload()
