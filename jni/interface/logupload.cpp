@@ -97,7 +97,7 @@ int LogUpload::comress2file(const char *srcFileName, const char *dstFileName)
         return -1;
     }
 
-    LOGINFO("readSize=%d\n", readSize);
+    LOGINFO("readSize(runtime.log)=%d\n", readSize);
     if(gzwrite(out, buf, (unsigned)readSize) != readSize)
     {
         LOGERROR("gzwrite error\n");
@@ -129,6 +129,7 @@ void *LogUpload::upload(void *param)
     }
 
     int size = f.getSize();
+    LOGINFO("size(log.gz)=%d\n", size);
     char *data = (char *)malloc(size);
     if (!data)
     {

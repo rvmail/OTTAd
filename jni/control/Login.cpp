@@ -290,6 +290,8 @@ string Login::doActivate()
     setConfigure(configDeviceId, mDeviceId);
     setLoginType();
 
+    LOGINFO("doActivate success!!\n");
+
     return ERR_NO;
 }
 
@@ -347,6 +349,7 @@ string Login::doAuthenticate()
         mToken = mLoginResponse.token;
     }
 
+    LOGINFO("doAuthenticate end, state=%s\n", mLoginResponse.state.c_str());
     return mLoginResponse.state;
 }
 
