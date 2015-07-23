@@ -41,17 +41,21 @@ bool ICNTV_Login_sdkInit(string path)
 {
     init_mutex.lock();
 
-    LOGDEBUG("ICNTV_Login_sdkInit...\n");
     if (isInit == 0)
     {
+        //set the path of configuration files
+        dataCache::getInstance()->setPath(path);
+
+        LogOperate::getInstance()->logInit();
+
+        LOGINFO("ICNTV_Login_sdkInit...\n");
+        LOGINFO("path=%s\n", path.c_str());
+
         LOGDEBUG("curl_global_init()\n");
         curl_global_init(CURL_GLOBAL_DEFAULT);
-        Login::getInstance()->startCheckToken();
 
-        LOGDEBUG("path=%s\n", path.c_str());
-        dataCache::getInstance()->setPath(path);
         Login::getInstance()->getLoginType();
-        LogOperate::getInstance()->logInit();
+        Login::getInstance()->startCheckToken();
 
         isInit = 1;
         LOGINFO("ICNTV_Login_sdkInit success\n");

@@ -503,6 +503,7 @@ int Login::startCheckToken()
 {
     if (m_isCheckTokenStart)
     {
+        LOGWARN("Check token thread has alreadty been started\n");
         return 0;
     }
 
