@@ -54,7 +54,6 @@ typedef enum
 class LogOperate
 {
 public :
-    LogOperate(void);
     ~LogOperate(void);
     static LogOperate *getInstance();
 
@@ -63,6 +62,7 @@ public :
     std::string getLogFileName(void);
 
 private:
+    LogOperate(void);
     void getConfig(void);
 
     static LogOperate *m_instance;
