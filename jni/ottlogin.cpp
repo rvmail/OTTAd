@@ -54,6 +54,11 @@ bool ICNTV_Login_sdkInit(string path)
         LogOperate::getInstance()->logInit();
 
         isInit = 1;
+        LOGINFO("ICNTV_Login_sdkInit success\n");
+    }
+    else
+    {
+        LOGWARN("SDK is already initialized\n");
     }
 
     init_mutex.unlock();
