@@ -48,9 +48,7 @@ LogUpload* LogUpload::getInstance()
 LogUpload::LogUpload(void): m_isUploading(false),
                             m_loginType(1)
 {
-
 }
-
 
 LogUpload::~LogUpload(void)
 {

@@ -107,9 +107,13 @@ public class MainActivity extends Activity
         Button token = (Button)findViewById(R.id.buttonToken);
         token.setOnClickListener(new Click_token());
         
-      //logUpload
+        //logUpload
         Button log = (Button)findViewById(R.id.buttonlog);
         log.setOnClickListener(new Click_log());
+        
+        //version
+        Button version = (Button)findViewById(R.id.buttonversion);
+        version.setOnClickListener(new Click_version());
     }
     
     //getLoginStatus
@@ -311,6 +315,20 @@ public class MainActivity extends Activity
             
             txt.setText("return " + ret);
     	}
+    }
+    
+    class Click_version implements View.OnClickListener
+    {
+        public void onClick(View v)
+        {
+        	EditText txt = (EditText)findViewById(R.id.txtversion);
+        	txt.setText("getVersion...");
+        	
+        	StringBuffer tf  = new StringBuffer();
+            int ret = loginSDK.getInstance().getVersion(tf);
+            
+            txt.setText(tf.toString());
+        }
     }
     
     protected void onDestroy() 
