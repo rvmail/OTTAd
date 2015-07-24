@@ -70,14 +70,25 @@ Login* Login::getInstance()
 }
 
 Login::Login(void): mLoginStatus(LoginNot),
+                    m_isInit(false),
                     m_isCheckTokenStart(false),
                     m_loginType(1),
-                    m_loginState("000")
+                    m_loginState("")
 {
 }
 
 Login::~Login(void)
 {
+}
+
+void Login::init(void)
+{
+    if (!m_isInit)
+    {
+        getLoginType();
+        startCheckToken();
+        m_isInit = true;
+    }
 }
 
 LoginStatus Login::getLoginStatus(void)
@@ -355,6 +366,11 @@ string Login::doAuthenticate()
 
 string Login::startLogin()
 {
+    if (!m_isInit)
+    {
+        LOGERROR("startLogin N\n");
+    }
+
     string ret;
     int retryCount = 0;
     bool needDoActivate = false;
@@ -436,7 +452,7 @@ void Login::stopLogin()
     else
     {
         mLoginStatus = LoginNot;
-        m_loginState = "000";
+        m_loginState = "";
     }
 }
 

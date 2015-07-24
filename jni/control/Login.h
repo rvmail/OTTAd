@@ -42,8 +42,11 @@ class Login
 {
 public:
     static Login* getInstance();
-
     ~Login(void);
+
+    void init(void);
+    string startLogin();
+    void stopLogin();
 
     LoginStatus getLoginStatus(void);
     string getLoginState(void);
@@ -53,10 +56,6 @@ public:
     string getPlatformID();
     string getTemplateID();
     string getServerAddress(string type);
-    string startLogin();
-    void stopLogin();
-    int startCheckToken();
-    void getLoginType(void);
 
 private:
     enum ConfigType
@@ -70,6 +69,8 @@ private:
     };
 
     Login(void);
+
+    int startCheckToken();
 
     /**
     * @name          doActivate
@@ -98,6 +99,7 @@ private:
     int checkToken();
     static void *checkTokenThread(void *param);
 
+    void getLoginType(void);
     void setLoginType(void);
     void changeLoginType(void);
 
@@ -114,6 +116,7 @@ private:
     string mToken;
     MapServerList mServerList;
 
+    bool m_isInit;
     bool m_isCheckTokenStart;
     int m_loginType;    //activate by MAC: 1 wlan, 0 eth
 };

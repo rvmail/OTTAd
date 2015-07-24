@@ -54,8 +54,7 @@ bool ICNTV_Login_sdkInit(string path)
         LOGDEBUG("curl_global_init()\n");
         curl_global_init(CURL_GLOBAL_DEFAULT);
 
-        Login::getInstance()->getLoginType();
-        Login::getInstance()->startCheckToken();
+        Login::getInstance()->init();
 
         LogUpload::getInstance()->init();
 
