@@ -57,6 +57,8 @@ bool ICNTV_Login_sdkInit(string path)
         Login::getInstance()->getLoginType();
         Login::getInstance()->startCheckToken();
 
+        LogUpload::getInstance()->init();
+
         isInit = 1;
         LOGINFO("ICNTV_Login_sdkInit success\n");
     }

@@ -29,12 +29,13 @@ class LogUpload
 {
 public:
     static LogUpload* getInstance();
-    LogUpload(void);
     ~LogUpload(void);
 
+    void init(void);
     int startUpload(void);
 
 private:
+    LogUpload(void);
     static LogUpload *m_instance;
     static void *upload(void *param);
     void getConfig(void);

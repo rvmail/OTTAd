@@ -48,13 +48,41 @@ LogUpload* LogUpload::getInstance()
 LogUpload::LogUpload(void): m_isUploading(false),
                             m_loginType(1)
 {
-    getConfig();
 
 }
 
 
 LogUpload::~LogUpload(void)
 {
+}
+
+void LogUpload::getConfig(void)
+{
+    char buf[256] = {0};
+    icntvConfigure::getInstance()->getStrValue("LOG", "LogServer", \
+                    buf, sizeof(buf) - 1, "/ini/DeviceInfo.ini");
+    m_serverAddr = buf;
+
+    int type = icntvConfigure::getInstance()->getIntValue("DEVICE", \
+                          "LoginType", "/ini/DeviceInfo.ini");
+    if (type == -1)
+    {
+        m_loginType = 1;
+    }
+    else if (type == 0)
+    {
+        m_loginType = 0;
+    }
+    else
+    {
+        m_loginType = 1;
+    }
+    LOGINFO("loginType=%d\n", m_loginType);
+}
+
+void LogUpload::init(void)
+{
+    getConfig();
 }
 
 int LogUpload::comress2file(const char *srcFileName, const char *dstFileName)
@@ -208,30 +236,6 @@ void *LogUpload::upload(void *param)
     }
 
     return 0;
-}
-
-void LogUpload::getConfig(void)
-{
-    char buf[256] = {0};
-    icntvConfigure::getInstance()->getStrValue("LOG", "LogServer", \
-                    buf, sizeof(buf) - 1, "/ini/DeviceInfo.ini");
-    m_serverAddr = buf;
-
-    int type = icntvConfigure::getInstance()->getIntValue("DEVICE", \
-                          "LoginType", "/ini/DeviceInfo.ini");
-    if (type == -1)
-    {
-        m_loginType = 1;
-    }
-    else if (type == 0)
-    {
-        m_loginType = 0;
-    }
-    else
-    {
-        m_loginType = 1;
-    }
-    LOGINFO("loginType=%d\n", m_loginType);
 }
 
 int LogUpload::startUpload()
