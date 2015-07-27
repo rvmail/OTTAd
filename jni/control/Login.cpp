@@ -37,7 +37,7 @@
 #include "debug.h"
 
 #define LOGIN_RETRY_COUNT      4
-#define LOGIN_RETRY_WAIT_TIME  2    //second
+#define LOGIN_RETRY_WAIT_TIME  1    //second
 #define CHECK_TOKEN_TIME_INTERVAL   (60 * 5)    //five minutes
 
 #define ERR_NO                                     "0"
