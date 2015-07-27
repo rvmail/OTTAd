@@ -73,12 +73,6 @@ bool ICNTV_Login_sdkInit(string path)
 
 string ICNTV_Login_deviceLogin(void)
 {
-    if (isInit == 0)
-    {
-        LOGERROR("deviceLogin MUST after sdkInit!!!\n");
-        return "889";
-    }
-
     login_mutex.lock();
 
     LOGINFO("ICNTV_Login_deviceLogin...\n");

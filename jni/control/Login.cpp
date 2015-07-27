@@ -45,6 +45,7 @@
 #define ERR_MALLOC                                 "888"
 #define ERR_READ_MAC                               "755"
 #define ERR_LOGIN_FORCE_STOP                       "119"
+#define ERR_LOGIN_NOT_INIT                         "889"
 
 #define ERR_ACTIVATE_CONNECT_TMS                   "765"
 #define ERR_ACTIVATE_PARSE_RESPONSE                "776"
@@ -386,7 +387,9 @@ string Login::startLogin()
 {
     if (!m_isInit)
     {
-        LOGERROR("startLogin N\n");
+        LOGERROR("startLogin failed, Not Init\n");
+        m_loginState = ERR_LOGIN_NOT_INIT;
+        return ERR_LOGIN_NOT_INIT;
     }
 
     string ret;
