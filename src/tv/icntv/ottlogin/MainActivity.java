@@ -34,7 +34,7 @@ public class MainActivity extends Activity
 			{
 				//Integer result =  (Integer) msg.obj;
 				String result = (String) msg.obj;
-				EditText txt = (EditText)findViewById(R.id.txt1);
+				EditText txt = (EditText)findViewById(R.id.txtlogin);
 	        	txt.setText(result);
 			}
 			else if (msg.what == 6)
@@ -42,7 +42,7 @@ public class MainActivity extends Activity
 				Integer arg1 = (Integer) msg.arg1;
 				Integer arg2 = (Integer) msg.arg2;
 				String error = (String)msg.obj;
-				EditText txt = (EditText)findViewById(R.id.txt6);
+				EditText txt = (EditText)findViewById(R.id.txtauto);
 	        	txt.setText("<okCount=" + arg1.toString() + ">, <errorCount=" + arg2.toString() + ", lastErrCode=" + error + ">");
 			    Log.d("", "ui thread id = " + Thread.currentThread().getId());
 			}
@@ -68,32 +68,32 @@ public class MainActivity extends Activity
         //loginSDK.getInstance().sdkInit(getFilesDir().getPath());
         
         //getLoginStatus
-        Button bn0 = (Button)findViewById(R.id.bn0);
-        bn0.setOnClickListener(new ClickB0());
+        Button status = (Button)findViewById(R.id.buttonstatus);
+        status.setOnClickListener(new Click_status());
         
         //deviceLogin
-        Button bn1 = (Button)findViewById(R.id.bn1);
-        bn1.setOnClickListener(new ClickB1());
+        Button login = (Button)findViewById(R.id.buttonlogin);
+        login.setOnClickListener(new Click_login());
         
         //sdkExit
-        Button bn2 = (Button)findViewById(R.id.bn2);
-        bn2.setOnClickListener(new ClickB2());
+        Button exit = (Button)findViewById(R.id.buttonexit);
+        exit.setOnClickListener(new Click_exit());
         
         //getDeviceID
-        Button bn3 = (Button)findViewById(R.id.bn3);
-        bn3.setOnClickListener(new ClickB3());
+        Button device = (Button)findViewById(R.id.buttondevice);
+        device.setOnClickListener(new Click_device());
         
         //getPlatformID
-        Button bn4 = (Button)findViewById(R.id.bn4);
-        bn4.setOnClickListener(new ClickB4());
+        Button platform = (Button)findViewById(R.id.buttonplatform);
+        platform.setOnClickListener(new Click_platform());
         
         //getUserID
-        Button bn5 = (Button)findViewById(R.id.bn5);
-        bn5.setOnClickListener(new ClickB5());
+        Button userid = (Button)findViewById(R.id.buttonuser);
+        userid.setOnClickListener(new Click_userid());
         
         //auto
-        Button bn6 = (Button)findViewById(R.id.bn6);
-        bn6.setOnClickListener(new ClickB6());
+        Button auto = (Button)findViewById(R.id.buttonauto);
+        auto.setOnClickListener(new Click_auto());
         
         //sdkInit
         Button init = (Button)findViewById(R.id.buttoninit);
@@ -117,11 +117,11 @@ public class MainActivity extends Activity
     }
     
     //getLoginStatus
-    class ClickB0 implements View.OnClickListener
+    class Click_status implements View.OnClickListener
     {
         public void onClick(View v)
         {
-        	EditText txt = (EditText)findViewById(R.id.txt0);
+        	EditText txt = (EditText)findViewById(R.id.txtstatus);
         	txt.setText("getLoginStatus...");
         	
             String ret = loginSDK.getInstance().getLoginStatus();
@@ -131,11 +131,11 @@ public class MainActivity extends Activity
     }
     
     //deviceLogin
-    class ClickB1 implements View.OnClickListener
+    class Click_login implements View.OnClickListener
     {
         public void onClick(View v)
         {
-        	EditText txt = (EditText)findViewById(R.id.txt1);
+        	EditText txt = (EditText)findViewById(R.id.txtlogin);
         	txt.setText("deviceLogin...");
         	new Thread(new Runnable() {
     			public void run() {
@@ -152,11 +152,11 @@ public class MainActivity extends Activity
     }
     
     //getDeviceID
-    class ClickB3 implements View.OnClickListener
+    class Click_device implements View.OnClickListener
     {
         public void onClick(View v)
         {
-        	EditText txt = (EditText)findViewById(R.id.txt3);
+        	EditText txt = (EditText)findViewById(R.id.txtdevice);
         	txt.setText("getDeviceID...");
         	
         	StringBuffer tf  = new StringBuffer();
@@ -167,11 +167,11 @@ public class MainActivity extends Activity
     }
     
     //getPlatformID
-    class ClickB4 implements View.OnClickListener
+    class Click_platform implements View.OnClickListener
     {
         public void onClick(View v)
         {
-        	EditText txt = (EditText)findViewById(R.id.txt4);
+        	EditText txt = (EditText)findViewById(R.id.txtplatform);
         	txt.setText("getPlatformID...");
         	
         	StringBuffer tf  = new StringBuffer();
@@ -182,11 +182,11 @@ public class MainActivity extends Activity
     }
     
     //getUserID
-    class ClickB5 implements View.OnClickListener
+    class Click_userid implements View.OnClickListener
     {
         public void onClick(View v)
         {
-        	EditText txt = (EditText)findViewById(R.id.txt5);
+        	EditText txt = (EditText)findViewById(R.id.txtuser);
         	txt.setText("getUserID...");
         	
         	StringBuffer tf  = new StringBuffer();
@@ -197,11 +197,11 @@ public class MainActivity extends Activity
     }
     
     //sdkExit
-    class ClickB2 implements View.OnClickListener
+    class Click_exit implements View.OnClickListener
     {
         public void onClick(View v)
         {
-        	EditText txt = (EditText)findViewById(R.id.txt2);
+        	EditText txt = (EditText)findViewById(R.id.txtexit);
         	txt.setText("sdkExit...");
         	
             boolean ret = loginSDK.getInstance().sdkExit();
@@ -211,12 +211,12 @@ public class MainActivity extends Activity
     }
     
     //auto test
-    class ClickB6 implements View.OnClickListener
+    class Click_auto implements View.OnClickListener
     {
     	public void onClick(View v)
         {
-        	EditText txt = (EditText)findViewById(R.id.txt6);
-        	Button b6 = (Button)findViewById(R.id.bn6);
+        	EditText txt = (EditText)findViewById(R.id.txtauto);
+        	Button b6 = (Button)findViewById(R.id.buttonauto);
         	
         	if (timer == null) {
         		timer = new Timer();

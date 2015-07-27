@@ -63,19 +63,42 @@ void LogUpload::getConfig(void)
 
     int type = icntvConfigure::getInstance()->getIntValue("DEVICE", \
                           "LoginType", "/ini/DeviceInfo.ini");
-    if (type == -1)
+    if (type == 1)
     {
         m_loginType = 1;
     }
-    else if (type == 0)
+    else if (type == 2)
     {
-        m_loginType = 0;
+        m_loginType = 2;
+    }
+    else if (type == 3)
+    {
+        m_loginType = 3;
+        icntvConfigure::getInstance()->getStrValue("DEVICE", "MacFile", \
+                                buf, sizeof(buf) - 1, "/ini/DeviceInfo.ini");
+        m_macFile = buf;
     }
     else
     {
         m_loginType = 1;
     }
     LOGINFO("loginType=%d\n", m_loginType);
+
+    std::string mac = getMac(m_loginType, m_macFile);
+    if (mac.empty())
+    {
+        mac = getMac(1, m_macFile);
+        if (mac.empty())
+        {
+            mac = getMac(2, m_macFile);
+            if (mac.empty())
+            {
+                mac = getMac(3, m_macFile);
+            }
+        }
+    }
+
+    m_MAC = mac;
 }
 
 void LogUpload::init(void)
@@ -176,32 +199,11 @@ void *LogUpload::upload(void *param)
     f.fileClose();
     f.fileRemove(instance->m_compressLogFile.c_str());
 
-    std::string mac = getMac(instance->m_loginType);
-    if (mac.empty())
-    {
-        if (instance->m_loginType == 1)
-        {
-            mac = getMac(0);
-        }
-        else
-        {
-            mac = getMac(1);
-        }
-    }
-
-    if (mac.empty())
-    {
-        LOGERROR("Not get MAC\n");
-        free(data);
-        data = NULL;
-        return NULL;
-    }
-
-    LOGINFO("logUpload MAC=%s\n", mac.c_str());
+    LOGINFO("logUpload MAC=%s\n", instance->m_MAC.c_str());
 
     char buf[128] = {0};
     //MAC(string) --> num(long long)
-    long long macnum = convertMac2Num(mac);
+    long long macnum = convertMac2Num(instance->m_MAC);
     snprintf(buf, sizeof(buf) - 1, "%lld", macnum);
     std::string id(buf);
 
@@ -248,6 +250,12 @@ int LogUpload::startUpload()
     if (m_logFile.empty())
     {
         LOGERROR("m_logFile is empty\n");
+        return -1;
+    }
+
+    if (m_MAC.empty())
+    {
+        LOGERROR("m_MAC is empty\n");
         return -1;
     }
 

@@ -47,6 +47,8 @@ private:
     std::string m_serverAddr;
     bool m_isUploading;
     int m_loginType;
+    std::string m_macFile;
+    std::string m_MAC;
 };
 
 #endif

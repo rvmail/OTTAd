@@ -173,6 +173,13 @@ string Login::getConfigure(ConfigType type)
             icntvConfigure::getInstance()->getLoginType(buffer, NUM_128);
             return string(buffer);
             break;
+
+        case configMacFile:
+            icntvConfigure::getInstance()->getStrValue("DEVICE", "MacFile", \
+                      buffer, sizeof(buffer) - 1, "/ini/DeviceInfo.ini");
+            return string(buffer);
+            break;
+
         default:
             break;
     }
@@ -207,9 +214,16 @@ void Login::getLoginType(void)
     {
         m_loginType = 1;
     }
-    else if (loginType.compare("0") == 0)
+    else if (loginType.compare("2") == 0)
     {
-        m_loginType = 0;
+        m_loginType = 2;
+    }
+    else if (loginType.compare("3") == 0)
+    {
+        m_loginTypeInConfigFile = 3;
+        m_loginType = 3;
+        m_macFile = getConfigure(configMacFile);
+        LOGINFO("loginType(3), macFile(%s)\n", m_macFile.c_str());
     }
     else    //read configuration file error, 1 default
     {
@@ -219,25 +233,29 @@ void Login::getLoginType(void)
 
 void Login::setLoginType(void)
 {
-    if (m_loginType == 0)
-    {
-        setConfigure(configLoginType, "0");
-    }
-    else if (m_loginType == 1)
+    if (m_loginType == 1)
     {
         setConfigure(configLoginType, "1");
+    }
+    else if (m_loginType == 2)
+    {
+        setConfigure(configLoginType, "2");
     }
 }
 
 void Login::changeLoginType(void)
 {
-    if (m_loginType == 0)
+    if (m_loginType == 1)
+    {
+        m_loginType = 2;
+    }
+    else if (m_loginType == 2)
     {
         m_loginType = 1;
     }
-    else if (m_loginType == 1)
+    else if (m_loginType == 3)
     {
-        m_loginType = 0;
+        m_loginType = 1;
     }
 }
 
@@ -251,10 +269,10 @@ string Login::doActivate()
     string host(getConfigure(configLoginAddr));
     string path("/deviceInit.action");
 
-    string mac = getMac(m_loginType);
+    string mac = getMac(m_loginType, m_macFile);
     if (mac.empty())
     {
-        LOGERROR("doActivate mac is empty\n");
+        LOGERROR("doActivate MAC(%d) is empty\n", m_loginType);
         changeLoginType();
         return ERR_READ_MAC;
     }
@@ -318,7 +336,7 @@ string Login::doAuthenticate()
     stringstream query;
     query << "deviceId=" << mDeviceId;
 
-    string mac = getMac(m_loginType);
+    string mac = getMac(m_loginType, m_macFile);
     if (mac.empty())
     {
         LOGERROR("doAuthenticate mac is empty\n");

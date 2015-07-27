@@ -33,13 +33,13 @@
 
 <TableRow>
 <Button
-    android:id="@+id/bn0"
+    android:id="@+id/buttonstatus"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:text="@string/bn0"
+    android:text="getLoginStatus"
     />
 <EditText
-    android:id="@+id/txt0"
+    android:id="@+id/txtstatus"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:editable="false"
@@ -51,13 +51,13 @@
 
 <TableRow>
 <Button
-    android:id="@+id/bn1"
+    android:id="@+id/buttonlogin"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@string/bn1"
+    android:text="deviceLogin"
     />
 <EditText
-    android:id="@+id/txt1"
+    android:id="@+id/txtlogin"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:editable="false"
@@ -69,13 +69,13 @@
 
 <TableRow>
 <Button
-    android:id="@+id/bn2"
+    android:id="@+id/buttonexit"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@string/bn2"
+    android:text="sdkExit"
     />
 <EditText
-    android:id="@+id/txt2"
+    android:id="@+id/txtexit"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:editable="false"
@@ -87,13 +87,30 @@
 
 <TableRow>
 <Button
-    android:id="@+id/bn3"
+    android:id="@+id/buttonlog"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@string/bn3"
+    android:text="logUpload"
     />
 <EditText
-    android:id="@+id/txt3"
+    android:id="@+id/txtlog"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:editable="false"
+    android:cursorVisible="false"
+    android:textSize="12pt"
+    />
+</TableRow>
+
+<TableRow>
+<Button
+    android:id="@+id/buttondevice"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="getDeviceID"
+    />
+<EditText
+    android:id="@+id/txtdevice"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:editable="false"
@@ -105,13 +122,13 @@
 
 <TableRow>
 <Button
-    android:id="@+id/bn4"
+    android:id="@+id/buttonplatform"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@string/bn4"
+    android:text="getPlatformID"
     />
 <EditText
-    android:id="@+id/txt4"
+    android:id="@+id/txtplatform"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:editable="false"
@@ -123,13 +140,13 @@
 
 <TableRow>
 <Button
-    android:id="@+id/bn5"
+    android:id="@+id/buttonuser"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@string/bn5"
+    android:text="getUserID"
     />
 <EditText
-    android:id="@+id/txt5"
+    android:id="@+id/txtuser"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:editable="false"
@@ -175,30 +192,13 @@
 
 <TableRow>
 <Button
-    android:id="@+id/bn6"
+    android:id="@+id/buttonauto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@string/bn6"
+    android:text="auto off"
     />
 <EditText
-    android:id="@+id/txt6"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:editable="false"
-    android:cursorVisible="false"
-    android:textSize="12pt"
-    />
-</TableRow>
-
-<TableRow>
-<Button
-    android:id="@+id/buttonlog"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="logUpload"
-    />
-<EditText
-    android:id="@+id/txtlog"
+    android:id="@+id/txtauto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:editable="false"

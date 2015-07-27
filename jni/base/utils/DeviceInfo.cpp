@@ -37,7 +37,6 @@
 
 #define MAX_INTERFACES  8
 
-std::mutex mtx;
 static int g_netType = 1;  //0-Ethernet, 1-Wireless, default
 
 int setNetType(int type)
@@ -47,25 +46,25 @@ int setNetType(int type)
     return 0;
 }
 
-//type: 0 eth0, 1 wlan0
-std::string getMac(int type)
+static std::string getMacByFile(std::string macFile)
 {
-    mtx.lock();
-
     FILE *fp = NULL;
     char buffer[80] = {0};
 
-    if (type == 0)
+    if (macFile.empty())
     {
-        fp = popen("cat /sys/class/net/eth0/address","r");
+        LOGERROR("macFile is empty\n");
+        return "";
     }
-    else if (type == 1)
+
+    std::string command("cat ");
+    command += macFile;
+
+    fp = popen(command.c_str(), "r");
+    if (!fp)
     {
-        fp = popen("cat /sys/class/net/wlan0/address","r");
-    }
-    else
-    {
-        fp = popen("cat /sys/class/net/wlan0/address","r");
+        LOGWARN("fp is NULL\n");
+        return "";
     }
 
     while (fgets(buffer, sizeof(buffer), fp))
@@ -81,28 +80,35 @@ std::string getMac(int type)
     }
     pclose(fp);
 
-    mtx.unlock();
-
-    LOGDEBUG("getMac: %s\n", buffer);
-    return std::string(buffer);
+    std::string mac(buffer);
+    LOGDEBUG("getMacByFile: MAC=%s\n", mac.c_str());
+    return mac;
 }
 
-std::string getMacByFile()
+std::string getMac(int type, std::string macFile)
 {
-    std::string mac;
+    std::string file("/sys/class/net/wlan0/address");
 
-#ifdef WLAN_MAC
-    mac = getMac(1);
-#endif
+    if (type == 1)
+    {
+        file = "/sys/class/net/wlan0/address";
+    }
+    else if (type == 2)
+    {
+        file = "/sys/class/net/eth0/address";
+    }
+    else if (type == 3)
+    {
+        file = macFile;
+    }
 
-#ifdef ETH_MAC
-    mac = getMac(0);
-#endif
+    if (file.empty())
+    {
+        LOGERROR("file is empty\n");
+        return "";
+    }
 
-#ifdef SET_MAC
-    mac = getMac(g_netType);
-#endif
-
+    std::string mac = getMacByFile(file);
     return mac;
 }
 
