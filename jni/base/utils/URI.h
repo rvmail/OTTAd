@@ -24,7 +24,7 @@
 #define ICNTV_URI_H_
 
 #include <Poco/URI.h>
-#include "control/icntvEncrypt.h"
+#include "icntvEncrypt.h"
 
 class URI : public Poco::URI {
 public:

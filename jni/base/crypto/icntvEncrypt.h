@@ -16,38 +16,40 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
-*
-* @author   chu.lei@icntv.tv
-* @date     2014-9-19
+ *
 */
-/************************************************************************/
-/* ����˵�����ṩ�ӽ��ܹ���
-*/
-/************************************************************************/
+
 #ifndef __ICNTFENCRYPT_H__
 #define __ICNTFENCRYPT_H__
 
 #include <string>
 
-#define algorithm_md5 "MD5"
-#define 	algorithm_sha1 "SHA1"
+enum AesPaddingType
+{
+    NoPadding,
+    PKCS5Padding,
+};
+
+enum AesResultType
+{
+    Original,
+    Base64,
+    Hexadecimal,
+};
 
 class icntvEncrypt
 {
 public:
-	icntvEncrypt(void);
-	icntvEncrypt(const std::string encryption);
-	~icntvEncrypt(void);
+    icntvEncrypt(void);
+    ~icntvEncrypt(void);
 
-	void setToken(const char* token);
-	std::string encrypt(const std::string src);
-	int decrypt(const char* src, char* dst);
-
-private:
-	std::string md5Encrypt(const std::string src);
+    std::string md5Encrypt(const std::string src);
+    std::string aesEncrypt(const std::string src, const std::string key);
+    std::string aesDecrypt(const std::string src, const std::string key);
 
 private:
-	std::string encryption;
+    std::string hex_encode(const std::string &src);
+    std::string hex_decode(const std::string &src);
 };
 
 #endif // !__ICNTFENCRYPT_H__

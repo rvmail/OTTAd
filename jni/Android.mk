@@ -41,6 +41,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH) \
                     $(LOCAL_PATH)/base/configure \
                     $(LOCAL_PATH)/base/network \
                     $(LOCAL_PATH)/base/parse \
+                    $(LOCAL_PATH)/base/crypto \
                     $(LOCAL_PATH)/base/utils \
                     $(LOCAL_PATH)/control \
                     $(LOCAL_PATH)/interface \

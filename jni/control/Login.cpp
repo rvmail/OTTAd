@@ -35,6 +35,7 @@
 #include "base/configure/icntvConfigure.h"
 #include "base/baseThread.h"
 #include "debug.h"
+#include "icntvEncrypt.h"
 
 #define LOGIN_RETRY_COUNT      4
 #define LOGIN_RETRY_WAIT_TIME  1    //second
@@ -57,6 +58,11 @@
 
 #define ERR_CONNECT_EPG                            "788"
 #define ERR_CHECKURL                               "799"
+
+#define AES_KEY               "36b9c7e8695468dc"
+#define ENCRYPT_VERSION       "1.0"
+#define VERSION_INFO          "4.4.6.19"
+#define VERSION_ID            "2"
 
 Login* Login::m_pInstance = NULL;
 
@@ -88,6 +94,7 @@ void Login::init(void)
     {
         getLoginType();
         startCheckToken();
+        getPlatformID();
         m_isInit = true;
     }
 }
@@ -260,6 +267,55 @@ void Login::changeLoginType(void)
     }
 }
 
+string Login::buildQuery(eLoginType type, string mac)
+{
+    stringstream t;
+    t << time(NULL);
+
+    string time = t.str();
+
+    //generate the k parameter in query
+    string k;
+    if (type == LoginActivate)
+    {
+        k = time + "/" + mac + "/" + "000000000000000" + "/" + "sn" + "/";
+    }
+    else if (type == LoginAuth)
+    {
+        k = time + "/" + mac + "/" + mDeviceId + "/" + "sn" + "/";
+    }
+    else
+    {
+        LOGERROR("type is invalid\n");
+        return "";
+    }
+
+    LOGDEBUG("k=%s\n", k.c_str());
+
+    icntvEncrypt enc;
+    string aes_k = enc.aesEncrypt(k, AES_KEY);
+    LOGDEBUG("aes_k=%s\n", aes_k.c_str());
+
+    //generate the s parameter in query
+    string s;
+    s = aes_k + mPlatformId + ENCRYPT_VERSION + AES_KEY + time;
+    LOGDEBUG("s=%s\n", s.c_str());
+
+    string md5_s = enc.md5Encrypt(s);
+    LOGDEBUG("md5_s=%s\n", md5_s.c_str());
+
+    stringstream query;
+    query << "k=" << aes_k;
+    query << "&s=" << md5_s;
+    query << "&v=" << ENCRYPT_VERSION;
+    query << "&type=";
+    query << "&platformid=" << mPlatformId;
+    query << "&versioninfo=" << VERSION_INFO;
+    query << "&versionid=" << VERSION_ID;
+
+    return query.str();
+}
+
 string Login::doActivate()
 {
     LOGINFO("doActivate start...\n");
@@ -268,7 +324,8 @@ string Login::doActivate()
     icntvHttp http;
     string response;
     string host(getConfigure(configLoginAddr));
-    string path("/deviceInit.action");
+    //string path("/deviceInit.action");
+    string path("/init.action");
 
     string mac = getMac(m_loginType, m_macFile);
     if (mac.empty())
@@ -280,10 +337,12 @@ string Login::doActivate()
 
     LOGINFO("[doActivate] MAC(%d)=%s\n", m_loginType, mac.c_str());
 
-    stringstream query;
-    query << "mac=" << mac;
+    //stringstream query;
+    //query << "mac=" << mac;
 
-    ret = http.getData(host, path, query.str(), response);
+    string query = buildQuery(LoginActivate, mac);
+
+    ret = http.getData(host, path, query, response);
     if (ret != 0)
     {
         LOGERROR("doActivate http.getData() error!\n");
@@ -333,9 +392,10 @@ string Login::doAuthenticate()
     icntvHttp http;
     string response;
     string host(getConfigure(configLoginAddr));
-    string path("/device!deviceLogin.action");
-    stringstream query;
-    query << "deviceId=" << mDeviceId;
+    //string path("/device!deviceLogin.action");
+    string path("/login.action");
+    //stringstream query;
+    //query << "deviceId=" << mDeviceId;
 
     string mac = getMac(m_loginType, m_macFile);
     if (mac.empty())
@@ -346,9 +406,11 @@ string Login::doAuthenticate()
 
     LOGINFO("[doAuthenticate] MAC(%d)=%s\n", m_loginType, mac.c_str());
 
-    query << "&mac=" << mac;
+    //query << "&mac=" << mac;
 
-    ret = http.getData(host, path, query.str(), response);
+    string query = buildQuery(LoginAuth, mac);
+
+    ret = http.getData(host, path, query, response);
     if (ret != 0)
     {
         LOGERROR("doAuthenticate http.getData() error!\n");
@@ -435,12 +497,6 @@ string Login::startLogin()
         {
             LOGINFO("doAuthenticate OK\n");
             break;
-        }
-        else if (ret.compare("000") == 0)
-        {
-            needDoActivate = true;
-            sleep(LOGIN_RETRY_WAIT_TIME);
-            continue;
         }
         else
         {

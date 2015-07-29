@@ -58,8 +58,8 @@ void URI::setSignature(const string token, const string encryption, string &data
 	sortStr.append(token);
 
 	// encryption
-	icntvEncrypt mIcntvEncrypt(encryption);
-	string signature = mIcntvEncrypt.encrypt(sortStr.c_str());
+	icntvEncrypt mIcntvEncrypt;
+	string signature = mIcntvEncrypt.md5Encrypt(sortStr.c_str());
 
 	data.append("&sign="+signature);
 }

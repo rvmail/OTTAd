@@ -69,9 +69,17 @@ private:
         configMacFile
     };
 
+    enum eLoginType
+    {
+        LoginActivate,
+        LoginAuth
+    };
+
     Login(void);
 
     int startCheckToken();
+
+    string buildQuery(eLoginType type, string mac);
 
     /**
     * @name          doActivate
