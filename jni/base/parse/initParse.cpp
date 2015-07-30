@@ -44,13 +44,13 @@ int initParse::parse(const char *src, void *dst)
             p = pChildNode->GetText();
             if (p)
             {
-                res->status = atoi(p);
+                res->resultCode = atoi(p);
             }
         }
         else
         {
             LOGERROR("Can't find resultCode\n");
-            return -1;
+            //return -1;
         }
 
         //find deviceId
@@ -66,7 +66,43 @@ int initParse::parse(const char *src, void *dst)
         else
         {
             LOGERROR("Can't find deviceId\n");
-            return -1;
+            //return -1;
+        }
+
+        //find state
+        pChildNode = pNode->FirstChildElement("state");
+        if (pChildNode)
+        {
+            p = pChildNode->GetText();
+            if (p)
+            {
+                res->state.assign(p);
+                LOGWARN("WAO! find state=%s\n", p);
+            }
+        }
+
+        //find time
+        pChildNode = pNode->FirstChildElement("time");
+        if (pChildNode)
+        {
+            p = pChildNode->GetText();
+            if (p)
+            {
+                res->time.assign(p);
+                LOGWARN("WAO! find time=%s\n", p);
+            }
+        }
+
+        //find message
+        pChildNode = pNode->FirstChildElement("message");
+        if (pChildNode)
+        {
+            p = pChildNode->GetText();
+            if (p)
+            {
+                res->message.assign(p);
+                LOGWARN("WAO! find message=%s\n", p);
+            }
         }
     }
     else

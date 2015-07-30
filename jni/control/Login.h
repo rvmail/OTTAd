@@ -131,6 +131,8 @@ private:
     int m_loginTypeInConfigFile;    //the LoginType value in the configuration file
     int m_loginType;    //activate by MAC: 1 wlan, 2 eth, 3 mac file
     string m_macFile;
+
+    string m_serverTime;
 };
 
 #endif // !__LOGIN_H__

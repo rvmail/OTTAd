@@ -37,7 +37,7 @@
 #include "debug.h"
 #include "icntvEncrypt.h"
 
-#define LOGIN_RETRY_COUNT      4
+#define LOGIN_RETRY_COUNT      6
 #define LOGIN_RETRY_WAIT_TIME  1    //second
 #define CHECK_TOKEN_TIME_INTERVAL   (60 * 5)    //five minutes
 
@@ -274,6 +274,11 @@ string Login::buildQuery(eLoginType type, string mac)
 
     string time = t.str();
 
+    if (!m_serverTime.empty())
+    {
+        time = m_serverTime;
+    }
+
     //generate the k parameter in query
     string k;
     if (type == LoginActivate)
@@ -313,6 +318,7 @@ string Login::buildQuery(eLoginType type, string mac)
     query << "&versioninfo=" << VERSION_INFO;
     query << "&versionid=" << VERSION_ID;
 
+    m_serverTime.clear();
     return query.str();
 }
 
@@ -359,9 +365,9 @@ string Login::doActivate()
         return ERR_ACTIVATE_PARSE_RESPONSE;
     }
 
-    if (mInitResponse.status != 1)
+    if (mInitResponse.resultCode != 1)
     {
-        LOGERROR("resultCode=%d\n", mInitResponse.status);
+        LOGERROR("resultCode=%d\n", mInitResponse.resultCode);
         //return ERR_ACTIVATE_DEVICE_NULL;
     }
 
@@ -372,7 +378,15 @@ string Login::doActivate()
     {
         LOGERROR("mDeviceId is empty\n");
 
-        changeLoginType();
+        if (mInitResponse.state.compare("93") == 0)
+        {
+            m_serverTime = mInitResponse.time;
+        }
+        else
+        {
+            changeLoginType();
+        }
+
         return ERR_ACTIVATE_DEVICE_NULL;
     }
 
@@ -439,6 +453,11 @@ string Login::doAuthenticate()
         mTemplateId = mLoginResponse.templateId;
         mServerList= mLoginResponse.serverList;
         mToken = mLoginResponse.token;
+    }
+
+    if (mLoginResponse.state.compare("93") == 0)
+    {
+        m_serverTime = mLoginResponse.time;
     }
 
     LOGINFO("doAuthenticate end, state=%s\n", mLoginResponse.state.c_str());

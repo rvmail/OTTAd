@@ -174,6 +174,29 @@ int loginParse::parse(const char *src, void *dst)
                     pAddressNode = pAddressNode->NextSiblingElement("address");
                 }
             }
+
+            //when state is 93, time is not ok
+            pChildNode = pNode->FirstChildElement("time");
+            if (pChildNode != NULL)
+            {
+                p = pChildNode->GetText();
+                if (p != NULL)
+                {
+                    res->time.assign(p);
+                    LOGWARN("time=%s\n", res->time.c_str());
+                }
+            }
+
+            pChildNode = pNode->FirstChildElement("message");
+            if (pChildNode != NULL)
+            {
+                p = pChildNode->GetText();
+                if (p != NULL)
+                {
+                    res->message.assign(p);
+                    LOGWARN("message=%s\n", res->message.c_str());
+                }
+            }
         }
         else
         {

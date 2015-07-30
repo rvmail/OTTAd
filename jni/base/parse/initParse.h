@@ -8,11 +8,14 @@ struct InitResponse
 {
     InitResponse()
     {
-        status = -1;
+        resultCode = -1;
     }
 
-    int status;
+    int resultCode;
     std::string deviceid;
+    std::string state;
+    std::string time;
+    std::string message;
 };
 
 class initParse : public baseParse

@@ -26,6 +26,8 @@ struct LoginResponse
     string resultCode;
     string token;
     MapServerList serverList;
+    string time;
+    string message;
 };
 
 class loginParse : public baseParse
