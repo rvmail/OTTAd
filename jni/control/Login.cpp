@@ -93,7 +93,6 @@ void Login::init(void)
 {
     if (!m_isInit)
     {
-        getLoginType();
         startCheckToken();
         getPlatformID();
         m_isInit = true;
@@ -229,7 +228,6 @@ void Login::getLoginType(void)
     }
     else if (loginType.compare("3") == 0)
     {
-        m_loginTypeInConfigFile = 3;
         m_loginType = 3;
         m_macFile = getConfigure(configMacFile);
         LOGINFO("loginType(3), macFile(%s)\n", m_macFile.c_str());
@@ -474,6 +472,8 @@ string Login::startLogin()
         return ERR_LOGIN_NOT_INIT;
     }
 
+    getLoginType();
+
     string ret;
     int retryCount = 0;
     bool needDoActivate = false;
@@ -588,6 +588,7 @@ int Login::checkToken()
 
     if (tokenResponse.respCode != 1)
     {
+        LOGERROR("token is invalid\n");
         mLoginStatus = LoginTokenErr;
         m_loginState = ERR_CHECK_TOKEN;
         mToken.clear();
