@@ -58,6 +58,7 @@
 
 #define ERR_CONNECT_EPG                            "788"
 #define ERR_CHECKURL                               "799"
+#define ERR_CHECK_TOKEN                            "260"
 
 #define AES_KEY               "36b9c7e8695468dc"
 #define ENCRYPT_VERSION       "1.0"
@@ -588,7 +589,9 @@ int Login::checkToken()
     if (tokenResponse.respCode != 1)
     {
         mLoginStatus = LoginTokenErr;
-        startLogin();
+        m_loginState = ERR_CHECK_TOKEN;
+        mToken.clear();
+        //startLogin();
     }
 
     return 0;
