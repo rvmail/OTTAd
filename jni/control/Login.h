@@ -103,7 +103,7 @@ private:
     string doAuthenticate();
 
     string getConfigure(ConfigType type);
-    bool setConfigure(ConfigType type, const string val);
+    int setConfigure(ConfigType type, const string val);
 
     int checkToken();
     static void *checkTokenThread(void *param);

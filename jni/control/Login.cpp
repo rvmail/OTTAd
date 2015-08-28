@@ -45,6 +45,7 @@
 #define ERR_DEFALT                                 "-1"
 #define ERR_MALLOC                                 "888"
 #define ERR_READ_MAC                               "755"
+#define ERR_WRITE_DEVICE_ID                        "756"
 #define ERR_LOGIN_FORCE_STOP                       "119"
 #define ERR_LOGIN_NOT_INIT                         "889"
 
@@ -195,7 +196,7 @@ string Login::getConfigure(ConfigType type)
     return "";
 }
 
-bool Login::setConfigure(ConfigType type, const string val)
+int Login::setConfigure(ConfigType type, const string val)
 {
     switch (type)
     {
@@ -389,7 +390,14 @@ string Login::doActivate()
         return ERR_ACTIVATE_DEVICE_NULL;
     }
 
-    setConfigure(configDeviceId, mDeviceId);
+    ret = setConfigure(configDeviceId, mDeviceId);
+    if (ret != 0)
+    {
+        LOGERROR("write deviceID failed\n");
+        return ERR_WRITE_DEVICE_ID;
+    }
+    LOGINFO("write deviceID success\n");
+
     setLoginType();
 
     LOGINFO("doActivate success!!\n");
