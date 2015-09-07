@@ -43,23 +43,31 @@
 
 #define ERR_NO                                     "0"
 #define ERR_DEFALT                                 "-1"
-#define ERR_MALLOC                                 "888"
-#define ERR_READ_MAC                               "755"
-#define ERR_WRITE_DEVICE_ID                        "756"
+
 #define ERR_LOGIN_FORCE_STOP                       "119"
 #define ERR_LOGIN_NOT_INIT                         "889"
 
+#define ERR_CHECK_TOKEN                            "260"
+
+#define ERR_MALLOC                                 "888"
+
+#define ERR_READ_MAC                               "755"
+#define ERR_WRITE_DEVICE_ID                        "756"
+
 #define ERR_ACTIVATE_CONNECT_TMS                   "765"
-#define ERR_ACTIVATE_PARSE_RESPONSE                "776"
+#define ERR_AUTH_CONNECT_TMS                       "766"
+
+#define ERR_AUTH_STATE_NULL                        "774"
 #define ERR_ACTIVATE_DEVICE_NULL                   "775"
 
-#define ERR_AUTH_CONNECT_TMS                       "766"
+#define ERR_ACTIVATE_PARSE_RESPONSE                "776"
 #define ERR_AUTH_PARSE_RESPONSE                    "777"
-#define ERR_AUTH_STATE_NULL                        "774"
+
+#define ERR_ACTIVATE_ALREADY_TRY_ALL               "778"
 
 #define ERR_CONNECT_EPG                            "788"
 #define ERR_CHECKURL                               "799"
-#define ERR_CHECK_TOKEN                            "260"
+
 
 #define AES_KEY               "36b9c7e8695468dc"
 #define ENCRYPT_VERSION       "1.0"
@@ -82,7 +90,8 @@ Login::Login(void): mLoginStatus(LoginNot),
                     m_isInit(false),
                     m_isCheckTokenStart(false),
                     m_loginType(1),
-                    m_loginState("")
+                    m_loginState(""),
+                    m_alreadyTryAll(false)
 {
 }
 
@@ -260,6 +269,7 @@ void Login::changeLoginType(void)
     else if (m_loginType == 2)
     {
         m_loginType = 1;
+        m_alreadyTryAll = true;
     }
     else if (m_loginType == 3)
     {
@@ -537,6 +547,12 @@ string Login::startLogin()
     {
         LOGERROR("login failed, up to the max retry times\n");
         mLoginStatus = LoginStatus::LoginFailed;
+
+        if (needDoActivate && m_alreadyTryAll)
+        {
+            LOGERROR("doActivate already try all\n");
+            ret = ERR_ACTIVATE_ALREADY_TRY_ALL;
+        }
     }
     else
     {

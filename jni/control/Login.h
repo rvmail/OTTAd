@@ -132,6 +132,8 @@ private:
     string m_macFile;
 
     string m_serverTime;
+
+    bool m_alreadyTryAll;
 };
 
 #endif // !__LOGIN_H__
