@@ -111,6 +111,7 @@ private:
     void getLoginType(void);
     void setLoginType(void);
     void changeLoginType(void);
+    void setActivateErrCode(string err);
 
     static Login* m_pInstance;
 
@@ -133,7 +134,9 @@ private:
 
     string m_serverTime;
 
-    bool m_alreadyTryAll;
+    string m_loginType1ActiErrCode;
+    string m_loginType2ActiErrCode;
+    string m_loginType3ActiErrCode;
 };
 
 #endif // !__LOGIN_H__

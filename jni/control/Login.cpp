@@ -63,8 +63,6 @@
 #define ERR_ACTIVATE_PARSE_RESPONSE                "776"
 #define ERR_AUTH_PARSE_RESPONSE                    "777"
 
-#define ERR_ACTIVATE_ALREADY_TRY_ALL               "778"
-
 #define ERR_CONNECT_EPG                            "788"
 #define ERR_CHECKURL                               "799"
 
@@ -91,7 +89,9 @@ Login::Login(void): mLoginStatus(LoginNot),
                     m_isCheckTokenStart(false),
                     m_loginType(1),
                     m_loginState(""),
-                    m_alreadyTryAll(false)
+                    m_loginType1ActiErrCode("444"),
+                    m_loginType2ActiErrCode("444"),
+                    m_loginType3ActiErrCode("444")
 {
 }
 
@@ -269,11 +269,30 @@ void Login::changeLoginType(void)
     else if (m_loginType == 2)
     {
         m_loginType = 1;
-        m_alreadyTryAll = true;
     }
     else if (m_loginType == 3)
     {
         m_loginType = 1;
+    }
+}
+
+void Login::setActivateErrCode(string err)
+{
+    if (m_loginType == 1)
+    {
+        m_loginType1ActiErrCode = err;
+    }
+    else if (m_loginType == 2)
+    {
+        m_loginType2ActiErrCode = err;
+    }
+    else if (m_loginType == 3)
+    {
+        m_loginType3ActiErrCode = err;
+    }
+    else
+    {
+
     }
 }
 
@@ -346,6 +365,7 @@ string Login::doActivate()
     string mac = getMac(m_loginType, m_macFile);
     if (mac.empty())
     {
+        setActivateErrCode(ERR_READ_MAC);
         LOGERROR("doActivate MAC(%d) is empty\n", m_loginType);
         changeLoginType();
         return ERR_READ_MAC;
@@ -361,6 +381,7 @@ string Login::doActivate()
     ret = http.getData(host, path, query, response);
     if (ret != 0)
     {
+        setActivateErrCode(ERR_ACTIVATE_CONNECT_TMS);
         LOGERROR("doActivate http.getData() error!\n");
         return ERR_ACTIVATE_CONNECT_TMS;
     }
@@ -371,6 +392,7 @@ string Login::doActivate()
     ret = mInitParse.parse(response.c_str(), &mInitResponse);
     if (ret != 0)
     {
+        setActivateErrCode(ERR_ACTIVATE_PARSE_RESPONSE);
         LOGERROR("mInitParse error\n");
         return ERR_ACTIVATE_PARSE_RESPONSE;
     }
@@ -386,6 +408,7 @@ string Login::doActivate()
 
     if (mDeviceId.empty())
     {
+        setActivateErrCode(ERR_ACTIVATE_DEVICE_NULL);
         LOGERROR("mDeviceId is empty\n");
 
         if (mInitResponse.state.compare("93") == 0)
@@ -403,6 +426,7 @@ string Login::doActivate()
     ret = setConfigure(configDeviceId, mDeviceId);
     if (ret != 0)
     {
+        setActivateErrCode(ERR_WRITE_DEVICE_ID);
         LOGERROR("write deviceID failed\n");
         return ERR_WRITE_DEVICE_ID;
     }
@@ -548,10 +572,12 @@ string Login::startLogin()
         LOGERROR("login failed, up to the max retry times\n");
         mLoginStatus = LoginStatus::LoginFailed;
 
-        if (needDoActivate && m_alreadyTryAll)
+        if (needDoActivate)
         {
-            LOGERROR("doActivate already try all\n");
-            ret = ERR_ACTIVATE_ALREADY_TRY_ALL;
+            LOGERROR("doActivate already try all, but failed\n");
+            ret = "1" + m_loginType1ActiErrCode + "-" \
+                + "2" + m_loginType2ActiErrCode + "-" \
+                + "3" + m_loginType3ActiErrCode;
         }
     }
     else
