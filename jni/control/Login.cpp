@@ -53,6 +53,7 @@
 
 #define ERR_READ_MAC                               "755"
 #define ERR_WRITE_DEVICE_ID                        "756"
+#define ERR_READ_CONFIG                            "757"
 
 #define ERR_ACTIVATE_CONNECT_TMS                   "765"
 #define ERR_AUTH_CONNECT_TMS                       "766"
@@ -239,13 +240,14 @@ void Login::getLoginType(void)
     else if (loginType.compare("3") == 0)
     {
         m_loginType = 3;
-        m_macFile = getConfigure(configMacFile);
-        LOGINFO("loginType(3), macFile(%s)\n", m_macFile.c_str());
     }
     else    //read configuration file error, 1 default
     {
         m_loginType = 1;
     }
+
+    m_macFile = getConfigure(configMacFile);
+    LOGINFO("loginType(%d), macFile(%s)\n", m_loginType, m_macFile.c_str());
 }
 
 void Login::setLoginType(void)
@@ -258,6 +260,10 @@ void Login::setLoginType(void)
     {
         setConfigure(configLoginType, "2");
     }
+    else if (m_loginType == 3)
+    {
+        setConfigure(configLoginType, "3");
+    }
 }
 
 void Login::changeLoginType(void)
@@ -268,7 +274,7 @@ void Login::changeLoginType(void)
     }
     else if (m_loginType == 2)
     {
-        m_loginType = 1;
+        m_loginType = 3;
     }
     else if (m_loginType == 3)
     {
@@ -423,6 +429,23 @@ string Login::doActivate()
         return ERR_ACTIVATE_DEVICE_NULL;
     }
 
+    setLoginType();
+
+    //activate success, write LoginType into DeviceID.ini
+    char buf[32] = {0};
+    snprintf(buf, sizeof(buf), "%d", m_loginType);
+
+    ret = icntvConfigure::getInstance()->setKeyValue("DEVICE", \
+            "LoginType", buf, "/ini/DeviceID.ini");
+    if (ret != 0)
+    {
+        setActivateErrCode(ERR_WRITE_DEVICE_ID);
+        LOGERROR("write LoginType failed\n");
+        return ERR_WRITE_DEVICE_ID;
+    }
+    LOGINFO("write LoginType success\n");
+
+    //activate success, write DeviceID into DeviceID.ini
     ret = setConfigure(configDeviceId, mDeviceId);
     if (ret != 0)
     {
@@ -432,9 +455,7 @@ string Login::doActivate()
     }
     LOGINFO("write deviceID success\n");
 
-    setLoginType();
-
-    LOGINFO("doActivate success!!\n");
+    LOGINFO("doActivate success, LoginType(%d)\n", m_loginType);
 
     return ERR_NO;
 }
@@ -455,7 +476,7 @@ string Login::doAuthenticate()
     string mac = getMac(m_loginType, m_macFile);
     if (mac.empty())
     {
-        LOGERROR("doAuthenticate mac is empty\n");
+        LOGERROR("[doAuthenticate] MAC(%d) is empty\n", m_loginType);
         return ERR_READ_MAC;
     }
 
@@ -481,10 +502,17 @@ string Login::doAuthenticate()
         return ERR_AUTH_PARSE_RESPONSE;
     }
 
+    //state is Empty
     if (mLoginResponse.state.empty())
     {
         LOGERROR("doAuthenticate state is empty\n");
         return ERR_AUTH_STATE_NULL;
+    }
+
+    //state is 93, time is not good, so use the time from server
+    if (mLoginResponse.state.compare("93") == 0)
+    {
+        m_serverTime = mLoginResponse.time;
     }
 
     if (mLoginResponse.state.compare("111") == 0 \
@@ -494,11 +522,6 @@ string Login::doAuthenticate()
         mTemplateId = mLoginResponse.templateId;
         mServerList= mLoginResponse.serverList;
         mToken = mLoginResponse.token;
-    }
-
-    if (mLoginResponse.state.compare("93") == 0)
-    {
-        m_serverTime = mLoginResponse.time;
     }
 
     LOGINFO("doAuthenticate end, state=%s\n", mLoginResponse.state.c_str());
@@ -527,6 +550,19 @@ string Login::startLogin()
     {
         LOGWARN("Can not get device ID from configuration file, Need doActivate!\n");
         needDoActivate = true;
+    }
+    else
+    {
+        //get the LoginType form DeviceID.ini, LoginType is write when
+        //doActivate is successful
+        m_loginType = icntvConfigure::getInstance()->getIntValue("DEVICE", \
+                           "LoginType", "/ini/DeviceID.ini");
+        if (m_loginType == -1)
+        {
+            LOGERROR("read LoginType from DeviceID.ini failed\n");
+            return ERR_READ_CONFIG;
+        }
+        LOGINFO("m_loginType=%d\n", m_loginType);
     }
 
     for (retryCount = 0; retryCount < LOGIN_RETRY_COUNT; retryCount++)
