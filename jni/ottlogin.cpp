@@ -123,10 +123,11 @@ bool ICNTV_Login_sdkExit(void)
 int ICNTV_Login_getVersion(string &version)
 {
     version = SDK_VERSION;
-    version += "(";
-    version += GIT_VERSION;
-    version += ")";
-    LOGINFO("SDK_VERSION: %s\n", version.c_str());
+    //version += "(";
+    //version += GIT_VERSION;
+    //version += ")";
+    LOGINFO("SDK_VERSION: %s\n", SDK_VERSION);
+    LOGINFO("GIT_VERSION: %s\n", GIT_VERSION);
 
     return 0;
 }
