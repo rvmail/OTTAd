@@ -270,14 +270,17 @@ void Login::changeLoginType(void)
 {
     if (m_loginType == 1)
     {
+        LOGINFO("changeLoginType, 1-->2\n");
         m_loginType = 2;
     }
     else if (m_loginType == 2)
     {
+        LOGINFO("changeLoginType, 2-->3\n");
         m_loginType = 3;
     }
     else if (m_loginType == 3)
     {
+        LOGINFO("changeLoginType, 3-->1\n");
         m_loginType = 1;
     }
 }
