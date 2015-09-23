@@ -563,11 +563,16 @@ string Login::startLogin()
         if (m_loginType == -1)
         {
             LOGERROR("read LoginType from DeviceID.ini failed\n");
-            return ERR_READ_CONFIG;
+            needDoActivate = true;
+            getLoginType();
         }
-        LOGINFO("m_loginType=%d\n", m_loginType);
+        else
+        {
+            LOGINFO("m_loginType=%d, in DeviceID.ini\n", m_loginType);
+        }
     }
 
+    bool needReActi = true;
     for (retryCount = 0; retryCount < LOGIN_RETRY_COUNT; retryCount++)
     {
         if (mLoginStatus == LoginForceStop)
@@ -598,6 +603,18 @@ string Login::startLogin()
         {
             LOGINFO("doAuthenticate OK\n");
             break;
+        }
+        else if (ret.compare("000") == 0)
+        {
+            if (needReActi)
+            {
+                LOGINFO("auth state is 000, now redoActivate only once\n");
+                needDoActivate = true;
+                needReActi = false;
+                getLoginType();
+                retryCount = 0;
+                continue;
+            }
         }
         else
         {
