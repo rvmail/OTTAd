@@ -24,7 +24,6 @@
 
 #include "SystemClock.h"
 
-#include <mutex>
 #include <android/log.h>
 
 typedef enum
@@ -71,32 +70,26 @@ private:
     int m_logOutput;
 
     std::string m_logFileName;
-
-    std::mutex m_logOutputMutex;
 };
 
 #define LOGDEBUG(x, ...)\
 {\
-    SystemClock t;\
-    LogOperate::getInstance()->logOutput(LOG_LEVEL_DEBUG, "D<%s>[%s-%d]: " x, t.getTime().c_str(), __FILE__, __LINE__,  ##__VA_ARGS__);\
+    LogOperate::getInstance()->logOutput(LOG_LEVEL_DEBUG, "D<%s>[%s-%d]: " x, SystemClock::getTime().c_str(), __FILE__, __LINE__,  ##__VA_ARGS__);\
 }
 
 #define LOGINFO(x, ...)\
 {\
-    SystemClock t;\
-    LogOperate::getInstance()->logOutput(LOG_LEVEL_INFO, "I<%s>[%s-%d]: " x, t.getTime().c_str(), __FILE__, __LINE__,  ##__VA_ARGS__);\
+    LogOperate::getInstance()->logOutput(LOG_LEVEL_INFO, "I<%s>[%s-%d]: " x, SystemClock::getTime().c_str(), __FILE__, __LINE__,  ##__VA_ARGS__);\
 }
 
 #define LOGWARN(x, ...)\
 {\
-    SystemClock t;\
-    LogOperate::getInstance()->logOutput(LOG_LEVEL_WARN, "W<%s>[%s-%d]: " x, t.getTime().c_str(), __FILE__, __LINE__,  ##__VA_ARGS__);\
+    LogOperate::getInstance()->logOutput(LOG_LEVEL_WARN, "W<%s>[%s-%d]: " x, SystemClock::getTime().c_str(), __FILE__, __LINE__,  ##__VA_ARGS__);\
 }
 
 #define LOGERROR(x, ...)\
 {\
-    SystemClock t;\
-    LogOperate::getInstance()->logOutput(LOG_LEVEL_ERROR, "E<%s>[%s-%d]: " x, t.getTime().c_str(), __FILE__, __LINE__,  ##__VA_ARGS__);\
+    LogOperate::getInstance()->logOutput(LOG_LEVEL_ERROR, "E<%s>[%s-%d]: " x, SystemClock::getTime().c_str(), __FILE__, __LINE__,  ##__VA_ARGS__);\
 }
 
 #endif

@@ -712,8 +712,7 @@ int Login::startCheckToken()
         return 0;
     }
 
-    baseThread heart;
-    heart.startThread(Login::checkTokenThread, Login::getInstance());
+    baseThread::startThread(Login::checkTokenThread, Login::getInstance());
 
     m_isCheckTokenStart = true;
     return 0;

@@ -35,7 +35,7 @@ public:
      */
     static int64_t currentTimeMillis();
 
-    std::string getTime();
+    static std::string getTime();
 };
 
 #endif /* ICNTV_SYSTEMCLOCK_H_ */

@@ -21,6 +21,8 @@
 #ifndef __BASETHREAD_H__
 #define __BASETHREAD_H__
 
+#include <pthread.h>
+
 typedef void *(*thread_func_t)(void *);
 
 class baseThread
@@ -29,7 +31,11 @@ public:
     baseThread(void);
     ~baseThread(void);
 
-    int startThread(thread_func_t func, void *param);
+    static int startThread(thread_func_t func, void *param);
+    static int mutexInit(pthread_mutex_t *mutex, const void *attr);
+    static int mutexDestroy(pthread_mutex_t *mutex);
+    static int mutexLock(pthread_mutex_t *mutex);
+    static int mutexUnlock(pthread_mutex_t *mutex);
 private:
 
 };

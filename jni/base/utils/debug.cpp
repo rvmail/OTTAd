@@ -141,8 +141,6 @@ void LogOperate::logInit()
 
 void LogOperate::logOutput(eLogLevel logLevel, const char *format, ...)
 {
-    //m_logOutputMutex.lock();
-
     char buffer[MAX_LOG_MSG_SIZE];
     va_list ap;
 
@@ -207,8 +205,6 @@ void LogOperate::logOutput(eLogLevel logLevel, const char *format, ...)
             bfile.fileClose();
         }
     }
-
-    //m_logOutputMutex.unlock();
 }
 
 std::string LogOperate::getLogFileName()

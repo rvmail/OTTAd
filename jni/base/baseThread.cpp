@@ -46,4 +46,25 @@ int baseThread::startThread(thread_func_t func, void *param)
     return ret;
 }
 
+int baseThread::mutexInit(pthread_mutex_t *mutex, const void *attr)
+{
+    return pthread_mutex_init(mutex, (pthread_mutexattr_t*)attr);
+}
+
+int baseThread::mutexDestroy(pthread_mutex_t *mutex)
+{
+    return pthread_mutex_destroy(mutex);
+}
+
+int baseThread::mutexLock(pthread_mutex_t *mutex)
+{
+    return pthread_mutex_lock(mutex);
+}
+
+int baseThread::mutexUnlock(pthread_mutex_t *mutex)
+{
+    return pthread_mutex_unlock(mutex);
+}
+
+
 
