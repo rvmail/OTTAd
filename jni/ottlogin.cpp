@@ -75,6 +75,8 @@ string ICNTV_Login_deviceLogin(void)
     baseThread::mutexLock(&g_loginMutex);
 
     LOGINFO("ICNTV_Login_deviceLogin...\n");
+    LOGINFO("SDK_VERSION: %s\n", SDK_VERSION);
+    LOGINFO("GIT_VERSION: %s\n", GIT_VERSION);
 
     string ret("111");
     if (Login::getInstance()->getLoginStatus() != LoginSuccess)
