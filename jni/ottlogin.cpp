@@ -28,18 +28,17 @@
 #include "base/utils/debug.h"
 #include "logupload.h"
 #include "curl.h"
+#include "baseThread.h"
 
-#include <mutex>
-
-mutex init_mutex;
-mutex login_mutex;
-mutex exit_mutex;
+pthread_mutex_t g_initMutex  = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t g_exitMutex  = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t g_loginMutex = PTHREAD_MUTEX_INITIALIZER;
 
 static int isInit = 0;
 
 bool ICNTV_Login_sdkInit(string path)
 {
-    init_mutex.lock();
+    baseThread::mutexLock(&g_initMutex);
 
     if (isInit == 0)
     {
@@ -66,14 +65,14 @@ bool ICNTV_Login_sdkInit(string path)
         LOGWARN("SDK is already initialized\n");
     }
 
-    init_mutex.unlock();
+    baseThread::mutexUnlock(&g_initMutex);
 
     return true;
 }
 
 string ICNTV_Login_deviceLogin(void)
 {
-    login_mutex.lock();
+    baseThread::mutexLock(&g_loginMutex);
 
     LOGINFO("ICNTV_Login_deviceLogin...\n");
 
@@ -83,9 +82,9 @@ string ICNTV_Login_deviceLogin(void)
         ret = Login::getInstance()->startLogin();
     }
 
-    login_mutex.unlock();
-
     LOGINFO("ICNTV_Login_deviceLogin return %s\n", ret.c_str());
+
+    baseThread::mutexUnlock(&g_loginMutex);
 
     return ret;
 }
@@ -99,7 +98,7 @@ string ICNTV_Login_getLoginStatus(void)
 
 bool ICNTV_Login_sdkExit(void)
 {
-    exit_mutex.lock();
+    baseThread::mutexLock(&g_exitMutex);
 
     LOGINFO("ICNTV_Login_sdkExit...\n");
 
@@ -115,7 +114,7 @@ bool ICNTV_Login_sdkExit(void)
 
     LOGINFO("ICNTV_Login_sdkExit OK\n");
 
-    exit_mutex.unlock();
+    baseThread::mutexUnlock(&g_exitMutex);
 
     return true;
 }
