@@ -1,5 +1,5 @@
 APP_PLATFORM := android-10
-NDK_TOOLCHAIN_VERSION = 4.9
+NDK_TOOLCHAIN_VERSION = 4.6
 
 # Build for all arch ndk supported
 APP_ABI := armeabi-v7a  #x86 armeabi 
