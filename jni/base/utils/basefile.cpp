@@ -69,7 +69,7 @@ bool BaseFile::fileOpen(const char *filename, const char *mode)
     m_pFile = fopen(filename, mode);
     if (m_pFile == NULL)
     {
-        LOGERROR("fopen %s error\n", filename);
+        LOGE("fopen %s error\n", filename);
         return false;
     }
 
