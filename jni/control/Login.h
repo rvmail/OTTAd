@@ -61,6 +61,7 @@ private:
     enum ConfigType
     {
         configLoginAddr,
+        configLoginAddrBackup,
         configLogAddr,
         configUpdataAddr,
         configDeviceId,
@@ -81,25 +82,10 @@ private:
 
     string buildQuery(eLoginType type, string mac);
 
-    /**
-    * @name          doActivate
-    * @param         no
-    * @return        0: OK;
-    *                -1: http request error
-    *                -2: the response data is not good
-    * @description   Activate the terminal, get device ID
-    */
-    string doActivate();
+    bool whetherUseBackupServer(int errorCode);
+    bool whetherNeedActivate();
 
-    /**
-    * @name          doAuthenticate
-    * @param         no
-    * @return        0: OK;
-    *                -1: http request error
-    *                -2: state=000
-    *                -3: other result
-    * @description   Authenticate the terminal, get some information
-    */
+    string doActivate();
     string doAuthenticate();
 
     string getConfigure(ConfigType type);
@@ -108,6 +94,7 @@ private:
     int checkToken();
     static void *checkTokenThread(void *param);
 
+    int getLoginServerAddr(void);
     void getLoginType(void);
     void setLoginType(void);
     void changeLoginType(void);
@@ -137,6 +124,10 @@ private:
     string m_loginType1ActiErrCode;
     string m_loginType2ActiErrCode;
     string m_loginType3ActiErrCode;
+
+    string m_loginServer;         //the address of the TMS
+    string m_loginServerBackup;   //used when connect to m_loginServer failed
+    bool m_backupServerIsUsed;
 };
 
 #endif // !__LOGIN_H__

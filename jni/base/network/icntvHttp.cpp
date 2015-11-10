@@ -62,7 +62,8 @@ void icntvHttp::setTimeout(int timeout)
 
 int icntvHttp::get(const char *request, httpResponse *response)
 {
-    int nRet = 0;
+    CURLcode retCode = CURLE_UNSUPPORTED_PROTOCOL;  //CURLE_UNSUPPORTED_PROTOCOL default
+
     if (m_pCurl != NULL)
     {
         curl_easy_setopt(m_pCurl, CURLOPT_VERBOSE, 1L);
@@ -73,19 +74,18 @@ int icntvHttp::get(const char *request, httpResponse *response)
         curl_easy_setopt(m_pCurl, CURLOPT_WRITEDATA, response);
         curl_easy_setopt(m_pCurl, CURLOPT_NOSIGNAL, 1L);
 
-        CURLcode retCode = curl_easy_perform(m_pCurl);
+        retCode = curl_easy_perform(m_pCurl);
         if (retCode != CURLE_OK)
         {
             const char* pError = curl_easy_strerror(retCode);
             if (pError != NULL)
             {
-                nRet = -1;
                 LOGERROR("http get error, %s\n", pError);
             }
         }
     }
 
-    return nRet;
+    return retCode;
 }
 
 int icntvHttp::post(const char *head, const char *data, int datasize, httpResponse *response)
@@ -145,8 +145,8 @@ int icntvHttp::getData(string host, string path, string query, string &response)
     ret = get(url.toString().c_str(), &resp);
     if (ret != 0)
     {
-        LOGERROR("http.get error\n");
-        return -1;
+        LOGERROR("http.get return %d, url:%s\n", ret, url.toString().c_str());
+        return ret;
     }
 
     int len = resp.getLength();
@@ -154,7 +154,7 @@ int icntvHttp::getData(string host, string path, string query, string &response)
     if (buf == NULL)
     {
         LOGERROR("new char[] error!\n");
-        return -2;
+        return -1;
     }
     buf[len] = 0;
 

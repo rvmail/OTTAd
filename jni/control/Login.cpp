@@ -92,7 +92,8 @@ Login::Login(void): mLoginStatus(LoginNot),
                     m_loginState(""),
                     m_loginType1ActiErrCode("444"),
                     m_loginType2ActiErrCode("444"),
-                    m_loginType3ActiErrCode("444")
+                    m_loginType3ActiErrCode("444"),
+                    m_backupServerIsUsed(false)
 {
 }
 
@@ -175,11 +176,25 @@ string Login::getConfigure(ConfigType type)
             if (buffer[0] == '\0')
             {
                 LOGERROR("Get login server address failed, use default address\n");
-                return  "http://tms.is.ysten.com:8080/yst-tms";
+                return  "http://tms.ottcn.com:8080/yst-tms";
             }
             LOGINFO("Login serverAddr=%s\n", buffer);
             return string(buffer);
             break;
+
+        case configLoginAddrBackup:
+            icntvConfigure::getInstance()->getStrValue("DEVICE", "LoginServerBackup", \
+                                  buffer, sizeof(buffer) - 1, "/ini/DeviceInfo.ini");
+            if (buffer[0] == '\0')
+            {
+                LOGERROR("Get LoginServerBackup failed, use default address[125.39.27.155]\n");
+                return  "http://125.39.27.155:8080/yst-tms";
+            }
+
+            LOGINFO("Login serverAddrBackup=%s\n", buffer);
+            return string(buffer);
+            break;
+
         case configDeviceId:
             icntvConfigure::getInstance()->getDeviceID(buffer, NUM_128);
             return string(buffer);
@@ -223,6 +238,14 @@ int Login::setConfigure(ConfigType type, const string val)
     }
 
     return false;
+}
+
+int Login::getLoginServerAddr()
+{
+    m_loginServer = getConfigure(configLoginAddr);
+    m_loginServerBackup = getConfigure(configLoginAddrBackup);
+
+    return 0;
 }
 
 void Login::getLoginType(void)
@@ -360,6 +383,18 @@ string Login::buildQuery(eLoginType type, string mac)
     return query.str();
 }
 
+bool Login::whetherUseBackupServer(int errorCode)
+{
+    bool backupServerUsed = false;
+
+    if (errorCode > 0)
+    {
+        backupServerUsed = true;
+    }
+
+    return backupServerUsed;
+}
+
 string Login::doActivate()
 {
     LOGINFO("doActivate start...\n");
@@ -367,7 +402,7 @@ string Login::doActivate()
     int ret;
     icntvHttp http;
     string response;
-    string host(getConfigure(configLoginAddr));
+    string host = m_loginServer;
     //string path("/deviceInit.action");
     string path("/init.action");
 
@@ -387,9 +422,17 @@ string Login::doActivate()
 
     string query = buildQuery(LoginActivate, mac);
 
+    if (m_backupServerIsUsed)
+    {
+        host = m_loginServerBackup;
+    }
+
+    LOGINFO("doActivate host=%s\n", host.c_str());
     ret = http.getData(host, path, query, response);
     if (ret != 0)
     {
+        m_backupServerIsUsed = whetherUseBackupServer(ret);
+        LOGINFO("whetherUseBackupServer return %d\n", m_backupServerIsUsed);
         setActivateErrCode(ERR_ACTIVATE_CONNECT_TMS);
         LOGERROR("doActivate http.getData() error!\n");
         return ERR_ACTIVATE_CONNECT_TMS;
@@ -470,7 +513,7 @@ string Login::doAuthenticate()
     int ret;
     icntvHttp http;
     string response;
-    string host(getConfigure(configLoginAddr));
+    string host = m_loginServer;
     //string path("/device!deviceLogin.action");
     string path("/login.action");
     //stringstream query;
@@ -489,9 +532,17 @@ string Login::doAuthenticate()
 
     string query = buildQuery(LoginAuth, mac);
 
+    if (m_backupServerIsUsed)
+    {
+        host = m_loginServerBackup;
+    }
+
+    LOGINFO("doAuthenticate host=%s\n", host.c_str());
     ret = http.getData(host, path, query, response);
     if (ret != 0)
     {
+        m_backupServerIsUsed = whetherUseBackupServer(ret);
+        LOGINFO("whetherUseBackupServer return %d\n", m_backupServerIsUsed);
         LOGERROR("doAuthenticate http.getData() error!\n");
         return ERR_AUTH_CONNECT_TMS;
     }
@@ -531,22 +582,9 @@ string Login::doAuthenticate()
     return mLoginResponse.state;
 }
 
-string Login::startLogin()
+bool Login::whetherNeedActivate()
 {
-    if (!m_isInit)
-    {
-        LOGERROR("startLogin failed, Not Init\n");
-        m_loginState = ERR_LOGIN_NOT_INIT;
-        return ERR_LOGIN_NOT_INIT;
-    }
-
-    getLoginType();
-
-    string ret;
-    int retryCount = 0;
     bool needDoActivate = false;
-
-    LOGINFO("startLogin...\n");
 
     mDeviceId = getConfigure(configDeviceId);
     if (mDeviceId.empty())
@@ -562,17 +600,42 @@ string Login::startLogin()
                            "LoginType", "/ini/DeviceID.ini");
         if (m_loginType == -1)
         {
-            LOGERROR("read LoginType from DeviceID.ini failed\n");
+            LOGERROR("read LoginType from DeviceID.ini failed, Need doActivate!\n");
             needDoActivate = true;
             getLoginType();
         }
         else
         {
-            LOGINFO("m_loginType=%d, in DeviceID.ini\n", m_loginType);
+            LOGINFO("m_loginType=%d, in DeviceID.ini, Do not need to doActivate\n", m_loginType);
         }
     }
 
+    return needDoActivate;
+}
+
+string Login::startLogin()
+{
+    LOGINFO("startLogin...\n");
+
+    if (!m_isInit)
+    {
+        LOGERROR("startLogin failed, Not Init\n");
+        m_loginState = ERR_LOGIN_NOT_INIT;
+        return ERR_LOGIN_NOT_INIT;
+    }
+
+    //get LoginType and MacFile from DeviceInfo.ini
+    getLoginType();
+
+    //get the address of the login server
+    getLoginServerAddr();
+
+    string ret;
+    int retryCount = 0;
+    bool needDoActivate = whetherNeedActivate();
     bool needReActi = true;
+    m_backupServerIsUsed = false;
+
     for (retryCount = 0; retryCount < LOGIN_RETRY_COUNT; retryCount++)
     {
         if (mLoginStatus == LoginForceStop)
