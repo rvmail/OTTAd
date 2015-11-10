@@ -80,7 +80,7 @@ int icntvHttp::get(const char *request, httpResponse *response)
             const char* pError = curl_easy_strerror(retCode);
             if (pError != NULL)
             {
-                LOGERROR("http get error, %s\n", pError);
+                LOGERROR("http get error, %d: %s\n", retCode, pError);
             }
         }
     }
