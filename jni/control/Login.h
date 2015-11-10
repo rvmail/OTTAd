@@ -82,7 +82,7 @@ private:
 
     string buildQuery(eLoginType type, string mac);
 
-    bool whetherUseBackupServer(int errorCode);
+    void changeLoginServerAddr(int errorCode);
     bool whetherNeedActivate();
 
     string doActivate();

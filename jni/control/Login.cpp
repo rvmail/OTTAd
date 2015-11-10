@@ -383,16 +383,21 @@ string Login::buildQuery(eLoginType type, string mac)
     return query.str();
 }
 
-bool Login::whetherUseBackupServer(int errorCode)
+void Login::changeLoginServerAddr(int errorCode)
 {
-    bool backupServerUsed = false;
-
     if (errorCode > 0)
     {
-        backupServerUsed = true;
+        if (m_backupServerIsUsed)
+        {
+            m_backupServerIsUsed = false;
+            LOGINFO("changeLoginServerAddr, backup --> default\n");
+        }
+        else
+        {
+            m_backupServerIsUsed = true;
+            LOGINFO("changeLoginServerAddr, default --> backup\n");
+        }
     }
-
-    return backupServerUsed;
 }
 
 string Login::doActivate()
@@ -431,8 +436,7 @@ string Login::doActivate()
     ret = http.getData(host, path, query, response);
     if (ret != 0)
     {
-        m_backupServerIsUsed = whetherUseBackupServer(ret);
-        LOGINFO("whetherUseBackupServer return %d\n", m_backupServerIsUsed);
+        changeLoginServerAddr(ret);
         setActivateErrCode(ERR_ACTIVATE_CONNECT_TMS);
         LOGERROR("doActivate http.getData() error!\n");
         return ERR_ACTIVATE_CONNECT_TMS;
@@ -541,8 +545,7 @@ string Login::doAuthenticate()
     ret = http.getData(host, path, query, response);
     if (ret != 0)
     {
-        m_backupServerIsUsed = whetherUseBackupServer(ret);
-        LOGINFO("whetherUseBackupServer return %d\n", m_backupServerIsUsed);
+        changeLoginServerAddr(ret);
         LOGERROR("doAuthenticate http.getData() error!\n");
         return ERR_AUTH_CONNECT_TMS;
     }
