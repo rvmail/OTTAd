@@ -124,6 +124,7 @@ private:
     string m_loginType1ActiErrCode;
     string m_loginType2ActiErrCode;
     string m_loginType3ActiErrCode;
+    string m_activateErrCode;
 
     string m_loginServer;         //the address of the TMS
     string m_loginServerBackup;   //used when connect to m_loginServer failed

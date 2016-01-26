@@ -36,6 +36,7 @@
 #include "base/baseThread.h"
 #include "debug.h"
 #include "icntvEncrypt.h"
+#include "dataCache.h"
 
 #define LOGIN_RETRY_COUNT      6
 #define LOGIN_RETRY_WAIT_TIME  1    //second
@@ -326,6 +327,8 @@ void Login::setActivateErrCode(string err)
     {
 
     }
+
+    m_activateErrCode = err;
 }
 
 string Login::buildQuery(eLoginType type, string mac)
@@ -696,10 +699,17 @@ string Login::startLogin()
 
         if (needDoActivate)
         {
-            LOGERROR("doActivate already try all, but failed\n");
-            ret = "1" + m_loginType1ActiErrCode + "-" \
-                + "2" + m_loginType2ActiErrCode + "-" \
-                + "3" + m_loginType3ActiErrCode;
+            if (dataCache::getInstance()->getLicense() != "")
+            {
+                ret = m_activateErrCode;
+            }
+            else
+            {
+                LOGERROR("doActivate already try all, but failed\n");
+                ret = "1" + m_loginType1ActiErrCode + "-" \
+                    + "2" + m_loginType2ActiErrCode + "-" \
+                    + "3" + m_loginType3ActiErrCode;
+            }
         }
     }
     else

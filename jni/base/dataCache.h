@@ -17,13 +17,10 @@
  * specific language governing permissions and limitations
  * under the License.
 *
-* @author   chu.lei@icntv.tv
-* @date     2014-9-22
+* @author
+* @date
 */
-/************************************************************************/
-/* ����˵�����ṩ���ݻ��湦��
-*/
-/************************************************************************/
+
 #ifndef __DATACACHE_H__
 #define __DATACACHE_H__
 
@@ -33,22 +30,22 @@ using namespace std;
 class dataCache
 {
 public:
-	~dataCache(void);
-	static dataCache* getInstance();
-	void setPath(string path);
-	string getPath();
-	int getPath(char* path);
-	void setLicense(string license);
-	string getLicense();
+    ~dataCache(void);
+    static dataCache* getInstance();
+    void setPath(string path);
+    string getPath();
+    int getPath(char *path);
+    void setLicense(string license);
+    string getLicense();
 
 protected:
-	dataCache(void);
+    dataCache(void);
 
 private:
-	static dataCache* m_pInstance;
+    static dataCache* m_pInstance;
 
-	string mPath;
-	string mLicense;
+    string mPath;
+    string mLicense;
 };
 
 #endif // !__DATACACHE_H__

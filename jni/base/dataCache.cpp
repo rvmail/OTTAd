@@ -5,9 +5,8 @@ dataCache* dataCache::m_pInstance = NULL;
 
 dataCache::dataCache(void) : mLicense("")
 {
-	mPath.clear();
+    mPath.clear();
 }
-
 
 dataCache::~dataCache(void)
 {
@@ -15,44 +14,44 @@ dataCache::~dataCache(void)
 
 dataCache* dataCache::getInstance()
 {
-	if (m_pInstance  == NULL)
-	{
-		m_pInstance = new dataCache();
-	}
+    if (m_pInstance  == NULL)
+    {
+        m_pInstance = new dataCache();
+    }
 
-	return m_pInstance;
+    return m_pInstance;
 }
 
 void dataCache::setPath(string path)
 {
-	mPath = path;
+    mPath = path;
 }
 
 string dataCache::getPath()
 {
-	return mPath;
+    return mPath;
 }
 
-int dataCache::getPath(char* path)
+int dataCache::getPath(char *path)
 {
-	int nLength = mPath.length();
-	if (nLength <= 0)
-	{
-		return -1;
-	}
+    int nLength = mPath.length();
+    if (nLength <= 0)
+    {
+        return -1;
+    }
 
-	memcpy(path, mPath.c_str(), nLength);
+    memcpy(path, mPath.c_str(), nLength);
 
-	return 0;
+    return 0;
 }
 
 void dataCache::setLicense(string license)
 {
-	mLicense = license;
+    mLicense = license;
 }
 
 string dataCache::getLicense()
 {
-	return mLicense;
+    return mLicense;
 }
 

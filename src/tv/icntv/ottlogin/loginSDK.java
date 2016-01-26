@@ -25,8 +25,7 @@ import android.util.Log;
 public class loginSDK {
 	private static final String LOG_TAG = "ottlogin";
 	private static final int TYPE_KONKA = 1;
-	private static loginSDK sdk;
-	private boolean isInit = false;
+	private static loginSDK mInstance = null;
 	private String mLicense = null;
 
 	private loginSDK() {
@@ -42,10 +41,10 @@ public class loginSDK {
 	 * @return
 	 */
 	public synchronized static loginSDK getInstance() {
-		if (sdk == null) {
-			sdk = new loginSDK();
+		if (mInstance == null) {
+			mInstance = new loginSDK();
 		}
-		return sdk;
+		return mInstance;
 	}
 
 	/**
@@ -53,7 +52,7 @@ public class loginSDK {
 	 * 
 	 * @return
 	 */
-	private synchronized native boolean sdkInitialize(String path, String license);
+	private synchronized native boolean init(String path, String license);
 	public synchronized boolean sdkInit(String path, int type, Context context) {
 		if (type == TYPE_KONKA) {
 			if (mLicense == null || mLicense == "") {
@@ -68,7 +67,7 @@ public class loginSDK {
 			mLicense = null;
 		}
 		
-		return sdkInitialize(path, mLicense);
+		return init(path, mLicense);
 	}
 	
 	/**
