@@ -24,8 +24,10 @@ import android.util.Log;
 
 public class loginSDK {
 	private static final String LOG_TAG = "ottlogin";
-	private static loginSDK sdk;// 实例
+	private static final int TYPE_KONKA = 1;
+	private static loginSDK sdk;
 	private boolean isInit = false;
+	private String mLicense = null;
 
 	private loginSDK() {
 	}
@@ -51,16 +53,22 @@ public class loginSDK {
 	 * 
 	 * @return
 	 */
-	public synchronized native boolean sdkInitialize(String path, String license);
-	public synchronized boolean sdkInit(String path, Context context) {
-		AidlHelper aidlhelper = new AidlHelper(context);
-		String license = aidlhelper.getCNTV4License();
-		if (license == null || license == "") {
-			Log.e(LOG_TAG, "getCNTV4License failed");
-			return false;
+	private synchronized native boolean sdkInitialize(String path, String license);
+	public synchronized boolean sdkInit(String path, int type, Context context) {
+		if (type == TYPE_KONKA) {
+			if (mLicense == null || mLicense == "") {
+				AidlHelper aidlhelper = new AidlHelper(context);
+				mLicense = aidlhelper.getCNTV4License();
+				if (mLicense == null || mLicense == "") {
+					Log.e(LOG_TAG, "getCNTV4License failed");
+					return false;
+				}
+			}
+		} else {
+			mLicense = null;
 		}
 		
-		return sdkInitialize(path, license);
+		return sdkInitialize(path, mLicense);
 	}
 	
 	/**

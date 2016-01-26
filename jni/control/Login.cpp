@@ -416,7 +416,7 @@ string Login::doActivate()
     {
         setActivateErrCode(ERR_READ_MAC);
         LOGERROR("doActivate MAC(%d) is empty\n", m_loginType);
-        //changeLoginType();
+        changeLoginType();
         return ERR_READ_MAC;
     }
 
@@ -473,7 +473,7 @@ string Login::doActivate()
         }
         else
         {
-            //changeLoginType();
+            changeLoginType();
         }
 
         return ERR_ACTIVATE_DEVICE_NULL;

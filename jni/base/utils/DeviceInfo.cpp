@@ -88,6 +88,13 @@ static std::string getMacByFile(std::string macFile)
 
 std::string getMac(int type, std::string macFile)
 {
+    std::string license = dataCache::getInstance()->getLicense();
+    if (license != "")
+    {
+        LOGINFO("konka license is used: %s\n", license.c_str());
+        return license;
+    }
+
     std::string file("/sys/class/net/wlan0/address");
 
     if (type == 1)
@@ -101,7 +108,6 @@ std::string getMac(int type, std::string macFile)
     else if (type == 3)
     {
         file = macFile;
-        return dataCache::getInstance()->getLicense();
     }
 
     if (file.empty())

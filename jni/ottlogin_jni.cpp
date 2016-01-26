@@ -135,7 +135,7 @@ JNIEXPORT jboolean JNICALL Java_tv_icntv_ottlogin_loginSDK_sdkExit
 }
 
 JNIEXPORT jstring JNICALL Java_tv_icntv_ottlogin_loginSDK_deviceLogin
-(JNIEnv *env, jobject thiz, jstring path)
+(JNIEnv *env, jobject thiz)
 {
     string ret = ICNTV_Login_deviceLogin();
 

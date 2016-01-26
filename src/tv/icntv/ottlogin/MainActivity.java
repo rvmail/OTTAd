@@ -9,6 +9,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +27,7 @@ public class MainActivity extends Activity
 	private int errorCount = 0;
 	private int okCount = 0;
 	private Timer timer = null;
+	Context mContext;
 	
 	Handler handler = new Handler()
 	{
@@ -66,6 +69,7 @@ public class MainActivity extends Activity
         }
         
         //loginSDK.getInstance().sdkInit(getFilesDir().getPath());
+        mContext= getApplicationContext();
         
         //getLoginStatus
         Button status = (Button)findViewById(R.id.buttonstatus);
@@ -238,7 +242,7 @@ public class MainActivity extends Activity
 					resp.what = 6;
 					
 					loginSDK.getInstance().sdkExit();
-					loginSDK.getInstance().sdkInit(getFilesDir().getPath());
+					loginSDK.getInstance().sdkInit(getFilesDir().getPath(), 0, null);
 					
 					String ret = loginSDK.getInstance().deviceLogin();
 					if (ret.compareTo("111") == 0 || ret.compareTo("110") == 0){
@@ -267,7 +271,7 @@ public class MainActivity extends Activity
         	EditText txt = (EditText)findViewById(R.id.txtinit);
         	txt.setText("sdkInit...");
         	
-            boolean ret = loginSDK.getInstance().sdkInit(getFilesDir().getPath());
+            boolean ret = loginSDK.getInstance().sdkInit(getFilesDir().getPath(), 0, mContext);
             
             txt.setText("" + ret);
         }
