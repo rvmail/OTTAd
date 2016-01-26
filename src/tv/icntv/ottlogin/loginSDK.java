@@ -55,11 +55,16 @@ public class loginSDK {
 	private synchronized native boolean init(String path, String license);
 	public synchronized boolean sdkInit(String path, int type, Context context) {
 		if (type == TYPE_KONKA) {
+			if (context == null) {
+				Log.e(LOG_TAG, "loginSDK sdkInit context is null");
+				return false;
+			}
+			
 			if (mLicense == null || mLicense == "") {
 				AidlHelper aidlhelper = new AidlHelper(context);
 				mLicense = aidlhelper.getCNTV4License();
 				if (mLicense == null || mLicense == "") {
-					Log.e(LOG_TAG, "getCNTV4License failed");
+					Log.e(LOG_TAG, "loginSDK sdkInit getCNTV4License failed");
 					return false;
 				}
 			}
