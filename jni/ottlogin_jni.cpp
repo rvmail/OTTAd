@@ -119,12 +119,13 @@ JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_setNetworkType
     return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_tv_icntv_ottlogin_loginSDK_sdkInit
-(JNIEnv *env, jobject thiz, jstring path)
+JNIEXPORT jboolean JNICALL Java_tv_icntv_ottlogin_loginSDK_sdkInitialize
+(JNIEnv *env, jobject thiz, jstring path, jstring license)
 {
     string currPath = jstringToString(env, path);
+    string lice = jstringToString(env, license);
 
-    return ICNTV_Login_sdkInit(currPath);
+    return ICNTV_Login_sdkInit(currPath, lice);
 }
 
 JNIEXPORT jboolean JNICALL Java_tv_icntv_ottlogin_loginSDK_sdkExit

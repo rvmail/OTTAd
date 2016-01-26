@@ -37,7 +37,7 @@ using namespace std;
 * @return
 * @description  SDK initialize
 */
-bool ICNTV_Login_sdkInit(string path);
+bool ICNTV_Login_sdkInit(string path, string license);
 
 /**
 * @name         ICNTV_Login_deviceLogin

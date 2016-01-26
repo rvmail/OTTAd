@@ -38,8 +38,8 @@ public:
 	void setPath(string path);
 	string getPath();
 	int getPath(char* path);
-	void setVersion(string version);
-	string getVersion();
+	void setLicense(string license);
+	string getLicense();
 
 protected:
 	dataCache(void);
@@ -48,7 +48,7 @@ private:
 	static dataCache* m_pInstance;
 
 	string mPath;
-	string mVersion;
+	string mLicense;
 };
 
 #endif // !__DATACACHE_H__

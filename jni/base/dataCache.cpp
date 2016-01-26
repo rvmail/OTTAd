@@ -3,7 +3,7 @@
 
 dataCache* dataCache::m_pInstance = NULL;
 
-dataCache::dataCache(void)
+dataCache::dataCache(void) : mLicense("")
 {
 	mPath.clear();
 }
@@ -46,13 +46,13 @@ int dataCache::getPath(char* path)
 	return 0;
 }
 
-void dataCache::setVersion(string version)
+void dataCache::setLicense(string license)
 {
-	mVersion = version;
+	mLicense = license;
 }
 
-string dataCache::getVersion()
+string dataCache::getLicense()
 {
-	return mVersion;
+	return mLicense;
 }
 

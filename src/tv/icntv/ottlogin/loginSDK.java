@@ -17,9 +17,13 @@ package tv.icntv.ottlogin;
 
 import java.lang.StringBuffer;
 
+import com.konka.passport.aidl.AidlHelper;
+
+import android.content.Context;
 import android.util.Log;
 
 public class loginSDK {
+	private static final String LOG_TAG = "ottlogin";
 	private static loginSDK sdk;// 实例
 	private boolean isInit = false;
 
@@ -47,7 +51,17 @@ public class loginSDK {
 	 * 
 	 * @return
 	 */
-	public synchronized native boolean sdkInit(String path);
+	public synchronized native boolean sdkInitialize(String path, String license);
+	public synchronized boolean sdkInit(String path, Context context) {
+		AidlHelper aidlhelper = new AidlHelper(context);
+		String license = aidlhelper.getCNTV4License();
+		if (license == null || license == "") {
+			Log.e(LOG_TAG, "getCNTV4License failed");
+			return false;
+		}
+		
+		return sdkInitialize(path, license);
+	}
 	
 	/**
 	 * SDK退出

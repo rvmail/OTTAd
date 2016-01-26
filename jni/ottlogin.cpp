@@ -36,7 +36,7 @@ pthread_mutex_t g_loginMutex = PTHREAD_MUTEX_INITIALIZER;
 
 static int isInit = 0;
 
-bool ICNTV_Login_sdkInit(string path)
+bool ICNTV_Login_sdkInit(string path, string license)
 {
     baseThread::mutexLock(&g_initMutex);
 
@@ -56,6 +56,9 @@ bool ICNTV_Login_sdkInit(string path)
         Login::getInstance()->init();
 
         LogUpload::getInstance()->init();
+
+        dataCache::getInstance()->setLicense(license);
+        LOGINFO("license=%s\n", license.c_str());
 
         isInit = 1;
         LOGINFO("ICNTV_Login_sdkInit success\n");

@@ -1,10 +1,10 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#define GIT_VERSION "20151110-30c2076"
+#define GIT_VERSION "20151110-0c55319"
 
 #if (SDK_TYPE == 1)  //ANDROID_JAR
-    #define SDK_VERSION "1.1.3"
+    #define SDK_VERSION "1.1.3.konka"
 #elif (SDK_TYPE == 2)  //ANDROID_PURESDK
     #define SDK_VERSION "1.0.0"
 #else  //others

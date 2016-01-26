@@ -34,6 +34,7 @@
 
 #include "DeviceInfo.h"
 #include "debug.h"
+#include "dataCache.h"
 
 #define MAX_INTERFACES  8
 
@@ -100,6 +101,7 @@ std::string getMac(int type, std::string macFile)
     else if (type == 3)
     {
         file = macFile;
+        return dataCache::getInstance()->getLicense();
     }
 
     if (file.empty())
