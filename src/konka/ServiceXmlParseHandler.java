@@ -1,4 +1,4 @@
-package com.konka.passport.aidl;
+package konka;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

@@ -17,7 +17,7 @@ package tv.icntv.ottlogin;
 
 import java.lang.StringBuffer;
 
-import com.konka.passport.aidl.AidlHelper;
+import konka.AidlHelper;
 
 import android.content.Context;
 import android.util.Log;

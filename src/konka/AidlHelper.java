@@ -1,4 +1,4 @@
-package com.konka.passport.aidl;
+package konka;
 
 import java.io.StringReader;
 
@@ -14,8 +14,8 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-import com.konka.passport.service.UserInfo;
-import com.konka.passport.service.xmlData;
+import konka.UserInfo;
+import konka.xmlData;
 
 public class AidlHelper {
 	private Context mcontext = null;
@@ -46,7 +46,7 @@ public class AidlHelper {
 			return false;
 		}
 		Intent intent = new Intent();
-		intent.setAction("com.konka.passport.service.USERINFO_SERVICE");
+		intent.setAction("konka.USERINFO_SERVICE");
 		boolean bRet = mcontext.bindService(intent, conn,
 				Service.BIND_AUTO_CREATE);
 		return bRet;

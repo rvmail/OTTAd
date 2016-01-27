@@ -1,4 +1,4 @@
-package com.konka.passport.service;
+package konka;
 
 import android.graphics.Bitmap;
 import android.os.Parcel;
