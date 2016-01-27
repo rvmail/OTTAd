@@ -24,6 +24,7 @@ import android.util.Log;
 
 public class loginSDK {
 	private static final String LOG_TAG = "ottlogin";
+	private static final String VERSION = "V1.2.1";
 	private static final int TYPE_KONKA = 1;
 	private static loginSDK mInstance = null;
 	private String mLicense = null;
@@ -54,6 +55,8 @@ public class loginSDK {
 	 */
 	private synchronized native boolean init(String path, String license);
 	public synchronized boolean sdkInit(String path, int type, Context context) {
+		Log.i(LOG_TAG, "ottlogin jar VERSION: " + VERSION);
+		
 		if (type == TYPE_KONKA) {
 			if (context == null) {
 				Log.e(LOG_TAG, "loginSDK sdkInit context is null");
