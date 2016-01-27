@@ -13,7 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
-
+import android.util.Log;
 import konka.UserInfo;
 import konka.xmlData;
 
@@ -21,6 +21,7 @@ public class AidlHelper {
 	private Context mcontext = null;
 	private int iErrorCode = -1;
 
+	private static final String LOG_TAG = "ottlogin";
 	private static final int WAIT_USERINFO_SERVICE_TIMER = 5000;
 	private Object lock = new Object();
 	private UserInfo passportaidl = null;
@@ -46,9 +47,11 @@ public class AidlHelper {
 			return false;
 		}
 		Intent intent = new Intent();
-		intent.setAction("konka.USERINFO_SERVICE");
+		intent.setAction("com.konka.passport.service.USERINFO_SERVICE");
 		boolean bRet = mcontext.bindService(intent, conn,
 				Service.BIND_AUTO_CREATE);
+		
+		Log.i(LOG_TAG, "##BindPassportAidl: bindService return " + bRet);
 		return bRet;
 	}
 
@@ -71,7 +74,8 @@ public class AidlHelper {
 
 	public AidlHelper(Context context) {
 		mcontext = context;
-		BindPassportAidl();
+		boolean ret = BindPassportAidl();
+		Log.i(LOG_TAG, "##AidlHelper: BindPassportAidl return " + ret);
 	}
 
 	public void destroy() {
@@ -96,10 +100,12 @@ public class AidlHelper {
 		String strLicense = null;
 
 		try {
+			Log.i(LOG_TAG, "##getCNTV4License: start...");
 			xmlData xmlInfo = new xmlData();
 			iErrorCode = GetPassportAidl().SendNetRequest("getcntvlicense?type=4",
 					SYS_TYPE_BUSSINESS, BUSSINESS_CODE, xmlInfo);
 			if (iErrorCode != 0 || xmlInfo.GetXmlData() == null) {
+				Log.e(LOG_TAG, "##getCNTV4License: iErrorCode or xmlInfo.GetXmlData error");
 				return null;
 			}
 			ServiceXmlParseHandler xmlhander = new ServiceXmlParseHandler(
@@ -110,6 +116,8 @@ public class AidlHelper {
 			reader.parse(new InputSource(new StringReader(xmlInfo.GetXmlData())));
 			strLicense = xmlhander.GetCNTV4License();
 		} catch (Exception e) {
+			Log.e(LOG_TAG, "##getCNTV4License: Exception");
+			e.printStackTrace();
 			return null;
 		}
 

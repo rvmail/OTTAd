@@ -66,6 +66,7 @@ public class loginSDK {
 			if (mLicense == null || mLicense == "") {
 				AidlHelper aidlhelper = new AidlHelper(context);
 				mLicense = aidlhelper.getCNTV4License();
+				aidlhelper.destroy();
 				if (mLicense == null || mLicense == "") {
 					Log.e(LOG_TAG, "loginSDK sdkInit getCNTV4License failed");
 					return false;
