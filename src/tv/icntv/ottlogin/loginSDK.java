@@ -24,7 +24,7 @@ import android.util.Log;
 
 public class loginSDK {
 	private static final String LOG_TAG = "ottlogin";
-	private static final String VERSION = "V1.2.4";
+	private static final String VERSION = "V1.2.5";
 	private static final int TYPE_KONKA = 1;
 	private static loginSDK mInstance = null;
 	private String mLicense = null;

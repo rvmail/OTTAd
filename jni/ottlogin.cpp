@@ -78,7 +78,7 @@ string ICNTV_Login_deviceLogin(void)
     baseThread::mutexLock(&g_loginMutex);
 
     LOGINFO("ICNTV_Login_deviceLogin...\n");
-    LOGINFO("SDK_VERSION: %s\n", SDK_VERSION);
+    LOGINFO("SO_VERSION: %s\n", SDK_VERSION);
     LOGINFO("GIT_VERSION: %s\n", GIT_VERSION);
 
     string ret("111");
@@ -130,7 +130,7 @@ int ICNTV_Login_getVersion(string &version)
     //version += "(";
     //version += GIT_VERSION;
     //version += ")";
-    LOGINFO("SDK_VERSION: %s\n", SDK_VERSION);
+    LOGINFO("SO_VERSION: %s\n", SDK_VERSION);
     LOGINFO("GIT_VERSION: %s\n", GIT_VERSION);
 
     return 0;
