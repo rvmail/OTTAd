@@ -8,7 +8,7 @@ public interface UserInfo extends android.os.IInterface {
 	/** Local-side IPC implementation stub class. */
 	public static abstract class Stub extends android.os.Binder implements
 			konka.UserInfo {
-		private static final java.lang.String DESCRIPTOR = "com.konka.passport.service.UserInfo";
+		private static final java.lang.String DESCRIPTOR = "com.konka.localserver.service.aidl.LocalServer";
 
 		/** Construct the stub at attach it to the interface. */
 		public Stub() {
