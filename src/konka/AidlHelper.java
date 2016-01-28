@@ -47,7 +47,7 @@ public class AidlHelper {
 			return false;
 		}
 		Intent intent = new Intent();
-		intent.setAction("com.konka.passport.service.USERINFO_SERVICE");
+		intent.setAction("com.konka.localserver.service.LOCAL_SERVER_SERVICE");
 		boolean bRet = mcontext.bindService(intent, conn,
 				Service.BIND_AUTO_CREATE);
 		
