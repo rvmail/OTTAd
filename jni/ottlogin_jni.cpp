@@ -290,6 +290,25 @@ JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_getToken
     return 0;
 }
 
+JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_getStbext
+(JNIEnv *env, jobject thiz, jobject data)
+{
+    int ret = -1;
+    string str;
+
+    ret = ICNTV_Login_getSTBext(str);
+    if (ret != 0)
+    {
+        LOGERROR("JNI-getSTBext() error, return %d\n", ret);
+        return -1;
+    }
+
+    setLength(env, data, str.length());
+    setResult(env, data, str.c_str());
+
+    return 0;
+}
+
 JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_logUpload
 (JNIEnv *env, jobject thiz)
 {

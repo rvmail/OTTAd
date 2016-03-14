@@ -115,6 +115,8 @@ int ICNTV_Login_getServerAddress(string type, string &serverAddr);
 
 int ICNTV_Login_getToken(string &token);
 
+int ICNTV_Login_getSTBext(string &data);
+
 int ICNTV_Login_logUpload(void);
 
 #endif

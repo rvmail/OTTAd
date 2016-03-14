@@ -219,6 +219,21 @@ int ICNTV_Login_getToken(string &token)
     return 0;
 }
 
+int ICNTV_Login_getSTBext(string &data)
+{
+    if (Login::getInstance()->getLoginStatus() != LoginSuccess)
+    {
+        LOGERROR("login status is not success\n");
+        data = "";
+        return -1;
+    }
+
+    data = "%7B%22abilities%22%3A%5B%22cp-TENCENT%22%5D%7D";
+    LOGINFO("STBext=%s\n", data.c_str());
+
+    return 0;
+}
+
 int ICNTV_Login_setNetworkType(int type)
 {
     setNetType(type);

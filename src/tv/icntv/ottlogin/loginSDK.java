@@ -255,6 +255,31 @@ public class loginSDK {
 	}
 	
 	/**
+	 * 获取STBext
+	 * 
+	 * @param
+	 * @return
+	 */
+	private native int getStbext(TransferData data);
+
+	public int getSTBext(StringBuffer data) {
+		if (data == null)
+			data = new StringBuffer();
+		data.delete(0, data.length());
+
+		TransferData buf = new TransferData();
+		int val = getStbext(buf);
+
+		if (buf != null && buf.getResult() != null) {
+			data.append(buf.getResult());
+		} else {
+			data.append("");
+		}
+
+		return val;
+	}
+	
+	/**
 	 * 获取版本信息
 	 * 
 	 * @param version
