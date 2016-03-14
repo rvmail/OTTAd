@@ -187,6 +187,22 @@
 
 <TableRow>
 <Button
+    android:id="@+id/buttonSTBext"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="STBext"
+    />
+<EditText
+    android:id="@+id/txtSTBext"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:editable="false"
+    android:cursorVisible="false"
+    />
+</TableRow>
+
+<TableRow>
+<Button
     android:id="@+id/buttonauto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
