@@ -234,13 +234,6 @@ int ICNTV_Login_getSTBext(string &data)
     return 0;
 }
 
-int ICNTV_Login_setNetworkType(int type)
-{
-    setNetType(type);
-
-    return 0;
-}
-
 int ICNTV_Login_logUpload(void)
 {
     LOGINFO("ICNTV_Login_logUpload..\n");

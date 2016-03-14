@@ -34,7 +34,6 @@ std::string getMac(int type, std::string macFile);
 std::string getMacBySocket();
 unsigned long long getMacInNum();
 unsigned long long convertMac2Num(std::string mac);
-int setNetType(int type);
 
 #ifdef __cplusplus
 };

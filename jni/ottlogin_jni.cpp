@@ -28,8 +28,6 @@
 
 #define TRANSFER_DATA "tv/icntv/ottlogin/TransferData"
 
-extern int ICNTV_Login_setNetworkType(int type);
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -110,13 +108,6 @@ static string jstringToString(JNIEnv *env, jstring jstr)
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 {
     return JNI_VERSION_1_6;
-}
-
-JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_setNetworkType
-  (JNIEnv *env, jobject thiz, jint type)
-{
-    ICNTV_Login_setNetworkType(type);
-    return 0;
 }
 
 JNIEXPORT jboolean JNICALL Java_tv_icntv_ottlogin_loginSDK_init

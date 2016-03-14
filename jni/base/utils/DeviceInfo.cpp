@@ -38,15 +38,6 @@
 
 #define MAX_INTERFACES  8
 
-static int g_netType = 1;  //0-Ethernet, 1-Wireless, default
-
-int setNetType(int type)
-{
-    g_netType = type;
-
-    return 0;
-}
-
 static std::string getMacByFile(std::string macFile)
 {
     FILE *fp = NULL;
