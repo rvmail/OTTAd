@@ -191,7 +191,7 @@ int ICNTV_Login_getPlatformID(string &platformID)
     return 0;
 }
 
-int ICNTV_Login_getServerAddress(string type, string &serverAddr)
+int ICNTV_Login_getServerAddress(string name, string &serverAddr)
 {
     if (Login::getInstance()->getLoginStatus() != LoginSuccess)
     {
@@ -199,8 +199,8 @@ int ICNTV_Login_getServerAddress(string type, string &serverAddr)
         return -1;
     }
 
-    serverAddr = Login::getInstance()->getServerAddress(type);
-    LOGINFO("%s serverAddr=%s\n", type.c_str(), serverAddr.c_str());
+    serverAddr = Login::getInstance()->getServerAddress(name);
+    LOGINFO("%s serverAddr=%s\n", name.c_str(), serverAddr.c_str());
 
     return 0;
 }

@@ -167,18 +167,9 @@ string Login::getAddressFromList(string name, MapServerList &list)
     return "";
 }
 
-string Login::getServerAddress(string type)
+string Login::getServerAddress(string name)
 {
-    for (MapServerList::iterator it = mServerList.begin(); \
-            it != mServerList.end(); ++it)
-    {
-        if (compareCaseInsensitive(it->first, type))
-        {
-            return it->second.url;
-        }
-    }
-
-    return "";
+    return getAddressFromList(name, mServerList);
 }
 
 string Login::getConfigure(ConfigType type)

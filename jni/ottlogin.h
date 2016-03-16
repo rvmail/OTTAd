@@ -105,13 +105,13 @@ int ICNTV_Login_getPlatformID(string &platformID);
 
 /**
 * @name         ICNTV_Login_getServerAddress
-* @param        type[in]: type of the server
-*               "EPG"
+* @param        name[in]: type of the server
+*               "YST-EPG"
 * @param        platformID[out]
 * @return       0 success, -1 failed
 * @description  get the platform ID
 */
-int ICNTV_Login_getServerAddress(string type, string &serverAddr);
+int ICNTV_Login_getServerAddress(string name, string &serverAddr);
 
 int ICNTV_Login_getToken(string &token);
 

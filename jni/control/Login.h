@@ -55,7 +55,7 @@ public:
     string getUserID();
     string getPlatformID();
     string getTemplateID();
-    string getServerAddress(string type);
+    string getServerAddress(string name);
 
 private:
     enum ConfigType
