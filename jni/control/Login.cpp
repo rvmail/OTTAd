@@ -29,9 +29,9 @@
 #include "base/utils/misc.h"
 #include "base/utils/DeviceInfo.h"
 
-#include "base/parse/initParse.h"
-#include "base/parse/loginParse.h"
-#include "base/parse/tokenParse.h"
+//#include "base/parse/initParse.h"
+//#include "base/parse/loginParse.h"
+//#include "base/parse/tokenParse.h"
 #include "base/configure/icntvConfigure.h"
 #include "base/baseThread.h"
 #include "debug.h"
@@ -94,7 +94,8 @@ Login::Login(void): mLoginStatus(LoginNot),
                     m_loginType1ActiErrCode("444"),
                     m_loginType2ActiErrCode("444"),
                     m_loginType3ActiErrCode("444"),
-                    m_backupServerIsUsed(false)
+                    m_backupServerIsUsed(false),
+                    m_tmsAddress("")
 {
 }
 
@@ -150,6 +151,20 @@ string Login::getPlatformID()
 string Login::getTemplateID()
 {
     return mTemplateId;
+}
+
+string Login::getAddressFromList(string name, MapServerList &list)
+{
+    for (MapServerList::iterator it = list.begin(); \
+                it != list.end(); ++it)
+    {
+        if (compareCaseInsensitive(it->first, name))
+        {
+            return it->second.url;
+        }
+    }
+
+    return "";
 }
 
 string Login::getServerAddress(string type)
@@ -403,6 +418,64 @@ void Login::changeLoginServerAddr(int errorCode)
     }
 }
 
+bool Login::doBoot()
+{
+    LOGINFO("doBoot start...\n");
+
+    int ret;
+    icntvHttp http;
+    string response;
+    string host = m_loginServer;
+    string path("/boot");
+
+    string deviceid = getConfigure(configDeviceId);
+
+    string query("deviceId=");
+    query += deviceid;
+
+    if (m_backupServerIsUsed)
+    {
+        host = m_loginServerBackup;
+    }
+
+    LOGINFO("doBoot host=%s\n", host.c_str());
+    ret = http.getData(host, path, query, response);
+    if (ret != 0)
+    {
+        changeLoginServerAddr(ret);
+        LOGERROR("doBoot http.getData() error!\n");
+        return false;
+    }
+
+    BootResponse bootResp;
+    ret = XMLParse::bootParse(response.c_str(), bootResp);
+    if (ret != 0)
+    {
+        LOGERROR("XMLParse::bootParse error\n");
+        return false;
+    }
+
+    if (bootResp.addressList.size() < 1)
+    {
+        LOGERROR("bootResp.addressList.size()=%d\n", bootResp.addressList.size());
+        return false;
+    }
+
+    string tmsAddress = getAddressFromList("TMS", bootResp.addressList);
+    if (tmsAddress == "")
+    {
+        LOGERROR("tmsAddress is empty\n");
+        return false;
+    }
+
+    m_tmsAddress = tmsAddress;
+    LOGINFO("m_tmsAddress: %s\n", m_tmsAddress.c_str());
+
+    LOGINFO("doBoot success!!!\n");
+
+    return true;
+}
+
 string Login::doActivate()
 {
     LOGINFO("doActivate start...\n");
@@ -410,8 +483,7 @@ string Login::doActivate()
     int ret;
     icntvHttp http;
     string response;
-    string host = m_loginServer;
-    //string path("/deviceInit.action");
+    string host = m_tmsAddress;
     string path("/init.action");
 
     string mac = getMac(m_loginType, m_macFile);
@@ -425,13 +497,16 @@ string Login::doActivate()
 
     LOGINFO("[doActivate] MAC(%d)=%s\n", m_loginType, mac.c_str());
 
-    //stringstream query;
-    //query << "mac=" << mac;
-
     string query = buildQuery(LoginActivate, mac);
 
     if (m_backupServerIsUsed)
     {
+        host = m_loginServerBackup;
+    }
+
+    if (host == "")
+    {
+        LOGINFO("host(m_tmsAddress) is empty, m_loginServerBackup is used\n");
         host = m_loginServerBackup;
     }
 
@@ -445,14 +520,13 @@ string Login::doActivate()
         return ERR_ACTIVATE_CONNECT_TMS;
     }
 
-    initParse mInitParse;
     InitResponse mInitResponse;
 
-    ret = mInitParse.parse(response.c_str(), &mInitResponse);
+    ret = XMLParse::initParse(response.c_str(), &mInitResponse);
     if (ret != 0)
     {
         setActivateErrCode(ERR_ACTIVATE_PARSE_RESPONSE);
-        LOGERROR("mInitParse error\n");
+        LOGERROR("XMLParse::initParse error\n");
         return ERR_ACTIVATE_PARSE_RESPONSE;
     }
 
@@ -520,11 +594,8 @@ string Login::doAuthenticate()
     int ret;
     icntvHttp http;
     string response;
-    string host = m_loginServer;
-    //string path("/device!deviceLogin.action");
+    string host = m_tmsAddress;
     string path("/login.action");
-    //stringstream query;
-    //query << "deviceId=" << mDeviceId;
 
     string mac = getMac(m_loginType, m_macFile);
     if (mac.empty())
@@ -535,12 +606,16 @@ string Login::doAuthenticate()
 
     LOGINFO("[doAuthenticate] MAC(%d)=%s\n", m_loginType, mac.c_str());
 
-    //query << "&mac=" << mac;
-
     string query = buildQuery(LoginAuth, mac);
 
     if (m_backupServerIsUsed)
     {
+        host = m_loginServerBackup;
+    }
+
+    if (host == "")
+    {
+        LOGINFO("host(m_tmsAddress) is empty, m_loginServerBackup is used\n");
         host = m_loginServerBackup;
     }
 
@@ -553,12 +628,11 @@ string Login::doAuthenticate()
         return ERR_AUTH_CONNECT_TMS;
     }
 
-    loginParse mLoginParse;
     LoginResponse mLoginResponse;
-    ret = mLoginParse.parse(response.c_str(), &mLoginResponse);
+    ret = XMLParse::loginParse(response.c_str(), &mLoginResponse);
     if (ret != 0)
     {
-        LOGERROR("mLoginParse.parse error\n");
+        LOGERROR("XMLParse::loginParse error\n");
         return ERR_AUTH_PARSE_RESPONSE;
     }
 
@@ -635,6 +709,15 @@ string Login::startLogin()
 
     //get the address of the login server
     getLoginServerAddr();
+
+    m_backupServerIsUsed = false;
+    for (int i = 0; i < 3; i++)
+    {
+        if (doBoot())
+        {
+            break;
+        }
+    }
 
     string ret;
     int retryCount = 0;
@@ -759,12 +842,11 @@ int Login::checkToken()
         return -1;
     }
 
-    tokenParse tokenParse;
     TokenResponse tokenResponse;
-    ret = tokenParse.parse(response.c_str(), &tokenResponse);
+    ret = XMLParse::tokenParse(response.c_str(), &tokenResponse);
     if (ret != 0)
     {
-        LOGERROR("tokenParse.parse error\n");
+        LOGERROR("XMLParse::tokenParse error\n");
         return -2;
     }
 

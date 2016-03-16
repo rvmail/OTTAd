@@ -22,7 +22,7 @@
 #ifndef __LOGIN_H__
 #define __LOGIN_H__
 
-#include "base/parse/loginParse.h"
+#include "XMLParse.h"
 
 using namespace std;
 
@@ -85,6 +85,7 @@ private:
     void changeLoginServerAddr(int errorCode);
     bool whetherNeedActivate();
 
+    bool doBoot();
     string doActivate();
     string doAuthenticate();
 
@@ -99,6 +100,8 @@ private:
     void setLoginType(void);
     void changeLoginType(void);
     void setActivateErrCode(string err);
+
+    string getAddressFromList(string name, MapServerList &list);
 
     static Login* m_pInstance;
 
@@ -126,9 +129,10 @@ private:
     string m_loginType3ActiErrCode;
     string m_activateErrCode;
 
-    string m_loginServer;         //the address of the TMS
+    string m_loginServer;         //the address to boot
     string m_loginServerBackup;   //used when connect to m_loginServer failed
     bool m_backupServerIsUsed;
+    string m_tmsAddress;
 };
 
 #endif // !__LOGIN_H__
