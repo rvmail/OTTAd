@@ -133,6 +133,7 @@ private:
     string m_loginServerBackup;   //used when connect to m_loginServer failed
     bool m_backupServerIsUsed;
     string m_tmsAddress;
+    string m_tmsAddressBackup;
 };
 
 #endif // !__LOGIN_H__

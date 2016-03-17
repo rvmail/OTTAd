@@ -29,9 +29,6 @@
 #include "base/utils/misc.h"
 #include "base/utils/DeviceInfo.h"
 
-//#include "base/parse/initParse.h"
-//#include "base/parse/loginParse.h"
-//#include "base/parse/tokenParse.h"
 #include "base/configure/icntvConfigure.h"
 #include "base/baseThread.h"
 #include "debug.h"
@@ -95,7 +92,7 @@ Login::Login(void): mLoginStatus(LoginNot),
                     m_loginType2ActiErrCode("444"),
                     m_loginType3ActiErrCode("444"),
                     m_backupServerIsUsed(false),
-                    m_tmsAddress("")
+                    m_tmsAddress(""), m_tmsAddressBackup("")
 {
 }
 
@@ -251,6 +248,9 @@ int Login::getLoginServerAddr()
 {
     m_loginServer = getConfigure(configLoginAddr);
     m_loginServerBackup = getConfigure(configLoginAddrBackup);
+
+    //目前激活认证备用IP地址和boot接口备用IP地址相同
+    m_tmsAddressBackup = m_loginServerBackup;
 
     return 0;
 }
@@ -492,13 +492,13 @@ string Login::doActivate()
 
     if (m_backupServerIsUsed)
     {
-        host = m_loginServerBackup;
+        host = m_tmsAddressBackup;
     }
 
     if (host == "")
     {
-        LOGINFO("host(m_tmsAddress) is empty, m_loginServerBackup is used\n");
-        host = m_loginServerBackup;
+        LOGINFO("host(m_tmsAddress) is empty, m_tmsAddressBackup is used\n");
+        host = m_tmsAddressBackup;
     }
 
     LOGINFO("doActivate host=%s\n", host.c_str());
@@ -601,13 +601,13 @@ string Login::doAuthenticate()
 
     if (m_backupServerIsUsed)
     {
-        host = m_loginServerBackup;
+        host = m_tmsAddressBackup;
     }
 
     if (host == "")
     {
-        LOGINFO("host(m_tmsAddress) is empty, m_loginServerBackup is used\n");
-        host = m_loginServerBackup;
+        LOGINFO("host(m_tmsAddress) is empty, m_tmsAddressBackup is used\n");
+        host = m_tmsAddressBackup;
     }
 
     LOGINFO("doAuthenticate host=%s\n", host.c_str());
