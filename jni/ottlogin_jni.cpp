@@ -242,14 +242,14 @@ JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_getPlatformID
 }
 
 JNIEXPORT jint JNICALL Java_tv_icntv_ottlogin_loginSDK_getServerAddress
-(JNIEnv *env, jobject thiz, jstring type, jobject data)
+(JNIEnv *env, jobject thiz, jstring name, jobject data)
 {
     int ret = -1;
     string str;
 
-    string ty = jstringToString(env, type);
+    string serverName = jstringToString(env, name);
 
-    ret = ICNTV_Login_getServerAddress(ty, str);
+    ret = ICNTV_Login_getServerAddress(serverName, str);
     if (ret != 0)
     {
         LOGERROR("JNI-getServerAddress() error, return %d\n", ret);

@@ -1,7 +1,7 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#define GIT_VERSION "20160316-13423ff"
+#define GIT_VERSION "20160317-27715a2"
 
 #if (SDK_TYPE == 1)  //ANDROID_JAR
     #define SDK_VERSION "V1.3.0"

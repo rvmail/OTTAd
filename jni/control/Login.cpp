@@ -721,6 +721,7 @@ string Login::startLogin()
         if (mLoginStatus == LoginForceStop)
         {
             LOGINFO("stopLogin has been invoked\n");
+            m_loginState = ERR_LOGIN_FORCE_STOP;
             return ERR_LOGIN_FORCE_STOP;
         }
         else

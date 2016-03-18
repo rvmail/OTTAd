@@ -235,15 +235,15 @@ public class loginSDK {
 	 * @param data
 	 * @return
 	 */
-	private native int getServerAddress(String type, TransferData serverAddr);
+	private native int getServerAddress(String name, TransferData serverAddr);
 
-	public int getServerAddress(String type, StringBuffer serverAddr) {
+	public int getServerAddress(String name, StringBuffer serverAddr) {
 		if (serverAddr == null)
 			serverAddr = new StringBuffer();
 		serverAddr.delete(0, serverAddr.length());
 
 		TransferData dataVal = new TransferData();
-		int val = getServerAddress(type, dataVal);
+		int val = getServerAddress(name, dataVal);
 
 		if (dataVal != null && dataVal.getResult() != null) {
 			serverAddr.append(dataVal.getResult());
