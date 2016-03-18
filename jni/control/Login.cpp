@@ -35,7 +35,8 @@
 #include "icntvEncrypt.h"
 #include "dataCache.h"
 
-#define LOGIN_RETRY_COUNT      6
+#define BOOT_TRY_TIMES         3
+#define LOGIN_TRY_TIMES        6
 #define LOGIN_RETRY_WAIT_TIME  1    //second
 #define CHECK_TOKEN_TIME_INTERVAL   (60 * 5)    //five minutes
 
@@ -411,7 +412,7 @@ void Login::changeLoginServerAddr(int errorCode)
 
 bool Login::doBoot()
 {
-    LOGINFO("doBoot start...\n");
+    LOGINFO("###doBoot start...\n");
 
     int ret;
     icntvHttp http;
@@ -469,7 +470,7 @@ bool Login::doBoot()
 
 string Login::doActivate()
 {
-    LOGINFO("doActivate start...\n");
+    LOGINFO("###doActivate start...\n");
 
     int ret;
     icntvHttp http;
@@ -580,7 +581,7 @@ string Login::doActivate()
 
 string Login::doAuthenticate()
 {
-    LOGINFO("doAuthenticate start...\n");
+    LOGINFO("###doAuthenticate start...\n");
 
     int ret;
     icntvHttp http;
@@ -702,7 +703,8 @@ string Login::startLogin()
     getLoginServerAddr();
 
     m_backupServerIsUsed = false;
-    for (int i = 0; i < 3; i++)
+    int i;
+    for (i = 0; i < BOOT_TRY_TIMES; i++)
     {
         if (doBoot())
         {
@@ -711,12 +713,11 @@ string Login::startLogin()
     }
 
     string ret;
-    int retryCount = 0;
     bool needDoActivate = whetherNeedActivate();
     bool needReActi = true;
     m_backupServerIsUsed = false;
 
-    for (retryCount = 0; retryCount < LOGIN_RETRY_COUNT; retryCount++)
+    for (i = 0; i < LOGIN_TRY_TIMES; i++)
     {
         if (mLoginStatus == LoginForceStop)
         {
@@ -734,12 +735,12 @@ string Login::startLogin()
             ret = doActivate();
             if (ret.compare(ERR_NO) != 0)
             {
-                sleep(LOGIN_RETRY_WAIT_TIME);
+                //sleep(LOGIN_RETRY_WAIT_TIME);
                 continue;
             }
 
             needDoActivate = false;
-            retryCount = 0;
+            i = 0;
         }
 
         ret = doAuthenticate();
@@ -756,18 +757,18 @@ string Login::startLogin()
                 needDoActivate = true;
                 needReActi = false;
                 getLoginType();
-                retryCount = 0;
+                i = 0;
                 continue;
             }
         }
         else
         {
-            sleep(LOGIN_RETRY_WAIT_TIME);
+            //sleep(LOGIN_RETRY_WAIT_TIME);
             continue;
         }
     }
 
-    if (retryCount == LOGIN_RETRY_COUNT)
+    if (i == LOGIN_TRY_TIMES)
     {
         LOGERROR("login failed, up to the max retry times\n");
         mLoginStatus = LoginStatus::LoginFailed;
