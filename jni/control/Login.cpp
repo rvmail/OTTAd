@@ -86,7 +86,7 @@ Login* Login::getInstance()
 
 Login::Login(void): mLoginStatus(LoginNot),
                     m_isInit(false),
-                    m_isCheckTokenStart(false),
+                    m_isCheckTokenThreadRunning(false),
                     m_loginType(1),
                     m_loginState(""),
                     m_loginType1ActiErrCode("444"),
@@ -646,7 +646,7 @@ string Login::doAuthenticate()
     {
         mUserId = mLoginResponse.userId;
         mTemplateId = mLoginResponse.templateId;
-        mServerList= mLoginResponse.serverList;
+        mServerList = mLoginResponse.serverList;
         mToken = mLoginResponse.token;
     }
 
@@ -702,6 +702,7 @@ string Login::startLogin()
     //get the address of the login server
     getLoginServerAddr();
 
+    //get the address of the TMS server, try BOOT_TRY_TIMES times
     m_backupServerIsUsed = false;
     int i;
     for (i = 0; i < BOOT_TRY_TIMES; i++)
@@ -712,6 +713,7 @@ string Login::startLogin()
         }
     }
 
+    //activate & login
     string ret;
     bool needDoActivate = whetherNeedActivate();
     bool needReActi = true;
@@ -857,7 +859,7 @@ int Login::checkToken()
 
 void *Login::checkTokenThread(void *param)
 {
-    LOGINFO("checkToken start!!!\n");
+    LOGINFO("checkTokenThread start!!!\n");
 
     Login *plogin = (Login *)param;
 
@@ -867,22 +869,22 @@ void *Login::checkTokenThread(void *param)
         plogin->checkToken();
     }
 
-    LOGINFO("checkToken end!!!\n");
+    LOGINFO("checkTokenThread end!!!\n");
 
     return 0;
 }
 
 int Login::startCheckToken()
 {
-    if (m_isCheckTokenStart)
+    if (m_isCheckTokenThreadRunning)
     {
-        LOGWARN("Check token thread has alreadty been started\n");
+        LOGWARN("Check token thread has already been started\n");
         return 0;
     }
 
     baseThread::startThread(Login::checkTokenThread, Login::getInstance());
 
-    m_isCheckTokenStart = true;
+    m_isCheckTokenThreadRunning = true;
     return 0;
 }
 

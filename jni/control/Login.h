@@ -117,7 +117,7 @@ private:
     MapServerList mServerList;
 
     bool m_isInit;
-    bool m_isCheckTokenStart;
+    bool m_isCheckTokenThreadRunning;
 
     int m_loginType;    //activate by MAC: 1 wlan, 2 eth, 3 mac file
     string m_macFile;
