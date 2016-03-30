@@ -16,10 +16,8 @@ if [ $GIT_VERSION != ""$PRE_VERSION ]
 then
 	if [ $KERNEL == "Linux" ]
 	then
-    	sed -i "s/#define\ SDK_VERSION.*/#define\ SDK_VERSION\ \"$SDK_VERSION\"/" $VERSION_FILE
-    	sed -i "s/#define\ GIT_VERSION.*/#define\ GIT_VERSION\ \"$GIT_VERSION\"/" $VERSION_FILE
+		sed -i "s/#define\ GIT_VERSION.*/#define\ GIT_VERSION\ \"$GIT_VERSION\"/" $VERSION_FILE
 	else
-    	sed -i "" "s/#define\ SDK_VERSION.*/#define\ SDK_VERSION\ \"$SDK_VERSION\"/" $VERSION_FILE
-    	sed -i "" "s/#define\ GIT_VERSION.*/#define\ GIT_VERSION\ \"$GIT_VERSION\"/" $VERSION_FILE
+		sed -i "" "s/#define\ GIT_VERSION.*/#define\ GIT_VERSION\ \"$GIT_VERSION\"/" $VERSION_FILE
 	fi
 fi
