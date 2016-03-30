@@ -4,7 +4,7 @@
 #define GIT_VERSION "20160317-27715a2"
 
 #if (SDK_TYPE == 1)  //ANDROID_JAR
-    #define SDK_VERSION "V1.3.0"
+    #define SDK_VERSION "V1.3.1"
 #elif (SDK_TYPE == 2)  //ANDROID_PURESDK
     #define SDK_VERSION "V1.0.0"
 #else  //others
