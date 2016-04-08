@@ -150,6 +150,22 @@ int icntvConfigure::getFilePath(char *szFile, const char *filePath /* = NULL */)
     return 0;
 }
 
+std::string icntvConfigure::getStrValue(const char *section, \
+                            const char *key, const char *filePath)
+{
+    int ret = -1;
+    char value[1024] = {0};
+
+    ret = getStrValue(section, key, value, 1024, filePath);
+    if (ret != 0)
+    {
+        LOGERROR("getStrValue failed\n");
+        return "";
+    }
+
+    return std::string(value);
+}
+
 int icntvConfigure::getStrValue(const char *section, const char *key , \
         char *keyvalue, const int bufsize, const char *filePath)
 {

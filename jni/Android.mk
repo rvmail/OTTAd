@@ -46,7 +46,8 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH) \
                     $(LOCAL_PATH)/control \
                     $(LOCAL_PATH)/interface \
                     $(LOCAL_PATH)/thirdparty/tinyxml \
-                    $(LOCAL_PATH)/thirdparty/curl/include/curl
+                    $(LOCAL_PATH)/thirdparty/curl/include/curl \
+                    $(LOCAL_PATH)/thirdparty/rapidjson
 
 LOCAL_SRC_FILES := ottlogin.cpp \
                    $(call all-cpp-files-under, base) \
@@ -59,11 +60,8 @@ LOCAL_STATIC_LIBRARIES := libcurl \
                           poco_foundation
 
 LOCAL_LDLIBS     += -fuse-ld=bfd -rdynamic -llog -lz
+LOCAL_CPPFLAGS :=
 
-#-DWLAN_MAC: Wireless
-#-DETH_MAC: Ethernet
-#-DSET_MAC: Setting type of the network by setNetworkType, default Wireless
-LOCAL_CPPFLAGS :=  -DSET_MAC
 $(call set-git-version)
 
 ifeq ($(OUTPUT_TYPE), ANDROID_JAR)

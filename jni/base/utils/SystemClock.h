@@ -26,14 +26,15 @@ class SystemClock
 {
 public:
     /**
-     * 获得开机以来的秒数
+     * 获得开机以来的毫秒数
      */
     static int64_t uptimeMillis();
 
     /**
-     * 获得 1970 年以来的秒数
+     * 获得 1970 年以来的毫秒数
      */
     static int64_t currentTimeMillis();
+    static std::string currentTimeMs();
 
     static std::string getTime();
 };

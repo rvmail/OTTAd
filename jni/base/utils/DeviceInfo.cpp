@@ -23,6 +23,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <mutex>
+#include <algorithm>
 #include <net/if.h>
 #include <net/if_arp.h>
 #include <sys/ioctl.h>
@@ -30,11 +32,10 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <mutex>
+#include <arpa/inet.h>
 
 #include "DeviceInfo.h"
 #include "debug.h"
-#include "dataCache.h"
 
 #define MAX_INTERFACES  8
 
@@ -77,15 +78,30 @@ static std::string getMacByFile(std::string macFile)
     return mac;
 }
 
-std::string getMac(int type, std::string macFile)
+std::string getMacAndRemoveColon(int type, std::string macFile)
 {
-    std::string license = dataCache::getInstance()->getLicense();
-    if (license != "")
+    std::string mac = getMac(type, macFile);
+    if (mac != "")
     {
-        LOGINFO("konka license is used: %s\n", license.c_str());
-        return license;
+        //MAC AB:CD:34:45:56:67 --> ABCD34455667
+        std::string::iterator it;
+        for (it =mac.begin(); it != mac.end(); it++)
+        {
+            if (*it == ':')
+            {
+                mac.erase(it);
+            }
+        }
+
+        // to lower: ABCD34455667 --> abcd34455667
+        transform(mac.begin(), mac.end(), mac.begin(), ::tolower);
     }
 
+    return mac;
+}
+
+std::string getMac(int type, std::string macFile)
+{
     std::string file("/sys/class/net/wlan0/address");
 
     if (type == 1)
@@ -215,4 +231,42 @@ unsigned long long convertMac2Num(std::string mac)
     return num;
 }
 
+std::string getIPByType(std::string type)
+{
+    int sock;
+    char ip[64] = {0};
+    struct sockaddr_in *sin;
+    struct ifreq ifr_ip;
 
+    sock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (sock < 0)
+    {
+        LOGERROR("socket() error\n");
+        return "";
+    }
+
+    memset(&ifr_ip, 0, sizeof(ifr_ip));
+    strncpy(ifr_ip.ifr_name, type.c_str(), sizeof(ifr_ip.ifr_name) - 1);
+
+    if (!ioctl(sock, SIOCGIFADDR, &ifr_ip))
+    {
+        sin = (struct sockaddr_in *)&ifr_ip.ifr_addr;
+        strcpy(ip, inet_ntoa(sin->sin_addr));
+    }
+
+    close(sock);
+    return std::string(ip);
+}
+
+std::string getIP()
+{
+    std::string ip;
+
+    ip = getIPByType("wlan0");
+    if (ip == "")
+    {
+        ip = getIPByType("eth0");
+    }
+
+    return ip;
+}

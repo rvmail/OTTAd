@@ -89,6 +89,9 @@ private:
     string doActivate();
     string doAuthenticate();
 
+    string genePubActiToken(string mac, string apptype, string timestamp);
+    string publicActivate();
+
     string getConfigure(ConfigType type);
     int setConfigure(ConfigType type, const string val);
 
@@ -134,6 +137,8 @@ private:
     bool m_backupServerIsUsed;
     string m_tmsAddress;
     string m_tmsAddressBackup;
+
+    string m_publicActivateAddr;
 };
 
 #endif // !__LOGIN_H__

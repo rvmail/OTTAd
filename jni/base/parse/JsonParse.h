@@ -17,29 +17,29 @@
  * specific language governing permissions and limitations
  * under the License.
 *
-*
+* zhangmingliang
 */
 
-#ifndef DEVICEINFO_H_
-#define DEVICEINFO_H_
+#ifndef __JSONPARSE_H__
+#define __JSONPARSE_H__
 
-#include <string>
+#include <iostream>
 
-#ifdef __cplusplus
-extern "C"
+struct ActivateResponse
 {
-#endif
-
-std::string getMac(int type, std::string macFile);
-std::string getMacAndRemoveColon(int type, std::string macFile);
-std::string getMacBySocket();
-unsigned long long getMacInNum();
-unsigned long long convertMac2Num(std::string mac);
-
-std::string getIP();
-
-#ifdef __cplusplus
+    std::string icntvid;
+    std::string returnCode;
+    std::string description;
 };
+
+class JsonParse
+{
+public:
+    JsonParse(void);
+    ~JsonParse(void);
+
+    static bool parseActivate(const char *src, void *dst);
+};
+
 #endif
 
-#endif /* DEVICEINFO_H_ */

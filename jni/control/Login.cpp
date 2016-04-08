@@ -23,11 +23,12 @@
 #include <unistd.h>
 
 #include "Login.h"
-#include "../common.h"
+#include "common.h"
 #include "base/network/icntvHttp.h"
-#include "base/utils/log.h"
 #include "base/utils/misc.h"
 #include "base/utils/DeviceInfo.h"
+#include "SystemClock.h"
+#include "JsonParse.h"
 
 #include "base/configure/icntvConfigure.h"
 #include "base/baseThread.h"
@@ -36,7 +37,7 @@
 #include "dataCache.h"
 
 #define BOOT_TRY_TIMES         3
-#define LOGIN_TRY_TIMES        6
+#define LOGIN_TRY_TIMES        4
 #define LOGIN_RETRY_WAIT_TIME  1    //second
 #define CHECK_TOKEN_TIME_INTERVAL   (60 * 5)    //five minutes
 
@@ -71,6 +72,8 @@
 #define ENCRYPT_VERSION       "1.0"
 #define VERSION_INFO          "4.4.6.19"
 #define VERSION_ID            "2"
+
+#define PUB_ACTI_KEY           "36b9c7e8695468dc"
 
 Login* Login::m_pInstance = NULL;
 
@@ -252,6 +255,9 @@ int Login::getLoginServerAddr()
 
     //目前激活认证备用IP地址和boot接口备用IP地址相同
     m_tmsAddressBackup = m_loginServerBackup;
+
+    m_publicActivateAddr = icntvConfigure::getInstance()->getStrValue("DEVICE", \
+            "PublicActivateAddr", "/ini/DeviceInfo.ini");
 
     return 0;
 }
@@ -579,6 +585,126 @@ string Login::doActivate()
     return ERR_NO;
 }
 
+string Login::genePubActiToken(string mac, string apptype, string timestamp)
+{
+    icntvEncrypt enc;
+    string temp = mac + "&" + apptype;
+    string k = enc.aesEncrypt(temp, PUB_ACTI_KEY);
+    LOGDEBUG("k=%s\n", k.c_str());
+    string usedkey = k.substr(0, 16);
+    LOGDEBUG("usedkey=%s\n", usedkey.c_str());
+
+    string token = enc.aesEncrypt(timestamp, usedkey);
+    LOGDEBUG("genePubActiToken return %s\n", token.c_str());
+
+    return token;
+}
+
+string Login::publicActivate()
+{
+    LOGINFO("###publicActivate start...\n");
+
+    int ret;
+    icntvHttp http;
+    string response;
+    string host = m_publicActivateAddr;
+    string path("/aas-api/activate");
+
+    string mac = getMac(m_loginType, m_macFile);
+    if (mac.empty())
+    {
+        setActivateErrCode(ERR_READ_MAC);
+        LOGERROR("publicActivate MAC(%d) is empty\n", m_loginType);
+        changeLoginType();
+        return ERR_READ_MAC;
+    }
+
+    LOGINFO("[publicActivate] MAC(%d)=%s\n", m_loginType, mac.c_str());
+
+    string appType = "EUROCUP";
+    string timestamp = SystemClock::currentTimeMs();
+    string token = genePubActiToken(mac, appType, timestamp);
+    string ip = getIP();
+
+    string query;
+    query = "mac=" + mac;
+    query += "&timestamp=" + timestamp;
+    query += "&ip=" + ip;
+    query += "&apptype=" + appType;
+    query += "&token=" + token;
+
+//    if (m_backupServerIsUsed)
+//    {
+//        host = m_tmsAddressBackup;
+//    }
+//
+//    if (host == "")
+//    {
+//        LOGINFO("host(m_tmsAddress) is empty, m_tmsAddressBackup is used\n");
+//        host = m_tmsAddressBackup;
+//    }
+
+    LOGINFO("publicActivate host=%s\n", host.c_str());
+    ret = http.postData(host, path, query.c_str(), query.length(), response);
+    if (ret != 0)
+    {
+        //changeLoginServerAddr(ret);
+        setActivateErrCode(ERR_ACTIVATE_CONNECT_TMS);
+        LOGERROR("publicActivate http.postData() error!\n");
+        return ERR_ACTIVATE_CONNECT_TMS;
+    }
+
+    ActivateResponse activateResp;
+
+    bool success = JsonParse::parseActivate(response.c_str(), &activateResp);
+    if (!success)
+    {
+        setActivateErrCode(ERR_ACTIVATE_PARSE_RESPONSE);
+        LOGERROR("JsonParse::parseActivate error\n");
+        return ERR_ACTIVATE_PARSE_RESPONSE;
+    }
+
+    mDeviceId = activateResp.icntvid;
+    LOGINFO("DeviceId=%s\n", mDeviceId.c_str());
+
+    if (mDeviceId.empty())
+    {
+        setActivateErrCode(ERR_ACTIVATE_DEVICE_NULL);
+        LOGERROR("mDeviceId is empty\n");
+        return ERR_ACTIVATE_DEVICE_NULL;
+    }
+
+    setLoginType();
+
+    //activate success, write LoginType into DeviceID.ini
+    char buf[32] = {0};
+    snprintf(buf, sizeof(buf), "%d", m_loginType);
+
+    ret = icntvConfigure::getInstance()->setKeyValue("DEVICE", \
+            "LoginType", buf, "/ini/DeviceID.ini");
+    if (ret != 0)
+    {
+        setActivateErrCode(ERR_WRITE_DEVICE_ID);
+        LOGERROR("write LoginType failed\n");
+        return ERR_WRITE_DEVICE_ID;
+    }
+    LOGINFO("write LoginType success\n");
+
+    //activate success, write DeviceID into DeviceID.ini
+    ret = setConfigure(configDeviceId, mDeviceId);
+    if (ret != 0)
+    {
+        setActivateErrCode(ERR_WRITE_DEVICE_ID);
+        LOGERROR("write deviceID failed\n");
+        return ERR_WRITE_DEVICE_ID;
+    }
+    LOGINFO("write deviceID success\n");
+
+    LOGINFO("publicActivate success, LoginType(%d)\n", m_loginType);
+
+    return ERR_NO;
+}
+
 string Login::doAuthenticate()
 {
     LOGINFO("###doAuthenticate start...\n");
@@ -734,7 +860,7 @@ string Login::startLogin()
 
         if (needDoActivate)
         {
-            ret = doActivate();
+            ret = publicActivate();
             if (ret.compare(ERR_NO) != 0)
             {
                 //sleep(LOGIN_RETRY_WAIT_TIME);
@@ -755,11 +881,11 @@ string Login::startLogin()
         {
             if (needReActi)
             {
-                LOGINFO("auth state is 000, now redoActivate only once\n");
-                needDoActivate = true;
-                needReActi = false;
-                getLoginType();
-                i = 0;
+                //LOGINFO("auth state is 000, now redoActivate only once\n");
+                //needDoActivate = true;
+                //needReActi = false;
+                //getLoginType();
+                //i = 0;
                 continue;
             }
         }

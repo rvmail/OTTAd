@@ -18,6 +18,7 @@
 
 #include "SystemClock.h"
 
+#include <sstream>
 #include <stdio.h>
 #include <time.h>
 #include <sys/time.h>
@@ -34,6 +35,13 @@ int64_t SystemClock::currentTimeMillis() {
     gettimeofday(&tv, 0);
     return ((static_cast<int64_t>(tv.tv_sec) * 1000)
             + (static_cast<int64_t>(tv.tv_usec) / 1000));
+}
+
+std::string SystemClock::currentTimeMs()
+{
+    std::stringstream t;
+    t << SystemClock::currentTimeMillis();
+    return t.str();
 }
 
 //get current time, format 20150713145028(year month day hour minute second)

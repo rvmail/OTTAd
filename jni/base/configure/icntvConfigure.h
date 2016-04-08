@@ -45,6 +45,7 @@ public:
     int getLoginType(char *type, int size);
     int setLoginType(const char *type);
 
+    std::string getStrValue(const char *section, const char *key, const char *filePath);
     int getStrValue(const char *section, const char *key , char *keyvalue, \
                     const int bufsize, const char *filePath);
     int getIntValue(const char *section, const char *key, \
