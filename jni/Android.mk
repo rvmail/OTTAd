@@ -4,6 +4,7 @@ LOCAL_PATH := $(call my-dir)
 ## Find all of files under the named directories.
 ###########################################################
 OUTPUT_TYPE=ANDROID_JAR
+APP_TYPE=EUROCUP
 
 define all-files-under
 $(patsubst ./%,%, \
@@ -60,7 +61,7 @@ LOCAL_STATIC_LIBRARIES := libcurl \
                           poco_foundation
 
 LOCAL_LDLIBS     += -fuse-ld=bfd -rdynamic -llog -lz
-LOCAL_CPPFLAGS :=
+LOCAL_CPPFLAGS := -DAPP_TYPE=$(APP_TYPE)
 
 $(call set-git-version)
 

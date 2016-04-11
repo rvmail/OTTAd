@@ -1,7 +1,7 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#define GIT_VERSION "20160317-27715a2"
+#define GIT_VERSION "20160408-de871fa"
 
 #if (SDK_TYPE == 1)  //ANDROID_JAR
     #define SDK_VERSION "V1.3.1"
@@ -9,6 +9,12 @@
     #define SDK_VERSION "V1.0.0"
 #else  //others
     #define SDK_VERSION "V1.0.0"
+#endif
+
+#if (APP_TYPE == EUROCUP)
+    #define APPTYPE    "EUROCUP"
+#else
+    #define APPTYPE    "DEFAULT"
 #endif
 
 const int NUM_4 = 4;

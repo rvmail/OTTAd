@@ -621,7 +621,7 @@ string Login::publicActivate()
 
     LOGINFO("[publicActivate] MAC(%d)=%s\n", m_loginType, mac.c_str());
 
-    string appType = "EUROCUP";
+    string appType = APPTYPE;
     string timestamp = SystemClock::currentTimeMs();
     string token = genePubActiToken(mac, appType, timestamp);
     string ip = getIP();
