@@ -50,13 +50,10 @@ static std::string getMacByFile(std::string macFile)
         return "";
     }
 
-    std::string command("cat ");
-    command += macFile;
-
-    fp = popen(command.c_str(), "r");
+    fp = fopen(macFile.c_str(), "r");
     if (!fp)
     {
-        LOGWARN("fp is NULL\n");
+        LOGWARN("fp is NULL : %s\n", macFile.c_str());
         return "";
     }
 
@@ -71,7 +68,7 @@ static std::string getMacByFile(std::string macFile)
             }
         }
     }
-    pclose(fp);
+    fclose(fp);
 
     std::string mac(buffer);
     LOGDEBUG("getMacByFile: MAC=%s\n", mac.c_str());
