@@ -30,6 +30,7 @@ struct ActivateResponse
     std::string icntvid;
     std::string returnCode;
     std::string description;
+    std::string appCode;
 };
 
 class JsonParse

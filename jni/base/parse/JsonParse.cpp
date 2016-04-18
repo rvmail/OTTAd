@@ -76,6 +76,17 @@ bool JsonParse::parseActivate(const char *src, void *dst)
                 return false;
             }
 
+            //appCode
+            if (!doc["appCode"].IsNull())
+            {
+                resp->appCode.assign(doc["appCode"].GetString());
+            }
+            else
+            {
+                LOGERROR("appCode is empty\n");
+                return false;
+            }
+
             //description
             if (!doc["description"].IsNull())
             {

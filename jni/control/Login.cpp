@@ -610,7 +610,7 @@ string Login::publicActivate()
     string host = m_publicActivateAddr;
     string path("/aas-api/activate");
 
-    string mac = getMac(m_loginType, m_macFile);
+    string mac = getMacAndRemoveColon(m_loginType, m_macFile);
     if (mac.empty())
     {
         setActivateErrCode(ERR_READ_MAC);
@@ -622,6 +622,8 @@ string Login::publicActivate()
     LOGINFO("[publicActivate] MAC(%d)=%s\n", m_loginType, mac.c_str());
 
     string appType = APPTYPE;
+    LOGDEBUG("apptype: %s\n", appType.c_str());
+
     string timestamp = SystemClock::currentTimeMs();
     string token = genePubActiToken(mac, appType, timestamp);
     string ip = getIP();
@@ -630,7 +632,7 @@ string Login::publicActivate()
     query = "mac=" + mac;
     query += "&timestamp=" + timestamp;
     query += "&ip=" + ip;
-    query += "&apptype=" + appType;
+    query += "&appkey=" + appType;
     query += "&token=" + token;
 
 //    if (m_backupServerIsUsed)
@@ -663,6 +665,8 @@ string Login::publicActivate()
         LOGERROR("JsonParse::parseActivate error\n");
         return ERR_ACTIVATE_PARSE_RESPONSE;
     }
+
+    m_appCode =  activateResp.appCode;
 
     mDeviceId = activateResp.icntvid;
     LOGINFO("DeviceId=%s\n", mDeviceId.c_str());
@@ -715,7 +719,7 @@ string Login::doAuthenticate()
     string host = m_tmsAddress;
     string path("/login.action");
 
-    string mac = getMac(m_loginType, m_macFile);
+    string mac = getMacAndRemoveColon(m_loginType, m_macFile);
     if (mac.empty())
     {
         LOGERROR("[doAuthenticate] MAC(%d) is empty\n", m_loginType);
@@ -724,6 +728,7 @@ string Login::doAuthenticate()
 
     LOGINFO("[doAuthenticate] MAC(%d)=%s\n", m_loginType, mac.c_str());
 
+    mac = mac + "-" + m_appCode;
     string query = buildQuery(LoginAuth, mac);
 
     if (m_backupServerIsUsed)

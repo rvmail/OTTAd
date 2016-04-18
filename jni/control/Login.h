@@ -139,6 +139,8 @@ private:
     string m_tmsAddressBackup;
 
     string m_publicActivateAddr;
+
+    string m_appCode;
 };
 
 #endif // !__LOGIN_H__

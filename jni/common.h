@@ -1,7 +1,7 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#define GIT_VERSION "20160408-de871fa"
+#define GIT_VERSION "20160414-e6609f4"
 
 #if (SDK_TYPE == 1)  //ANDROID_JAR
     #define SDK_VERSION "V1.3.1"
@@ -11,8 +11,8 @@
     #define SDK_VERSION "V1.0.0"
 #endif
 
-#if (APP_TYPE == EUROCUP)
-    #define APPTYPE    "EUROCUP"
+#if (APP_TYPE == 1)
+    #define APPTYPE    "FutureTv"
 #else
     #define APPTYPE    "DEFAULT"
 #endif
