@@ -666,6 +666,13 @@ string Login::publicActivate()
         return ERR_ACTIVATE_PARSE_RESPONSE;
     }
 
+    if (activateResp.returnCode != "0")
+    {
+        LOGERROR("returnCode is %s\n", activateResp.returnCode.c_str());
+        setActivateErrCode(ERR_ACTIVATE_DEVICE_NULL);
+        return ERR_ACTIVATE_DEVICE_NULL;
+    }
+
     m_appCode =  activateResp.appCode;
 
     mDeviceId = activateResp.icntvid;

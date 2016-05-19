@@ -54,47 +54,46 @@ bool JsonParse::parseActivate(const char *src, void *dst)
 
     if (doc.IsObject())
     {
-        //returnCode
+        // returnCode
         if (!doc["returnCode"].IsNull())
         {
             resp->returnCode.assign(doc["returnCode"].GetString());
-            LOGDEBUG("returnCode: %s\n", resp->returnCode.c_str());
-            if (resp->returnCode != "0")
-            {
-                LOGERROR("returnCode(%s) error\n", resp->returnCode.c_str());
-                return false;
-            }
-
-            //icntvid
-            if (!doc["icntvid"].IsNull())
-            {
-                resp->icntvid.assign(doc["icntvid"].GetString());
-            }
-            else
-            {
-                LOGERROR("icntvid is empty\n");
-                return false;
-            }
-
-            //appCode
-            if (!doc["appCode"].IsNull())
-            {
-                resp->appCode.assign(doc["appCode"].GetString());
-            }
-            else
-            {
-                LOGERROR("appCode is empty\n");
-                return false;
-            }
-
-            //description
-            if (!doc["description"].IsNull())
-            {
-                resp->description.assign(doc["description"].GetString());
-            }
-
-            return true;
         }
+        else
+        {
+            LOGERROR("returnCode is empty\n");
+            return false;
+        }
+
+        //icntvid
+        if (!doc["icntvid"].IsNull())
+        {
+            resp->icntvid.assign(doc["icntvid"].GetString());
+        }
+        else
+        {
+            LOGERROR("icntvid is empty\n");
+            //return false;
+        }
+
+        //appCode
+        if (!doc["appCode"].IsNull())
+        {
+            resp->appCode.assign(doc["appCode"].GetString());
+        }
+        else
+        {
+            LOGERROR("appCode is empty\n");
+            //return false;
+        }
+
+        //description
+        if (!doc["description"].IsNull())
+        {
+            resp->description.assign(doc["description"].GetString());
+        }
+
+        return true;
     }
 
     return false;
