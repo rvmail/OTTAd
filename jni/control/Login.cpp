@@ -176,6 +176,7 @@ string Login::getServerAddress(string name)
 string Login::getConfigure(ConfigType type)
 {
     char buffer[NUM_128] = {0};
+    string value;
 
     switch (type)
     {
@@ -222,6 +223,18 @@ string Login::getConfigure(ConfigType type)
             return string(buffer);
             break;
 
+        case configPublicActivateAddr:
+            value = icntvConfigure::getInstance()->getStrValue("DEVICE", \
+                        "PublicActivateAddr", "/ini/DeviceInfo.ini");
+            if (value == "")
+            {
+                LOGERROR("public activate address default\n");
+                value = "http://apk1.active.ottcn.com";
+            }
+
+            LOGDEBUG("public activate address is %s\n", value.c_str());
+            return value;
+
         default:
             break;
     }
@@ -256,8 +269,7 @@ int Login::getLoginServerAddr()
     //目前激活认证备用IP地址和boot接口备用IP地址相同
     m_tmsAddressBackup = m_loginServerBackup;
 
-    m_publicActivateAddr = icntvConfigure::getInstance()->getStrValue("DEVICE", \
-            "PublicActivateAddr", "/ini/DeviceInfo.ini");
+    m_publicActivateAddr = getConfigure(configPublicActivateAddr);
 
     return 0;
 }
@@ -621,18 +633,18 @@ string Login::publicActivate()
 
     LOGINFO("[publicActivate] MAC(%d)=%s\n", m_loginType, mac.c_str());
 
-    string appType = APPTYPE;
-    LOGDEBUG("apptype: %s\n", appType.c_str());
+    string appKey = APPKEY;
+    LOGDEBUG("appKey: %s\n", appKey.c_str());
 
     string timestamp = SystemClock::currentTimeMs();
-    string token = genePubActiToken(mac, appType, timestamp);
+    string token = genePubActiToken(mac, appKey, timestamp);
     string ip = getIP();
 
     string query;
     query = "mac=" + mac;
     query += "&timestamp=" + timestamp;
     query += "&ip=" + ip;
-    query += "&appkey=" + appType;
+    query += "&appkey=" + appKey;
     query += "&token=" + token;
 
 //    if (m_backupServerIsUsed)

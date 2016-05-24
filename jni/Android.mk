@@ -5,7 +5,7 @@ OUTPUT_TYPE=ANDROID_JAR
 ###########################################################
 ## 1: FutureTv
 ###########################################################
-APP_TYPE=1
+APP_KEY=1
 
 ###########################################################
 ## Find all of files under the named directories.
@@ -65,7 +65,7 @@ LOCAL_STATIC_LIBRARIES := libcurl \
                           poco_foundation
 
 LOCAL_LDLIBS     += -fuse-ld=bfd -rdynamic -llog -lz
-LOCAL_CPPFLAGS := -DAPP_TYPE=$(APP_TYPE)
+LOCAL_CPPFLAGS := -DAPP_KEY=$(APP_KEY)
 
 $(call set-git-version)
 

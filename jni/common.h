@@ -1,20 +1,20 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#define GIT_VERSION "20160414-e6609f4"
+#define GIT_VERSION "20160519-346ae5f"
 
 #if (SDK_TYPE == 1)  //ANDROID_JAR
-    #define SDK_VERSION "V1.3.1"
+    #define SDK_VERSION "V2.0.0"
 #elif (SDK_TYPE == 2)  //ANDROID_PURESDK
     #define SDK_VERSION "V1.0.0"
 #else  //others
     #define SDK_VERSION "V1.0.0"
 #endif
 
-#if (APP_TYPE == 1)
-    #define APPTYPE    "FutureTv"
+#if (APP_KEY == 1)
+    #define APPKEY    "FutureTv"
 #else
-    #define APPTYPE    "DEFAULT"
+    #define APPKEY    "DEFAULT"
 #endif
 
 const int NUM_4 = 4;

@@ -67,7 +67,8 @@ private:
         configDeviceId,
         configPlatformId,
         configLoginType,
-        configMacFile
+        configMacFile,
+        configPublicActivateAddr
     };
 
     enum eLoginType
