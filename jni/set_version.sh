@@ -1,11 +1,7 @@
 #!/bin/bash 
-# Author : li.he@icntv.tv
 
 VERSION_FILE=$PWD/jni/common.h
 KERNEL=`uname`
-
-read -a a <<<`git describe --tags | sed "s/-g.*//g;s/\./ /g;s/-/ /g"`
-SDK_VERSION="${a[0]:-0}.${a[1]:-0}.${a[2]:-0}"
 
 GIT_VERSION=`git --no-pager log --abbrev=7 -n 1 --pretty=format:"%h %ci" HEAD | awk \
 '{gsub("-", "");print $2"-"$1}'`
