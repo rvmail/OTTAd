@@ -82,11 +82,15 @@ std::string getMacAndRemoveColon(int type, std::string macFile)
     {
         //MAC AB:CD:34:45:56:67 --> ABCD34455667
         std::string::iterator it;
-        for (it =mac.begin(); it != mac.end(); it++)
+        for (it = mac.begin(); it != mac.end();)
         {
             if (*it == ':')
             {
-                mac.erase(it);
+                it = mac.erase(it);
+            }
+            else
+            {
+                it++;
             }
         }
 
