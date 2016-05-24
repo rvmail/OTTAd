@@ -597,12 +597,12 @@ string Login::doActivate()
     return ERR_NO;
 }
 
-string Login::genePubActiToken(string mac, string apptype, string timestamp)
+string Login::genePubActiToken(string mac, string appkey, string timestamp)
 {
     icntvEncrypt enc;
-    string temp = mac + "&" + apptype;
+    string temp = mac + "&" + appkey;
     string k = enc.aesEncrypt(temp, PUB_ACTI_KEY);
-    LOGDEBUG("k=%s\n", k.c_str());
+    //LOGDEBUG("k=%s\n", k.c_str());
     string usedkey = k.substr(0, 16);
     LOGDEBUG("usedkey=%s\n", usedkey.c_str());
 

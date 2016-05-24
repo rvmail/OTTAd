@@ -90,7 +90,7 @@ private:
     string doActivate();
     string doAuthenticate();
 
-    string genePubActiToken(string mac, string apptype, string timestamp);
+    string genePubActiToken(string mac, string appkey, string timestamp);
     string publicActivate();
 
     string getConfigure(ConfigType type);
