@@ -96,7 +96,8 @@ Login::Login(void): mLoginStatus(LoginNot),
                     m_loginType2ActiErrCode("444"),
                     m_loginType3ActiErrCode("444"),
                     m_backupServerIsUsed(false),
-                    m_tmsAddress(""), m_tmsAddressBackup("")
+                    m_tmsAddress(""), m_tmsAddressBackup(""),
+                    mPlatformId(PLATFORM_ID)
 {
 }
 
@@ -143,7 +144,8 @@ string Login::getPlatformID()
 {
     if (mPlatformId.empty())
     {
-        mPlatformId = getConfigure(configPlatformId);
+        //mPlatformId = getConfigure(configPlatformId);
+        mPlatformId = PLATFORM_ID;
     }
 
     return mPlatformId;
