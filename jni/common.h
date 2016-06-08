@@ -1,7 +1,7 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#define GIT_VERSION "20160524-6b64cef"
+#define GIT_VERSION "20160525-d826fe7"
 
 #if (SDK_TYPE == 1)  //ANDROID_JAR
     #define SDK_VERSION "V2.0.0"
@@ -24,7 +24,7 @@
 #if (PLATFORM == 1)
     #define PLATFORM_ID    "icntv01ifap"
 #elif (PLATFORM == 2)
-    #define PLATFORM_ID    ""
+    #define PLATFORM_ID    "NewTV104MiGuShiXun"
 #else
     #define PLATFORM_ID    ""
 #endif

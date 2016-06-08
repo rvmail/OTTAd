@@ -17,6 +17,8 @@ package tv.icntv.ottlogin;
 
 import java.lang.StringBuffer;
 
+import com.shcmcc.tools.GetSysInfo;
+
 import konka.AidlHelper;
 
 import android.content.Context;
@@ -26,8 +28,10 @@ public class loginSDK {
 	private static final String LOG_TAG = "ottlogin";
 	private static final String VERSION = "V1.3.0";
 	private static final int TYPE_KONKA = 1;
+	private static final int TYPE_MiGuShiXun = 2;
 	private static loginSDK mInstance = null;
 	private String mLicense = null;
+	private GetSysInfo mSysInfo = null;
 
 	private loginSDK() {
 	}
@@ -71,6 +75,33 @@ public class loginSDK {
 					Log.e(LOG_TAG, "loginSDK sdkInit getCNTV4License failed");
 					return false;
 				}
+			}
+		} else if (type == TYPE_MiGuShiXun) {
+			if (context == null) {
+				Log.e(LOG_TAG, "loginSDK sdkInit context is null");
+				return false;
+			}
+			
+			if (mSysInfo == null) {
+				mSysInfo = GetSysInfo.getInstance("10086", "", context);
+				if (mSysInfo == null) {
+					Log.e(LOG_TAG, "mSysInfo is null");
+					return false;
+				}
+			}
+			
+			mLicense = mSysInfo.getSnNum();
+			if (mLicense == null || mLicense == "") {
+				Log.e(LOG_TAG, "loginSDK sdkInit getSnNum failed");
+				return false;
+			}
+			Log.d(LOG_TAG, "mLicense: " + mLicense);
+				
+			if (mLicense.length() == 32 && mLicense.substring(6, 8).equals("FF") == true) {
+				mLicense = null;
+			} else {
+				Log.e(LOG_TAG, "loginSDK sdkInit failed, license error");
+				return false;
 			}
 		} else {
 			mLicense = null;
