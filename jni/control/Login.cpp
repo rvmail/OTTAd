@@ -237,6 +237,12 @@ string Login::getConfigure(ConfigType type)
             LOGDEBUG("public activate address is %s\n", value.c_str());
             return value;
 
+        case configAppCode: // add by chulei
+        	icntvConfigure::getInstance()->getStrValue("DEVICE", "appCode", \
+        	                      buffer, sizeof(buffer) - 1, "/ini/DeviceID.ini");
+        	return string(buffer);
+        	break;
+
         default:
             break;
     }
@@ -299,6 +305,13 @@ void Login::getLoginType(void)
 
     m_macFile = getConfigure(configMacFile);
     LOGINFO("loginType(%d), macFile(%s)\n", m_loginType, m_macFile.c_str());
+}
+
+void Login::getAppCode(void)
+{
+	string appCode(getConfigure(configAppCode));
+	m_appCode = appCode;
+	LOGINFO("appCode(%s)\n", m_appCode.c_str());
 }
 
 void Login::setLoginType(void)
@@ -715,6 +728,17 @@ string Login::publicActivate()
     }
     LOGINFO("write LoginType success\n");
 
+    //activate success, write appCode into DeviceID.ini,add by chulei
+    ret = icntvConfigure::getInstance()->setKeyValue("DEVICE", \
+            "appCode", m_appCode.c_str(), "/ini/DeviceID.ini");
+    if (ret != 0)
+    {
+        setActivateErrCode(ERR_WRITE_DEVICE_ID);
+        LOGERROR("write appCode failed\n");
+        return ERR_WRITE_DEVICE_ID;
+    }
+    LOGINFO("write appCode success\n");
+
     //activate success, write DeviceID into DeviceID.ini
     ret = setConfigure(configDeviceId, mDeviceId);
     if (ret != 0)
@@ -895,6 +919,11 @@ string Login::startLogin()
 
             needDoActivate = false;
             i = 0;
+        }
+        else
+        {
+            // get the appCode
+            getAppCode();
         }
 
         ret = doAuthenticate();

@@ -68,7 +68,8 @@ private:
         configPlatformId,
         configLoginType,
         configMacFile,
-        configPublicActivateAddr
+        configPublicActivateAddr,
+		configAppCode
     };
 
     enum eLoginType
@@ -100,6 +101,9 @@ private:
     static void *checkTokenThread(void *param);
 
     int getLoginServerAddr(void);
+    // add by chulei
+    void getAppCode(void);
+
     void getLoginType(void);
     void setLoginType(void);
     void changeLoginType(void);

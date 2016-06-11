@@ -97,8 +97,12 @@ public class loginSDK {
 			}
 			Log.d(LOG_TAG, "mLicense: " + mLicense);
 				
-			if (mLicense.length() == 32 && mLicense.substring(6, 8).equals("FF") == true) {
-				mLicense = null;
+			if (mLicense.length() == 32) {
+				if (mLicense.substring(6, 8).equals("FF")) {
+					mLicense = null;
+				} else if (mLicense.substring(2, 4).equals("42") && mLicense.substring(10, 12).equals("01")) {
+					mLicense = null;
+				}
 			} else {
 				Log.e(LOG_TAG, "loginSDK sdkInit failed, license error");
 				return false;
