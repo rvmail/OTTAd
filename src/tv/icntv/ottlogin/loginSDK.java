@@ -26,7 +26,7 @@ import android.util.Log;
 
 public class loginSDK {
 	private static final String LOG_TAG = "ottlogin";
-	private static final String VERSION = "V2.0.0";
+	private static final String VERSION = "V2.0.1";
 	private static final int TYPE_KONKA = 1;
 	private static final int TYPE_MiGuShiXun = 2;
 	private static loginSDK mInstance = null;
@@ -102,6 +102,9 @@ public class loginSDK {
 					mLicense = null;
 				} else if (mLicense.substring(2, 4).equals("42") && mLicense.substring(10, 12).equals("01")) {
 					mLicense = null;
+				} else {
+					Log.e(LOG_TAG, "loginSDK sdkInit failed, license error");
+					return false;
 				}
 			} else {
 				Log.e(LOG_TAG, "loginSDK sdkInit failed, license error");
