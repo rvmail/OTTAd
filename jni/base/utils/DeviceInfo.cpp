@@ -125,6 +125,12 @@ std::string getMac(int type, std::string macFile)
     }
 
     std::string mac = getMacByFile(file);
+
+    if (type == 3 && mac == "00:00:00:00:00:00")
+    {
+        mac = "";
+    }
+
     return mac;
 }
 
