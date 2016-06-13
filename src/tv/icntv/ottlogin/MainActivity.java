@@ -123,6 +123,7 @@ public class MainActivity extends Activity {
 			txt.setText("getLoginStatus...");
 			
 			String ret = loginSDK.getInstance().getLoginStatus();
+			ret = loginSDK.getInstance().loginStatusToMsg(ret);
 			
 			txt.setText(ret);
 		}

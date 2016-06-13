@@ -33,6 +33,7 @@ public:
 
     void init(void);
     int startUpload(void);
+    std::string getLogUploadMac();
 
 private:
     LogUpload(void);

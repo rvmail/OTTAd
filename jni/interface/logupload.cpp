@@ -267,4 +267,9 @@ int LogUpload::startUpload()
     return 0;
 }
 
+std::string LogUpload::getLogUploadMac()
+{
+    return m_MAC;
+}
+
 

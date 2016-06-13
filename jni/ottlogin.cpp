@@ -101,6 +101,12 @@ string ICNTV_Login_getLoginStatus(void)
     return stat;
 }
 
+string ICNTV_Login_loginStatusToMsg(string status)
+{
+    string msg = Login::getInstance()->loginStateToMsg(status);
+    return msg;
+}
+
 bool ICNTV_Login_sdkExit(void)
 {
     baseThread::mutexLock(&g_exitMutex);

@@ -141,6 +141,13 @@ public class loginSDK {
 	 */
 	public synchronized native String getLoginStatus();
 	
+	/**
+	 * 获取对认证状态的描述信息
+	 * 
+	 * @param 
+	 * @return 返回认证状态对应的描述信息
+	 */
+	public native String loginStatusToMsg(String status);
 	
 	/**
 	 * 获取devive ID

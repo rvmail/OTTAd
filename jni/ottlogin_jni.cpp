@@ -85,7 +85,7 @@ static string jstringToString(JNIEnv *env, jstring jstr)
     }
 
     jclass clsstring = env->FindClass("java/lang/String");
-    jstring strencode = env->NewStringUTF("GB2312");
+    jstring strencode = env->NewStringUTF("utf-8");
     jmethodID mid = env->GetMethodID(clsstring, "getBytes", "(Ljava/lang/String;)[B");
     jbyteArray barr= (jbyteArray)env->CallObjectMethod(jstr, mid, strencode);
     jsize len = env->GetArrayLength(barr);
@@ -143,6 +143,17 @@ JNIEXPORT jstring JNICALL Java_tv_icntv_ottlogin_loginSDK_getLoginStatus
 
     jstring jstr;
     jstr = env->NewStringUTF(ret.c_str());
+    return jstr;
+}
+
+JNIEXPORT jstring JNICALL Java_tv_icntv_ottlogin_loginSDK_loginStatusToMsg
+(JNIEnv *env, jobject thiz, jstring status)
+{
+    string loginStatus = jstringToString(env, status);
+    string msg = ICNTV_Login_loginStatusToMsg(loginStatus);
+
+    jstring jstr;
+    jstr = env->NewStringUTF(msg.c_str());
     return jstr;
 }
 

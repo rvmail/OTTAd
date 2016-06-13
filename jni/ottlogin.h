@@ -55,6 +55,8 @@ string ICNTV_Login_deviceLogin(void);
 */
 string ICNTV_Login_getLoginStatus(void);
 
+string ICNTV_Login_loginStatusToMsg(string status);
+
 /**
 * @name         ICNTV_Login_sdkExit
 * @param        void

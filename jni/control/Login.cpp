@@ -35,6 +35,7 @@
 #include "debug.h"
 #include "icntvEncrypt.h"
 #include "dataCache.h"
+#include "logupload.h"
 
 #define BOOT_TRY_TIMES         3
 #define LOGIN_TRY_TIMES        4
@@ -67,6 +68,19 @@
 #define ERR_CONNECT_EPG                            "788"
 #define ERR_CHECKURL                               "799"
 
+#define ERR_NOT_TRY_ACTIVATE                       "444"
+
+//服务端返回码
+#define SERVER_RETURN_DEVICE_NOT_FOUND             "000"
+#define SERVER_RETURN_OK                           "111"
+#define SERVER_RETURN_LOGIN_SERVER_CRASH           "999"
+#define SERVER_RETURN_TMS_ERROR                    "95"
+#define SERVER_RETURN_DEVICE_ID_ERROR              "250"
+#define SERVER_RETURN_DEVICE_HALT                  "251"
+#define SERVER_RETURN_IP_ILLEGAL                   "252"
+#define SERVER_RETURN_IP_FORBIDDEN                 "255"
+#define SERVER_RETURN_MAC_INVALID                  "257"
+#define SERVER_RETURN_SN_INVALID                   "258"
 
 #define AES_KEY               "36b9c7e8695468dc"
 #define ENCRYPT_VERSION       "1.0"
@@ -859,6 +873,204 @@ bool Login::whetherNeedActivate()
     }
 
     return needDoActivate;
+}
+
+string Login::errorCodeToMsg(string errorCode)
+{
+    string msg("未知错误");
+
+    if (errorCode == SERVER_RETURN_DEVICE_NOT_FOUND)
+    {
+        msg = "上线时设备未找到";
+    }
+    else if (errorCode == SERVER_RETURN_OK)
+    {
+        msg = "认证成功";
+    }
+    else if (errorCode == SERVER_RETURN_LOGIN_SERVER_CRASH)
+    {
+        msg = "上线后台服务器崩溃";
+    }
+    else if (errorCode == SERVER_RETURN_TMS_ERROR)  // ?
+    {
+        msg = "播控服务器异常";
+    }
+    else if (errorCode == SERVER_RETURN_DEVICE_ID_ERROR)
+    {
+        msg = "设备号无效";
+    }
+    else if (errorCode == SERVER_RETURN_DEVICE_HALT)
+    {
+        msg = "设备处于停机状态";
+    }
+    else if (errorCode == SERVER_RETURN_IP_ILLEGAL)
+    {
+        msg = "IP地址非法";
+    }
+    else if (errorCode == SERVER_RETURN_IP_FORBIDDEN)
+    {
+        msg = "IP地址限制";
+    }
+    else if (errorCode == SERVER_RETURN_MAC_INVALID)
+    {
+        msg = "MAC地址号无效";
+    }
+    else if (errorCode == SERVER_RETURN_SN_INVALID)
+    {
+        msg = "SN无效";
+    }
+    else if (errorCode == ERR_LOGIN_FORCE_STOP)
+    {
+        msg = "认证被强制中止";
+    }
+    else if (errorCode == ERR_LOGIN_NOT_INIT)
+    {
+        msg = "未初始化";
+    }
+    else if (errorCode == ERR_CHECK_TOKEN)
+    {
+        msg = "token服务异常";
+    }
+    else if (errorCode == ERR_MALLOC)
+    {
+        msg = "分配内存失败";
+    }
+    else if (errorCode == ERR_READ_MAC)
+    {
+        msg = "读取MAC失败";
+    }
+    else if (errorCode == ERR_WRITE_DEVICE_ID)
+    {
+        msg = "写设备号失败";
+    }
+    else if (errorCode == ERR_READ_CONFIG)
+    {
+        msg = "读配置文件异常";
+    }
+    else if (errorCode == ERR_ACTIVATE_CONNECT_TMS)
+    {
+        msg = "激活时连接服务器失败";
+    }
+    else if (errorCode == ERR_AUTH_CONNECT_TMS)
+    {
+        msg = "上线时连接服务器失败";
+    }
+    else if (errorCode == ERR_AUTH_STATE_NULL)
+    {
+        msg = "上线时后台上线state为空";
+    }
+    else if (errorCode == ERR_ACTIVATE_DEVICE_NULL)
+    {
+        msg = "激活时后台兑换出设备ID为空";
+    }
+    else if (errorCode == ERR_ACTIVATE_PARSE_RESPONSE)
+    {
+        msg = "激活时解析数据出错";
+    }
+    else if (errorCode == ERR_AUTH_PARSE_RESPONSE)
+    {
+        msg = "上线时解析数据出错";
+    }
+    else if (errorCode == ERR_NOT_TRY_ACTIVATE)
+    {
+        msg = "没尝试过进行激活";
+    }
+    else
+    {
+        msg = "未知错误";
+    }
+
+    return msg;
+}
+
+void Login::parseParam(const string &param, string separator, VectorString &list)
+{
+    string temp;
+    size_t from = 0, to = 0;
+
+    if (param == "")
+    {
+        LOGERROR("param is empty\n");
+        return;
+    }
+
+    to = param.find_first_of(separator, from);
+    while (to != string::npos)
+    {
+        temp = param.substr(from, to - from);
+        //LOGDEBUG("param: %s\n", temp.c_str());
+        list.push_back(temp);
+
+        from = to + 1;
+        to = param.find_first_of(separator, from);
+    }
+
+    temp = param.substr(from, -1);
+    //LOGDEBUG("param: %s\n", temp.c_str());
+    list.push_back(temp);
+}
+
+string Login::loginStateToMsg(string state)
+{
+    string msg;
+    VectorString list;
+    string temp;
+
+    parseParam(state, "-", list);
+
+    //激活结果1775-2755-3755: 无线没报备，有线读取MAC失败，蓝牙读取MAC失败
+    if (list.size() == 3)  //激活结果，康佳属于特殊情况，康佳用序列号报备，没有智能切换，激活结果形如775
+    {
+        msg = "激活失败";
+
+#if 0
+        for (int i = 0; i < 3; i++)
+        {
+            temp = list[i];
+
+            if (temp[0] == '1')
+            {
+                msg += "无线MAC";
+                msg += errorCodeToMsg(temp.substr(1, -1));
+            }
+            else if (temp[0] == '2')
+            {
+                msg += "有线MAC";
+                msg += errorCodeToMsg(temp.substr(1, -1));
+            }
+            else if (temp[0] == '3')
+            {
+                msg += "蓝牙MAC";
+                msg += errorCodeToMsg(temp.substr(1, -1));
+            }
+            else
+            {
+                //shit
+            }
+
+            if (i < 2)
+            {
+                msg += ",";
+            }
+        }
+#endif
+    }
+    else if (list.size() == 1)  //上线状态
+    {
+        temp = list[0];
+        msg = errorCodeToMsg(temp);
+    }
+    else
+    {
+        msg = "未知错误";
+    }
+
+    msg += "(";
+    msg += LogUpload::getInstance()->getLogUploadMac();
+    msg += ")";
+
+    LOGINFO("msg: %s\n", msg.c_str());
+    return msg;
 }
 
 string Login::startLogin()

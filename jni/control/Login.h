@@ -23,6 +23,7 @@
 #define __LOGIN_H__
 
 #include "XMLParse.h"
+#include <vector>
 
 using namespace std;
 
@@ -38,6 +39,8 @@ enum LoginStatus
     LoginUnknown,
 };
 
+typedef vector<string> VectorString;
+
 class Login
 {
 public:
@@ -50,6 +53,7 @@ public:
 
     LoginStatus getLoginStatus(void);
     string getLoginState(void);
+    string loginStateToMsg(string state);
     string getToken();
     string getDeviceID();
     string getUserID();
@@ -110,6 +114,9 @@ private:
     void setActivateErrCode(string err);
 
     string getAddressFromList(string name, MapServerList &list);
+
+    string errorCodeToMsg(string errorCode);
+    void parseParam(const string &param, string separator, VectorString &list);
 
     static Login* m_pInstance;
 
