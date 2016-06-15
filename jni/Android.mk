@@ -5,6 +5,9 @@ OUTPUT_TYPE=ANDROID_JAR
 ###########################################################
 ## APP_KEY
 ## 1: FutureTv
+## 3: UN99QQGCW_HZ
+## 4: UN98DZCJ_SH
+## 5: UN97NGDY_BJ
 ###########################################################
 APP_KEY=1
 
@@ -12,6 +15,9 @@ APP_KEY=1
 ## PLATFORM
 ## 1: icntv01ifap
 ## 2: NewTV104MiGuShiXuns
+## 3: UN99QQGCW_HZ
+## 4: UN98DZCJ_SH
+## 5: UN97NGDY_BJ
 ###########################################################
 PLATFORM=2
 

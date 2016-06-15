@@ -14,8 +14,12 @@
 // APP_KEY
 #if (APP_KEY == 1)
     #define APPKEY    "FutureTv"
-#elif (APP_KEY == 2)
-    #define APPKEY    ""
+#elif (APP_KEY == 3)
+    #define APPKEY    "UN99QQGCW_HZ"
+#elif (APP_KEY == 4)
+    #define APPKEY    "UN98DZCJ_SH"
+#elif (APP_KEY == 5)
+    #define APPKEY    "UN97NGDY_BJ"
 #else
     #define APPKEY    ""
 #endif
@@ -25,6 +29,12 @@
     #define PLATFORM_ID    "icntv01ifap"
 #elif (PLATFORM == 2)
     #define PLATFORM_ID    "NewTV104MiGuShiXun"
+#elif (PLATFORM == 3)
+    #define PLATFORM_ID    "UN99QQGCW_HZ"
+#elif (PLATFORM == 4)
+    #define PLATFORM_ID    "UN98DZCJ_SH"
+#elif (PLATFORM == 5)
+    #define PLATFORM_ID    "UN97NGDY_BJ"
 #else
     #define PLATFORM_ID    ""
 #endif
