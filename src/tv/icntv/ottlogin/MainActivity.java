@@ -253,7 +253,7 @@ public class MainActivity extends Activity {
 			EditText txt = (EditText)findViewById(R.id.txtinit);
 			txt.setText("sdkInit...");
 			
-			boolean ret = loginSDK.getInstance().sdkInit(getFilesDir().getPath(), 2, mContext);
+			boolean ret = loginSDK.getInstance().sdkInit(getFilesDir().getPath(), 0, mContext);
 			
 			txt.setText("" + ret);
 		}
