@@ -20,6 +20,10 @@
     #define APPKEY    "UN98DZCJ_SH"
 #elif (APP_KEY == 5)
     #define APPKEY    "UN97NGDY_BJ"
+#elif (APP_KEY == 6)
+    #define APPKEY    "UN96BWEG"
+#elif (APP_KEY == 7)
+    #define APPKEY    "UN95UTSDK"
 #else
     #define APPKEY    ""
 #endif
@@ -35,6 +39,10 @@
     #define PLATFORM_ID    "UN98DZCJ_SH"
 #elif (PLATFORM == 5)
     #define PLATFORM_ID    "UN97NGDY_BJ"
+#elif (PLATFORM == 6)
+    #define PLATFORM_ID    "UN96BWEG"
+#elif (PLATFORM == 7)
+    #define PLATFORM_ID    "UN95UTSDK"
 #else
     #define PLATFORM_ID    ""
 #endif

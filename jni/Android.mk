@@ -8,6 +8,8 @@ OUTPUT_TYPE=ANDROID_JAR
 ## 3: UN99QQGCW_HZ
 ## 4: UN98DZCJ_SH
 ## 5: UN97NGDY_BJ
+## 6: UN96BWEG
+## 7: UN95UTSDK
 ###########################################################
 APP_KEY=1
 
@@ -18,6 +20,8 @@ APP_KEY=1
 ## 3: UN99QQGCW_HZ
 ## 4: UN98DZCJ_SH
 ## 5: UN97NGDY_BJ
+## 6: UN96BWEG
+## 7: UN95UTSDK
 ###########################################################
 PLATFORM=2
 
