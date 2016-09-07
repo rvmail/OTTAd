@@ -1,7 +1,7 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#define GIT_VERSION "20160608-6d2923d"
+#define GIT_VERSION "20160704-7cef3db"
 
 #if (SDK_TYPE == 1)  //ANDROID_JAR
     #define SDK_VERSION "V2.0.1"
@@ -14,6 +14,8 @@
 // APP_KEY
 #if (APP_KEY == 1)
     #define APPKEY    "FutureTv"
+#elif (APP_KEY == 2)
+    #define APPKEY    "FutureTv"
 #elif (APP_KEY == 3)
     #define APPKEY    "UN99QQGCW_HZ"
 #elif (APP_KEY == 4)
@@ -24,6 +26,10 @@
     #define APPKEY    "UN96BWEG"
 #elif (APP_KEY == 7)
     #define APPKEY    "UN95UTSDK"
+#elif (APP_KEY == 8)
+    #define APPKEY    "UN94RWGC"
+#elif (APP_KEY == 9)
+    #define APPKEY    "UN93YFJY"
 #else
     #define APPKEY    ""
 #endif
@@ -43,6 +49,10 @@
     #define PLATFORM_ID    "UN96BWEG"
 #elif (PLATFORM == 7)
     #define PLATFORM_ID    "UN95UTSDK"
+#elif (PLATFORM == 8)
+    #define PLATFORM_ID    "UN94RWGC"
+#elif (PLATFORM == 9)
+    #define PLATFORM_ID    "UN93YFJY"
 #else
     #define PLATFORM_ID    ""
 #endif

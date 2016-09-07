@@ -5,13 +5,16 @@ OUTPUT_TYPE=ANDROID_JAR
 ###########################################################
 ## APP_KEY
 ## 1: FutureTv
+## 2: FutureTv
 ## 3: UN99QQGCW_HZ
 ## 4: UN98DZCJ_SH
 ## 5: UN97NGDY_BJ
 ## 6: UN96BWEG
 ## 7: UN95UTSDK
+## 8: UN94RWGC
+## 9: UN93YFJY
 ###########################################################
-APP_KEY=1
+APP_KEY=8
 
 ###########################################################
 ## PLATFORM
@@ -22,8 +25,10 @@ APP_KEY=1
 ## 5: UN97NGDY_BJ
 ## 6: UN96BWEG
 ## 7: UN95UTSDK
+## 8: UN94RWGC
+## 9: UN93YFJY
 ###########################################################
-PLATFORM=2
+PLATFORM=8
 
 ###########################################################
 ## Find all of files under the named directories.
