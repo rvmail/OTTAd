@@ -11,6 +11,7 @@ import java.util.TimerTask;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -114,6 +115,9 @@ public class MainActivity extends Activity {
 		//version
 		Button version = (Button)findViewById(R.id.buttonversion);
 		version.setOnClickListener(new Click_version());
+		
+		Button tz = (Button)findViewById(R.id.tz);
+		tz.setOnClickListener(new Click_tz());
 	}
 	
 	//getLoginStatus
@@ -323,6 +327,14 @@ public class MainActivity extends Activity {
 		}
 	}
 	
+	class Click_tz implements View.OnClickListener {
+		public void onClick(View v) {
+			if (v.getId() == R.id.tz) {
+				startActivity(new Intent(MainActivity.this,SeActivity.class));
+			}
+		}
+	}
+	
 	protected void onDestroy() {
 		Log.d("loginsdk", "onDestroy");
 		loginSDK.getInstance().sdkExit();
@@ -347,9 +359,9 @@ public class MainActivity extends Activity {
 		BufferedOutputStream bos = null;
 		InputStream is = null;
 		try {
-			// 源文件插上管子，准备读取内容
+			// 婧愭枃浠舵彃涓婄瀛愶紝鍑嗗璇诲彇鍐呭
 			is = mAssetManager.open(srcPath);
-			// 目的文件插上管道，准备写入文件
+			// 鐩殑鏂囦欢鎻掍笂绠￠亾锛屽噯澶囧啓鍏ユ枃浠�
 			File dstFile = new File(dstPath);
 			dstFile.getParentFile().mkdirs();
 			bos = new BufferedOutputStream(new FileOutputStream(dstFile), 1024);
